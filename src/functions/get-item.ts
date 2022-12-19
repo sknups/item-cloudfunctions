@@ -48,7 +48,7 @@ export class GetItem {
       throw new AppError(UNCATEGORIZED_ERROR, e);
     }
 
-    const item = new ItemDTOMapper(config.assetsHost, config.flexHost, config.sknappHost).toDTO(entity)
+    const item = new ItemDTOMapper(config.assetsUrl, config.flexUrl, config.sknAppUrl).toDTO(entity)
 
     res.status(StatusCodes.OK).json(item);
   }

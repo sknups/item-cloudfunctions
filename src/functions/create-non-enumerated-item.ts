@@ -4,17 +4,21 @@ import { AllConfig } from '../config/all-config';
 import { StatusCodes } from 'http-status-codes';
 import logger from '../helpers/logger';
 import { parseAndValidateRequestData } from '../helpers/validation';
-import { ItemEntity } from '../persistence/item-entity';
 import { SkuEntity } from '../persistence/sku-entity';
 import { ALREADY_EXISTS } from '../persistence/datastore-constants';
-import { getEntity, insertEntity, transaction } from '../persistence/datastore-repository';
 import { randomBytes } from 'crypto';
-import { AuditEntity } from '../persistence/audit-entity';
 import { EventPublisher } from '../eventstreaming/event-publisher';
-import { itemEntityToCreateItemEvent, itemEntityToResponseDto, skuEntityToItemEntity } from '../helpers/item-mapper';
+import { itemEntityToCreateItemEvent, skuEntityToItemEntity } from '../helpers/item-mapper';
 import { AppError, ITEM_CODE_RETRIES_EXCEEDED, SKU_NOT_FOUND, SKU_NOT_SUPPORTED } from '../app.errors';
 import { ItemEvent } from '../eventstreaming/item-event';
 import { CreateNonEnumeratedItemRequestDTO } from '../dto/create-non-enumerated-item-request.dto';
+import { commitTransaction, DatastoreContext, rollbackTransaction, startTransaction } from '../helpers/datastore/datastore.helper';
+import { ItemRepository } from '../persistence/item-repository';
+import { ItemEntity } from '../entity/item.entity';
+import { AuditEntity } from '../entity/audit.entity';
+import { getEntity } from '../persistence/datastore-repository';
+import { MutationResult } from '../helpers/persistence/mutation-result';
+import { ItemDTOMapper } from '../mapper/item-mapper';
 
 let _publisherInstance: EventPublisher<ItemEvent> = null;
 function _publisher(cfg: AllConfig) {
@@ -24,43 +28,46 @@ function _publisher(cfg: AllConfig) {
   return _publisherInstance;
 }
 
+const repository = new ItemRepository();
+
 const MAX_ITEM_CODE_RETRIES = 3;
 
-async function _createItemAndAuditWithRetries(item: ItemEntity) {
-  const audit = new AuditEntity();
-  audit.date = item.created;
-  audit.details = null;
-  audit.fromState = null;
-  audit.toState = 'UNBOXED / UNMINTED';
-  let auditKey: string | number | Long = null;
+function _generateItemCode(): string {
+  return randomBytes(5).toString("hex");
+}
 
-  let itemCode: string = null;
+async function _createItemAndAuditWithRetries(item: ItemEntity): Promise<AuditEntity> {
+  const audit: AuditEntity = {
+    key: null,
+    date: item.created,
+    details: null,
+    entityId: item.key,
+    fromState: null,
+    toState: 'UNBOXED / UNMINTED',
+  };
+
   let remainingAttempts = MAX_ITEM_CODE_RETRIES;
   let success = false;
+  let commitResponse: MutationResult[];
   let lastError: any; // eslint-disable-line @typescript-eslint/no-explicit-any
 
   while (!success && remainingAttempts > 0) {
     remainingAttempts--;
-    itemCode = randomBytes(5).toString('hex');
-    audit.entityId = itemCode;
 
-    const tx = transaction('drm');
-    await tx.run();
+    const context: DatastoreContext = await startTransaction(ItemRepository.context);
 
     try {
-      await insertEntity('drm', 'item', itemCode, item, tx);
-      await insertEntity('drm', 'audit', null, audit, tx);
-      const response = await tx.commit();
-      auditKey = response[0].mutationResults
-        .filter(r => r.key?.path?.length || 0 > 0)
-        .map(r => r.key.path[0])
-        .filter(k => k.kind == 'audit')[0].id;
+      await repository.insertItem(item, context);
+
+      await repository.insertAudit(audit, context);
+
+      commitResponse = await commitTransaction(context);
       success = true;
     } catch (e) {
-      await tx.rollback();
+      await rollbackTransaction(context);
       if (e.code == ALREADY_EXISTS) {
-        logger.warn(`Item code ${itemCode} in use, retry attempts remaining: ${remainingAttempts}`);
-        itemCode = randomBytes(5).toString("hex");
+        logger.warn(`Item code ${item.key} in use, retry attempts remaining: ${remainingAttempts}`);
+        item.key = _generateItemCode();
         lastError = new AppError(ITEM_CODE_RETRIES_EXCEEDED(MAX_ITEM_CODE_RETRIES), e);
       } else {
         throw e;
@@ -72,7 +79,9 @@ async function _createItemAndAuditWithRetries(item: ItemEntity) {
     throw lastError;
   }
 
-  return { auditKey, audit };
+  audit.key = commitResponse.filter(m => m?.kind === 'audit')[0].key as number;
+
+  return audit;
 }
 
 async function _retrieveAndValidateSku(skuCode: string): Promise<SkuEntity> {
@@ -104,19 +113,20 @@ export class CreateNonEnumeratedItem {
     const item = skuEntityToItemEntity(
       sku,
       requestDto.skuCode,
+      _generateItemCode(),
       requestDto.claimCode,
       requestDto.email,
       requestDto.user,
       cfg,
     );
-    const { auditKey, audit } = await _createItemAndAuditWithRetries(item);
-    logger.info(`Manufactured item ${audit.entityId} from SKU "${item.stockKeepingUnitCode}" for giveaway "${item.claimCode}"`);
+    const audit = await _createItemAndAuditWithRetries(item);
+    logger.info(`Manufactured item ${audit.entityId} from SKU "${item.stockKeepingUnitCode}" for giveaway "${item.claimCode}" with auditId ${audit.key}`);
 
     // Publish event
-    const event = itemEntityToCreateItemEvent(item, audit, auditKey.toString());
+    const event = itemEntityToCreateItemEvent(item, audit, audit.key.toString());
     await _publisher(cfg).publishEvent(event);
 
-    const response = itemEntityToResponseDto(item, audit.entityId);
+    const response = new ItemDTOMapper(cfg.assetsUrl, cfg.flexUrl, cfg.sknAppUrl).toDTO(item);
     res.status(StatusCodes.OK).json(response);
   }
 }
