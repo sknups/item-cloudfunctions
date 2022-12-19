@@ -29,9 +29,7 @@ EMAIL_HASHING_SECRET='#oBbMZrt56ti'
 FLEX_URL=https://flex-dev.sknups.gg
 LOG_FORMAT=simple
 SKNAPP_URL=https://app-dev.sknups.gg
-ASSETS_HOST=https://assets-dev.sknups.gg
-FLEX_HOST=https://flex-dev.sknups.gg
-SKNAPP_HOST=https://app-dev.sknups.gg
+ASSETS_URL=https://assets-dev.sknups.gg
 EOF
 ```
 

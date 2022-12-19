@@ -32,9 +32,9 @@ export class GetItems {
         const emailHash = hashEmail(getItemsReq.emailAddress, config.emailHashingSecret);
         const itemsFromEmail = await GetItems.repository.byEmailHash(getItemsReq.platformCode, emailHash);
         for(const item of itemsFromEmail){ 
-          if (!itemIds.has(item.thumbprint)) {
+          if (!itemIds.has(item.key)) {
             entities.push(item)
-            itemIds.add(item.thumbprint)
+            itemIds.add(item.key)
           }
         }
       }
@@ -42,9 +42,9 @@ export class GetItems {
       if (getItemsReq.user) {
         const itemsFromUser = await GetItems.repository.byUser(getItemsReq.platformCode, getItemsReq.user);
         for(const item of itemsFromUser){ 
-          if (!itemIds.has(item.thumbprint)) {
+          if (!itemIds.has(item.key)) {
             entities.push(item)
-            itemIds.add(item.thumbprint)
+            itemIds.add(item.key)
           }
         }
       }
@@ -52,14 +52,14 @@ export class GetItems {
       if (getItemsReq.blockchainAddress) {
         const itemsFromWallets = await GetItems.repository.byWalletAddress(getItemsReq.platformCode, getItemsReq.blockchainAddress);  
         for(const item of itemsFromWallets){ 
-          if (!itemIds.has(item.thumbprint)) {
+          if (!itemIds.has(item.key)) {
             entities.push(item)
-            itemIds.add(item.thumbprint)
+            itemIds.add(item.key)
           }
         }
       }
 
-      const mapper = new ItemDTOMapper(config.assetsHost, config.flexHost, config.sknappHost)
+      const mapper = new ItemDTOMapper(config.assetsUrl, config.flexUrl, config.sknAppUrl)
       const items = entities.map(entity => mapper.toDTO(entity))
     
       res.status(StatusCodes.OK).json(items);

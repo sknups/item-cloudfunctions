@@ -2,6 +2,7 @@
 import { ClassConstructor } from 'class-transformer';
 import { mocked } from 'jest-mock';
 import { EventPublisher } from '../src/eventstreaming/event-publisher';
+import { MutationResult } from '../src/helpers/persistence/mutation-result';
 import { SkuEntity } from '../src/persistence/sku-entity';
 
 export function mockSkuEntity(): SkuEntity {
@@ -51,10 +52,11 @@ export function mockDatastoreCommitResponse(kind: string, id: number): any {
   ];
 }
 
-const datastoreTransaction = {
-  run: jest.fn(),
-  rollback: jest.fn(),
-  commit: jest.fn(),
+export function mockCommitTransactionResponse(kind: string, key: number): MutationResult[] {
+  return [{
+    key,
+    kind,
+  }];
 }
 
 const datastoreRepository = {
@@ -77,23 +79,29 @@ const datastoreRepository = {
           return null;
       }
     }),
+}
+
+const datastoreHelper = {
+  createContext: jest.fn(),
   insertEntity: jest.fn(),
-  transaction: jest.fn().mockReturnValue(datastoreTransaction),
+  startTransaction: jest.fn(),
+  commitTransaction: jest.fn(),
+  rollbackTransaction: jest.fn(),
 }
 
 const eventPublisher = mocked(EventPublisher);
 
 export const mocks = {
   datastoreRepository,
-  datastoreTransaction,
+  datastoreHelper,
   eventPublisher,
   mockClear: () => {
     datastoreRepository.getEntity.mockClear();
-    datastoreRepository.insertEntity.mockClear();
-    datastoreRepository.transaction.mockClear();
-    datastoreTransaction.commit.mockClear();
-    datastoreTransaction.rollback.mockClear();
-    datastoreTransaction.run.mockClear();
+    datastoreHelper.createContext.mockClear();
+    datastoreHelper.insertEntity.mockClear();
+    datastoreHelper.startTransaction.mockClear();
+    datastoreHelper.commitTransaction.mockClear();
+    datastoreHelper.rollbackTransaction.mockClear();
 
     // As EventPublisher is never recreated, just clear the mock methods of all instances (should only be 1 instance)
     eventPublisher.mock.instances.forEach(i => mocked(i.publishEvent).mockClear());
@@ -101,4 +109,5 @@ export const mocks = {
 }
 
 jest.mock('../src/persistence/datastore-repository', () => datastoreRepository);
+jest.mock('../src/helpers/datastore/datastore.helper', () => datastoreHelper);
 jest.mock('../src/eventstreaming/event-publisher');

@@ -2,17 +2,13 @@ import * as Joi from 'joi';
 import base, { BaseConfig } from './base-config';
 import emailHashing, { EmailHashingConfig } from './email-hashing-config';
 import item, { ItemConfig } from './item-config';
-import media, { MediaConfig } from './media-config';
-import sknapp, { SknAppConfig } from './sknapp-config';
 
-export type AllConfig = BaseConfig & EmailHashingConfig & ItemConfig & MediaConfig & SknAppConfig;
+export type AllConfig = BaseConfig & EmailHashingConfig & ItemConfig;
 
 const ALL_FRAGMENTS = [
   base,
   emailHashing,
   item,
-  media,
-  sknapp,
 ];
 
 const CONFIG_SCHEMA = Joi.object(ALL_FRAGMENTS.map(f => f.schema).reduce((a, b) => {

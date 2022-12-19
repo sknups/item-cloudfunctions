@@ -1,50 +1,52 @@
 import { AllConfig } from '../config/all-config';
 import { ItemEvent } from '../eventstreaming/item-event';
-import { AuditEntity } from '../persistence/audit-entity';
-import { ItemEntity } from '../persistence/item-entity';
 import { SkuEntity } from '../persistence/sku-entity';
-import { createHash } from 'crypto';
-import { CreateNonEnumeratedItemResponseDTO } from '../dto/create-non-enumerated-item-response.dto';
+import { ItemEntity } from '../entity/item.entity';
+import { AuditEntity } from '../entity/audit.entity';
+import { hashEmail } from '../hashing/index';
 
 export function skuEntityToItemEntity(
   sku: SkuEntity,
   skuCode: string,
+  itemCode: string,
   claimCode: string,
   email: string,
   user: string,
   cfg: AllConfig,
 ): ItemEntity {
-  const item = new ItemEntity();
-  item.brandCode = sku.brandCode;
-  item.brandName = sku.brandName;
-  item.brandWholesalePrice = sku.brandWholesalePrice;
-  item.brandWholesalerShare = sku.brandWholesalerShare;
-  item.card = sku.card;
-  item.certVersion = 'v1';
-  item.claimCode = claimCode;
-  item.created = new Date();
-  item.description = sku.description;
-  item.emailHash = createHash('sha256').update(cfg.emailHashingSecret + email).digest('hex');
-  item.user = user || null;
-  item.flexHost = cfg.flexUrl;
-  item.maxQty = sku.maxQty;
-  item.nftAddress = null;
-  item.nftState = 'UNMINTED';
-  item.ownerAddress = null;
-  item.platformCode = sku.platformCode;
-  item.recommendedRetailPrice = sku.recommendedRetailPrice;
-  item.saleQty = null;
-  item.sknappHost = cfg.sknAppUrl;
-  item.source = 'GIVEAWAY';
-  item.state = 'UNBOXED';
-  item.stockKeepingUnitCode = skuCode;
-  item.stockKeepingUnitName = sku.name;
-  item.stockKeepingUnitRarity = sku.rarity;
-  item.tier = sku.tier;
-  item.updated = item.created;
-  item.version = '2';
-  item.skn = sku.skn;
-  return item;
+  const created = new Date();
+  return {
+    key: itemCode,
+    brandCode: sku.brandCode,
+    brandName: sku.brandName,
+    brandWholesalePrice: sku.brandWholesalePrice,
+    brandWholesalerShare: sku.brandWholesalerShare,
+    card: sku.card,
+    certVersion: 'v1',
+    claimCode: claimCode,
+    created,
+    description: sku.description,
+    emailHash: hashEmail(email, cfg.emailHashingSecret),
+    user: user || null,
+    flexHost: cfg.flexUrl,
+    maxQty: sku.maxQty,
+    nftAddress: null,
+    nftState: 'UNMINTED',
+    ownerAddress: null,
+    platformCode: sku.platformCode,
+    recommendedRetailPrice: sku.recommendedRetailPrice,
+    saleQty: null,
+    sknappHost: cfg.sknAppUrl,
+    source: 'GIVEAWAY',
+    state: 'UNBOXED',
+    stockKeepingUnitCode: skuCode,
+    stockKeepingUnitName: sku.name,
+    stockKeepingUnitRarity: sku.rarity,
+    tier: sku.tier,
+    updated: created,
+    version: '2',
+    skn: sku.skn,
+  }
 }
 
 export function itemEntityToCreateItemEvent(item: ItemEntity, audit: AuditEntity, eventId: string): ItemEvent {
@@ -74,32 +76,4 @@ export function itemEntityToCreateItemEvent(item: ItemEntity, audit: AuditEntity
   event.state = item.state;
   event.tier = item.tier;
   return event;
-}
-
-export function itemEntityToResponseDto(item: ItemEntity, itemCode: string): CreateNonEnumeratedItemResponseDTO {
-  return {
-    brandCode: item.brandCode,
-    brandName: item.brandName,
-    card: item.card,
-    certVersion: item.certVersion,
-    claimCode: item.claimCode,
-    code: itemCode,
-    description: item.description,
-    flexHost: item.flexHost,
-    maxQty: item.maxQty,
-    nftAddress: item.nftAddress,
-    nftState: item.nftState,
-    ownerAddress: item.ownerAddress,
-    platformCode: item.platformCode,
-    recommendedRetailPrice: item.recommendedRetailPrice,
-    saleQty: item.saleQty,
-    sknappHost: item.sknappHost,
-    source: item.source,
-    state: item.state,
-    stockKeepingUnitCode: item.stockKeepingUnitCode,
-    stockKeepingUnitName: item.stockKeepingUnitName,
-    stockKeepingUnitRarity: item.stockKeepingUnitRarity,
-    thumbprint: itemCode,
-    version: item.version,
-  }
 }
