@@ -4,11 +4,10 @@ import { AllConfig } from '../config/all-config';
 import { StatusCodes } from 'http-status-codes';
 import logger from '../helpers/logger';
 import { parseAndValidateRequestData } from '../helpers/validation';
-import { SkuEntity } from '../persistence/sku-entity';
 import { ALREADY_EXISTS } from '../persistence/datastore-constants';
 import { randomBytes } from 'crypto';
 import { EventPublisher } from '../eventstreaming/event-publisher';
-import { itemEntityToCreateItemEvent, skuEntityToItemEntity } from '../helpers/item-mapper';
+import { itemEntityToCreateItemEvent, skuToItemEntity } from '../helpers/item-mapper';
 import { AppError, ITEM_CODE_RETRIES_EXCEEDED, SKU_NOT_FOUND, SKU_NOT_SUPPORTED } from '../app.errors';
 import { ItemEvent } from '../eventstreaming/item-event';
 import { CreateNonEnumeratedItemRequestDTO } from '../dto/create-non-enumerated-item-request.dto';
@@ -16,9 +15,9 @@ import { commitTransaction, DatastoreContext, rollbackTransaction, startTransact
 import { ItemRepository } from '../persistence/item-repository';
 import { ItemEntity } from '../entity/item.entity';
 import { AuditEntity } from '../entity/audit.entity';
-import { getEntity } from '../persistence/datastore-repository';
 import { MutationResult } from '../helpers/persistence/mutation-result';
 import { ItemDTOMapper } from '../mapper/item-mapper';
+import { Sku, getSku } from '../client/catalog/catalog.client';
 
 let _publisherInstance: EventPublisher<ItemEvent> = null;
 function _publisher(cfg: AllConfig) {
@@ -84,8 +83,10 @@ async function _createItemAndAuditWithRetries(item: ItemEntity): Promise<AuditEn
   return audit;
 }
 
-async function _retrieveAndValidateSku(skuCode: string): Promise<SkuEntity> {
-  const sku: SkuEntity | null = await getEntity(SkuEntity, 'catalog', 'sku', skuCode);
+
+
+async function _retrieveAndValidateSku(cfg: AllConfig, skuCode: string): Promise<Sku> {
+  const sku: Sku | null = await getSku(cfg, skuCode);
   if (!sku) {
     throw new AppError(SKU_NOT_FOUND(skuCode));
   }
@@ -107,10 +108,10 @@ export class CreateNonEnumeratedItem {
     logger.debug(`Received request for create-non-enumerated-item for sku ${requestDto.skuCode} and claim ${requestDto.claimCode}`);
 
     // Retrieve required data
-    const sku: SkuEntity = await _retrieveAndValidateSku(requestDto.skuCode);
+    const sku: Sku = await _retrieveAndValidateSku(cfg, requestDto.skuCode);
 
     // Create item
-    const item = skuEntityToItemEntity(
+    const item = skuToItemEntity(
       sku,
       requestDto.skuCode,
       _generateItemCode(),

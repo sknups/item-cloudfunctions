@@ -85,7 +85,7 @@ describe('function - create-giveaway-item', () => {
 
     expect(res.statusCode).toEqual(StatusCodes.NOT_FOUND);
     expect(res._getJSON().code).toEqual('CREATE_NON_ENUMERATED_ITEM_00001');
-    expect(mocks.datastoreRepository.getEntity).toHaveBeenCalledTimes(1); // get catalog.sku
+    expect(mocks.catalog.getSku).toHaveBeenCalledTimes(1);
   });
 
   it('v1 sku returns 403', async () => {
@@ -96,7 +96,7 @@ describe('function - create-giveaway-item', () => {
 
     expect(res.statusCode).toEqual(StatusCodes.FORBIDDEN);
     expect(res._getJSON().code).toEqual('CREATE_NON_ENUMERATED_ITEM_00002');
-    expect(mocks.datastoreRepository.getEntity).toHaveBeenCalledTimes(1); // get catalog.sku
+    expect(mocks.catalog.getSku).toHaveBeenCalledTimes(1);
   });
 
   it('premium sku returns 403', async () => {
@@ -107,7 +107,7 @@ describe('function - create-giveaway-item', () => {
 
     expect(res.statusCode).toEqual(StatusCodes.FORBIDDEN);
     expect(res._getJSON().code).toEqual('CREATE_NON_ENUMERATED_ITEM_00002');
-    expect(mocks.datastoreRepository.getEntity).toHaveBeenCalledTimes(1); // get catalog.sku
+    expect(mocks.catalog.getSku).toHaveBeenCalledTimes(1);
   });
 
   it('duplicate itemCode retries and returns 200', async () => {
@@ -122,7 +122,7 @@ describe('function - create-giveaway-item', () => {
     await createNonEnumeratedItem(req, res);
 
     expect(res.statusCode).toEqual(StatusCodes.OK);
-    expect(mocks.datastoreRepository.getEntity).toHaveBeenCalledTimes(1); // get catalog.sku
+    expect(mocks.catalog.getSku).toHaveBeenCalledTimes(1);
     expect(mocks.datastoreHelper.startTransaction).toHaveBeenCalledTimes(2); // once for each try
     expect(mocks.datastoreHelper.rollbackTransaction).toHaveBeenCalledTimes(1); // rolled back failure
     expect(mocks.datastoreHelper.commitTransaction).toHaveBeenCalledTimes(1); // committed success
@@ -147,7 +147,7 @@ describe('function - create-giveaway-item', () => {
 
     expect(res.statusCode).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
     expect(res._getJSON().code).toEqual('CREATE_NON_ENUMERATED_ITEM_00100');
-    expect(mocks.datastoreRepository.getEntity).toHaveBeenCalledTimes(1); // get catalog.sku
+    expect(mocks.catalog.getSku).toHaveBeenCalledTimes(1);
     expect(mocks.datastoreHelper.startTransaction).toHaveBeenCalledTimes(3); // once for each try
     expect(mocks.datastoreHelper.rollbackTransaction).toHaveBeenCalledTimes(3); // 3 failures rolled back
     expect(mocks.datastoreHelper.insertEntity).toHaveBeenCalledTimes(3); // item x 3, 0 audit
@@ -165,7 +165,7 @@ describe('function - create-giveaway-item', () => {
     await createNonEnumeratedItem(req, res);
 
     expect(res.statusCode).toEqual(StatusCodes.OK);
-    expect(mocks.datastoreRepository.getEntity).toHaveBeenCalledTimes(1); // get catalog.sku
+    expect(mocks.catalog.getSku).toHaveBeenCalledTimes(1);
     expect(mocks.datastoreHelper.startTransaction).toHaveBeenCalledTimes(1);
     expect(mocks.datastoreHelper.commitTransaction).toHaveBeenCalledTimes(1);
     expect(mocks.datastoreHelper.rollbackTransaction).toHaveBeenCalledTimes(0);

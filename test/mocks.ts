@@ -3,28 +3,24 @@ import { ClassConstructor } from 'class-transformer';
 import { mocked } from 'jest-mock';
 import { EventPublisher } from '../src/eventstreaming/event-publisher';
 import { MutationResult } from '../src/helpers/persistence/mutation-result';
-import { SkuEntity } from '../src/persistence/sku-entity';
+import { Sku } from '../src/client/catalog/catalog.client';
+import { AllConfig } from '../src/config/all-config';
 
-export function mockSkuEntity(): SkuEntity {
+export function mockSku(code: string): Sku {
   return {
+    code,
     brandCode: 'brandCode',
     brandName: 'brandName',
     brandWholesalePrice: null,
     brandWholesalerShare: 0.3,
     card: 'card',
-    created: new Date(),
     description: 'description',
-    discover: 'discover',
     maxQty: null,
     name: 'name',
-    nftMasterAddress: null,
-    nftState: 'UNMINTED',
-    permissions: 'permissions',
     platformCode: 'platformCode',
     rarity: null,
     recommendedRetailPrice: null,
     tier: 'GIVEAWAY',
-    updated: new Date(),
     skn: 'STATIC',
     version: '2',
   };
@@ -59,19 +55,19 @@ export function mockCommitTransactionResponse(kind: string, key: number): Mutati
   }];
 }
 
-const datastoreRepository = {
-  getEntity: jest.fn()
-    .mockImplementation((_cls: ClassConstructor<object>, namespace: string, kind: string, key: string) => {
-      switch (`${namespace}.${kind}.${key}`) {
-        case 'catalog.sku.skuCode':
-          return mockSkuEntity();
-        case 'catalog.sku.skuv1': {
-          const sku = mockSkuEntity();
+const catalog = {
+  getSku: jest.fn()
+    .mockImplementation((_cfg: AllConfig, skuCode: string) => {
+      switch (skuCode) {
+        case 'skuCode':
+          return mockSku('skuCode');
+        case 'skuv1': {
+          const sku = mockSku('skuv1');
           sku.version = '1';
           return sku;
         }
-        case 'catalog.sku.skuWithMaxQty': {
-          const sku = mockSkuEntity();
+        case 'skuWithMaxQty': {
+          const sku = mockSku('skuWithMaxQty');
           sku.maxQty = 500;
           return sku;
         }
@@ -92,11 +88,11 @@ const datastoreHelper = {
 const eventPublisher = mocked(EventPublisher);
 
 export const mocks = {
-  datastoreRepository,
+  catalog,
   datastoreHelper,
   eventPublisher,
   mockClear: () => {
-    datastoreRepository.getEntity.mockClear();
+    catalog.getSku.mockClear();
     datastoreHelper.createContext.mockClear();
     datastoreHelper.insertEntity.mockClear();
     datastoreHelper.startTransaction.mockClear();
@@ -108,6 +104,6 @@ export const mocks = {
   },
 }
 
-jest.mock('../src/persistence/datastore-repository', () => datastoreRepository);
+jest.mock('../src/client/catalog/catalog.client', () => catalog);
 jest.mock('../src/helpers/datastore/datastore.helper', () => datastoreHelper);
 jest.mock('../src/eventstreaming/event-publisher');
