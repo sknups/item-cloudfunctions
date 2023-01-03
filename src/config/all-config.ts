@@ -1,14 +1,16 @@
 import * as Joi from 'joi';
 import base, { BaseConfig } from './base-config';
+import client, { ClientConfig } from './client-config';
 import emailHashing, { EmailHashingConfig } from './email-hashing-config';
 import item, { ItemConfig } from './item-config';
 
-export type AllConfig = BaseConfig & EmailHashingConfig & ItemConfig;
+export type AllConfig = BaseConfig & EmailHashingConfig & ItemConfig & ClientConfig;
 
 const ALL_FRAGMENTS = [
   base,
   emailHashing,
   item,
+  client,
 ];
 
 const CONFIG_SCHEMA = Joi.object(ALL_FRAGMENTS.map(f => f.schema).reduce((a, b) => {

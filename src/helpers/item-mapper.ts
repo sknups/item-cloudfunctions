@@ -1,12 +1,12 @@
 import { AllConfig } from '../config/all-config';
 import { ItemEvent } from '../eventstreaming/item-event';
-import { SkuEntity } from '../persistence/sku-entity';
 import { ItemEntity } from '../entity/item.entity';
 import { AuditEntity } from '../entity/audit.entity';
 import { hashEmail } from '../hashing/index';
+import { Sku } from '../client/catalog/catalog.client';
 
-export function skuEntityToItemEntity(
-  sku: SkuEntity,
+export function skuToItemEntity(
+  sku: Sku,
   skuCode: string,
   itemCode: string,
   claimCode: string,
