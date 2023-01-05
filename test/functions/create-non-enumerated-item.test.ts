@@ -13,7 +13,7 @@ import { ALREADY_EXISTS } from '../../src/persistence/datastore-constants';
 let body: CreateNonEnumeratedItemRequestDTO = {} as CreateNonEnumeratedItemRequestDTO;
 let res = new MockExpressResponse();
 
-describe('function - create-giveaway-item', () => {
+describe('function - create-non-enumerated-item', () => {
 
   beforeEach(function () {
     mocks.mockClear();
@@ -84,7 +84,7 @@ describe('function - create-giveaway-item', () => {
     await createNonEnumeratedItem(req, res);
 
     expect(res.statusCode).toEqual(StatusCodes.NOT_FOUND);
-    expect(res._getJSON().code).toEqual('CREATE_NON_ENUMERATED_ITEM_00001');
+    expect(res._getJSON().code).toEqual('ITEM_00001');
     expect(mocks.catalog.getSku).toHaveBeenCalledTimes(1);
   });
 
@@ -95,7 +95,7 @@ describe('function - create-giveaway-item', () => {
     await createNonEnumeratedItem(req, res);
 
     expect(res.statusCode).toEqual(StatusCodes.FORBIDDEN);
-    expect(res._getJSON().code).toEqual('CREATE_NON_ENUMERATED_ITEM_00002');
+    expect(res._getJSON().code).toEqual('ITEM_00002');
     expect(mocks.catalog.getSku).toHaveBeenCalledTimes(1);
   });
 
@@ -106,11 +106,11 @@ describe('function - create-giveaway-item', () => {
     await createNonEnumeratedItem(req, res);
 
     expect(res.statusCode).toEqual(StatusCodes.FORBIDDEN);
-    expect(res._getJSON().code).toEqual('CREATE_NON_ENUMERATED_ITEM_00002');
+    expect(res._getJSON().code).toEqual('ITEM_00002');
     expect(mocks.catalog.getSku).toHaveBeenCalledTimes(1);
   });
 
-  it('duplicate itemCode retries and returns 200', async () => {
+  it('duplicate ownershipToken retries and returns 200', async () => {
     const auditId: number = Math.floor(Math.random() * 10000000000);
     mocks.datastoreHelper.commitTransaction.mockReturnValueOnce(mockCommitTransactionResponse('audit', auditId));
 
@@ -132,7 +132,7 @@ describe('function - create-giveaway-item', () => {
     expect(mockPublisher.publishEvent).toHaveBeenCalledTimes(1); // item event published
   });
 
-  it('duplicate itemCode retries and fails after 3 attempts', async () => {
+  it('duplicate ownershipToken retries and fails after 3 attempts', async () => {
     const req = getMockReq({ method: 'POST', body });
 
     const alreadyExistsError: any = new Error('mock alreadyExistsError');
@@ -146,7 +146,7 @@ describe('function - create-giveaway-item', () => {
     await createNonEnumeratedItem(req, res);
 
     expect(res.statusCode).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
-    expect(res._getJSON().code).toEqual('CREATE_NON_ENUMERATED_ITEM_00100');
+    expect(res._getJSON().code).toEqual('ITEM_00100');
     expect(mocks.catalog.getSku).toHaveBeenCalledTimes(1);
     expect(mocks.datastoreHelper.startTransaction).toHaveBeenCalledTimes(3); // once for each try
     expect(mocks.datastoreHelper.rollbackTransaction).toHaveBeenCalledTimes(3); // 3 failures rolled back

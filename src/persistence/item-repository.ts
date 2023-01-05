@@ -66,7 +66,7 @@ export class ItemRepository {
   }
 
   public async insertItem(item: ItemEntity, context?: DatastoreContext): Promise<void> {
-    logger.debug(`insertItem - itemCode = '${item.key}' platformCode = '${item.platformCode}'`);
+    logger.debug(`insertItem - ownershipToken = '${item.key}' platformCode = '${item.platformCode}'`);
 
     await insertEntity(context ?? ItemRepository.context, 'item', item);
   }
