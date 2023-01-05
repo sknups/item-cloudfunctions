@@ -8,7 +8,7 @@ import { Sku } from '../client/catalog/catalog.client';
 export function skuToItemEntity(
   sku: Sku,
   skuCode: string,
-  itemCode: string,
+  ownershipToken: string,
   claimCode: string,
   email: string,
   user: string,
@@ -16,7 +16,7 @@ export function skuToItemEntity(
 ): ItemEntity {
   const created = new Date();
   return {
-    key: itemCode,
+    key: ownershipToken,
     brandCode: sku.brandCode,
     brandName: sku.brandName,
     brandWholesalePrice: sku.brandWholesalePrice,

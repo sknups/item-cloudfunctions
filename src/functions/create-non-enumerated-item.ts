@@ -8,7 +8,7 @@ import { ALREADY_EXISTS } from '../persistence/datastore-constants';
 import { randomBytes } from 'crypto';
 import { EventPublisher } from '../eventstreaming/event-publisher';
 import { itemEntityToCreateItemEvent, skuToItemEntity } from '../helpers/item-mapper';
-import { AppError, ITEM_CODE_RETRIES_EXCEEDED, SKU_NOT_FOUND, SKU_NOT_SUPPORTED } from '../app.errors';
+import { AppError, OWNERSHIP_TOKEN_RETRIES_EXCEEDED, SKU_NOT_FOUND, SKU_NOT_SUPPORTED } from '../app.errors';
 import { ItemEvent } from '../eventstreaming/item-event';
 import { CreateNonEnumeratedItemRequestDTO } from '../dto/create-non-enumerated-item-request.dto';
 import { commitTransaction, DatastoreContext, rollbackTransaction, startTransaction } from '../helpers/datastore/datastore.helper';
@@ -29,9 +29,9 @@ function _publisher(cfg: AllConfig) {
 
 const repository = new ItemRepository();
 
-const MAX_ITEM_CODE_RETRIES = 3;
+const MAX_OWNERSHIP_TOKEN_RETRIES = 3;
 
-function _generateItemCode(): string {
+function _generateOwnershipToken(): string {
   return randomBytes(5).toString("hex");
 }
 
@@ -45,7 +45,7 @@ async function _createItemAndAuditWithRetries(item: ItemEntity): Promise<AuditEn
     toState: 'UNBOXED / UNMINTED',
   };
 
-  let remainingAttempts = MAX_ITEM_CODE_RETRIES;
+  let remainingAttempts = MAX_OWNERSHIP_TOKEN_RETRIES;
   let success = false;
   let commitResponse: MutationResult[];
   let lastError: any; // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -65,9 +65,9 @@ async function _createItemAndAuditWithRetries(item: ItemEntity): Promise<AuditEn
     } catch (e) {
       await rollbackTransaction(context);
       if (e.code == ALREADY_EXISTS) {
-        logger.warn(`Item code ${item.key} in use, retry attempts remaining: ${remainingAttempts}`);
-        item.key = _generateItemCode();
-        lastError = new AppError(ITEM_CODE_RETRIES_EXCEEDED(MAX_ITEM_CODE_RETRIES), e);
+        logger.warn(`Ownership token ${item.key} in use, retry attempts remaining: ${remainingAttempts}`);
+        item.key = _generateOwnershipToken();
+        lastError = new AppError(OWNERSHIP_TOKEN_RETRIES_EXCEEDED(MAX_OWNERSHIP_TOKEN_RETRIES), e);
       } else {
         throw e;
       }
@@ -114,7 +114,7 @@ export class CreateNonEnumeratedItem {
     const item = skuToItemEntity(
       sku,
       requestDto.skuCode,
-      _generateItemCode(),
+      _generateOwnershipToken(),
       requestDto.claimCode,
       requestDto.email,
       requestDto.user,

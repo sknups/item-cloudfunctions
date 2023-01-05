@@ -2,7 +2,7 @@
 import { ItemEvent } from '../src/eventstreaming/item-event';
 import { validateSync, ValidationError } from 'class-validator';
 
-const ITEM_EVENT_JSON_TEMPLATE = '{"dataVersion":3,"brandCode":"brandCode1","brandName":"brandName1","brandWholesalePrice":101,"brandWholesalerShare":1.5,"claimCode":"claimCode1","dataEvent":"CREATE","dataTimestamp":"$dataTimestamp","eventId":"$eventId","itemCode":"itemCode1","maxQty":50,"nftAddress":"nftAddress1","nftState":"UNMINTED","ownerAddress":"ownerAddress1","platformCode":"platformCode1","retailSource":"retailSource1","retailUserId":"retailUserId1","rrp":99,"saleQty":9,"skuCode":"stockKeepingUnitCode1","skuName":"stockKeepingUnitName1","skuRarity":3,"source":"source1","state":"state1","tier":"PREMIUM_3"}'
+const ITEM_EVENT_JSON_TEMPLATE = '{"dataVersion":3,"brandCode":"brandCode1","brandName":"brandName1","brandWholesalePrice":101,"brandWholesalerShare":1.5,"claimCode":"claimCode1","dataEvent":"CREATE","dataTimestamp":"$dataTimestamp","eventId":"$eventId","itemCode":"ownershipToken1","maxQty":50,"nftAddress":"nftAddress1","nftState":"UNMINTED","ownerAddress":"ownerAddress1","platformCode":"platformCode1","retailSource":"retailSource1","retailUserId":"retailUserId1","rrp":99,"saleQty":9,"skuCode":"stockKeepingUnitCode1","skuName":"stockKeepingUnitName1","skuRarity":3,"source":"source1","state":"state1","tier":"PREMIUM_3"}'
 
 function itemEventJson(dataTimestamp: Date, eventId: string) {
   return ITEM_EVENT_JSON_TEMPLATE
@@ -25,7 +25,7 @@ describe('function - create-non-enumerated-item', () => {
     testEvent.dataTimestamp = new Date();
     testEvent.dataVersion = 3;
     testEvent.eventId = 'eventId';
-    testEvent.itemCode = 'itemCode1';
+    testEvent.itemCode = 'ownershipToken1';
     testEvent.maxQty = 50;
     testEvent.nftAddress = 'nftAddress1';
     testEvent.nftState = 'UNMINTED';

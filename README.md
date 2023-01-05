@@ -50,7 +50,6 @@ The unit tests can be run using the following command.
 
 ```bash
 npm test
-npm run test:mocha
 ```
 
 For historic reasons some tests are in jest while others are in mocha. They will be merged at some point.
@@ -60,36 +59,36 @@ For historic reasons some tests are in jest while others are in mocha. They will
 ### item-get
 
 ```bash
-baseUrl=http://localhost:8080
-itemCode=00cb1c5b57
+BASE_URL=http://localhost:8080
+OWNERSHIP_TOKEN=00cb1c5b57
 
-curl $baseUrl/item-get/SKN/$itemCode
+curl $BASE_URL/item-get/SKN/$OWNERSHIP_TOKEN
 ```
 
 ### item-find
 
 ```bash
-baseUrl=http://localhost:8080
-blockchainAddress=SOL.devnet.A3khazraukupQqGctyxg27tvPdaKYTvtjcE4tMBUW7D8
-user=3DtShGmxzyPJwCJEzLPM7RlmOt73
+BASE_URL=http://localhost:8080
+BLOCKCHAIN_ADDRESS=SOL.devnet.A3khazraukupQqGctyxg27tvPdaKYTvtjcE4tMBUW7D8
+USER=3DtShGmxzyPJwCJEzLPM7RlmOt73
 
-curl $baseUrl/item-find -H 'content-type: application/json' \
-  -d '{"platformCode":"SKN","blockchainAddress":"'$blockchainAddress'","user":"'$user'"}'
+curl $BASE_URL/item-find -H 'content-type: application/json' \
+  -d '{"platformCode":"SKN","blockchainAddress":"'$BLOCKCHAIN_ADDRESS'","user":"'$USER'"}'
 ```
 
 ### item-create-non-enumerated
 
 ```bash
-baseUrl=http://localhost:8080
-skuCode=TEST-DODECAHEDRON-GIVEAWAY
-claimCode=test
-email=devtesting@sknups.com
-user=devtesting
+BASE_URL=http://localhost:8080
+SKU_CODE=TEST-DODECAHEDRON-GIVEAWAY
+CLAIM_CODE=test
+EMAIL=devtesting@sknups.com
+USER=devtesting
 
 curl \
   -H 'Content-Type: application/json' \
-  http://localhost:8080/item-create-non-enumerated \
-  -d '{"skuCode":"'$skuCode'","claimCode":"'$claimCode'","email":"'$email'","user":"'$user'"}'
+  $BASE_URL/item-create-non-enumerated \
+  -d '{"skuCode":"'$SKU_CODE'","claimCode":"'$CLAIM_CODE'","email":"'$EMAIL'","user":"'$USER'"}'
 ```
 
 ## Test GCP Deployment
@@ -100,7 +99,7 @@ Deploy functions with `-tmp` suffix:
 npm run deploy
 ```
 
-Delete functoins with `-tmp` suffix:
+Delete functions with `-tmp` suffix:
 
 ```bash
 npm run delete

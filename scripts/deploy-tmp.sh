@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 common_args="--project drm-apps-01-43b0"
 common_args="${common_args} --trigger-http"
