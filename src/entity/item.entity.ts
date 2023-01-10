@@ -56,9 +56,6 @@ export type ItemEntity = ProjectedItemEntity & UpdateableEntity & {
   brandName: string;
   brandWholesalePrice: number | null;
   brandWholesalerShare: number; //float
-  certVersion: string;
-  flexHost: string;
   nftAddress: string | null;
-  sknappHost: string;
 
 }
