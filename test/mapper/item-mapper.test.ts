@@ -1,6 +1,8 @@
 import { ItemDTOMapper } from "../../src/mapper/item-mapper";
-import { ProjectedItemEntity } from '../../src/entity/item.entity';
-import { LegacyItemDto, ItemNftState, ItemSource } from '../../src/dto/item.dto';
+import { ItemEntity, ProjectedItemEntity } from '../../src/entity/item.entity';
+import { ItemNftState, ItemSource } from '../../src/dto/item.dto';
+import { LegacyRetailerItemDto } from '../../src/dto/item-retailer.dto';
+import { InternalItemDto } from '../../src/dto/item-internal.dto';
 
 const ENTITY1: ProjectedItemEntity = {
   key: '338a6b3128',
@@ -27,10 +29,18 @@ const ENTITY1: ProjectedItemEntity = {
   version: '1',
 }
 
-const DTO1: LegacyItemDto = {
+const ENTITY1_FULL: ItemEntity = {
+  ...ENTITY1,
+  updated: ENTITY1.created,
+  brandName: 'TEST',
+  brandWholesalePrice: 80,
+  brandWholesalerShare: 50,
+  nftAddress: null,
+}
+
+const DTO1: LegacyRetailerItemDto = {
   "brand": "TEST",
   "brandCode": "TEST",
-  "cardJson": "{\"back\": {\"token\": {\"color\": \"#FFFFFFFF\",\"font-size\": \"25pt\",\"font-family\": \"ShareTechMono-Regular\",\"font-weight\": \"Regular\",\"x\": 470,\"y\": 340}}}",
   "certVersion": "v1",
   "claimCode": "test123",
   "created": "2022-07-12T10:37:19.335Z",
@@ -76,7 +86,29 @@ const DTO1: LegacyItemDto = {
   "version": "1"
 }
 
-describe('mapper - item', () => {
+const DTO1_INTERNAL: InternalItemDto = {
+  "token": "338a6b3128",
+  "issue": 14,
+  "maximum": 10000,
+  "giveaway": "test123",
+  "description": "The air element. Octahedra are sparkling crystals of diamond, and magnetite.",
+  "brand": "TEST",
+  "sku": "TEST-OCTAHEDRON-COMMON",
+  "name": "Common Octahedron",
+  "rarity": 1,
+  "version": "1",
+  "created": "2022-07-12T10:37:19.335Z",
+  "platform": "SKN",
+  "nftState": ItemNftState.UNMINTED,
+  "rrp": 100,
+  "source": ItemSource.SALE,
+  "tier": "PREMIUM",
+  "cardJson": "{\"back\": {\"token\": {\"color\": \"#FFFFFFFF\",\"font-size\": \"25pt\",\"font-family\": \"ShareTechMono-Regular\",\"font-weight\": \"Regular\",\"x\": 470,\"y\": 340}}}",
+  "nftAddress": null,
+  "ownerAddress": null,
+}
+
+describe('mapper - item - retailer', () => {
 
   const instance = new ItemDTOMapper(
     "https://assets.example.com",
@@ -85,18 +117,17 @@ describe('mapper - item', () => {
   );
 
   it('creates item dto structure', () => {
-    expect(instance.toDTO(ENTITY1)).toEqual(DTO1)
+    expect(instance.toRetailerDto(ENTITY1)).toEqual(DTO1)
   });
 
   it('can handle numeric timestamp', () => {
-    expect(instance.toDTO({ ...ENTITY1, created: new Date(1657622239335) })).toEqual(DTO1);
+    expect(instance.toRetailerDto({ ...ENTITY1, created: new Date(1657622239335) })).toEqual(DTO1);
   });
 
   it('generates \'VIDEO\' media structure', () => {
-    expect(instance.toDTO({ ...ENTITY1, skn: 'VIDEO' })).toEqual({
+    expect(instance.toRetailerDto({ ...ENTITY1, skn: 'VIDEO' })).toEqual({
       "brand": "TEST",
       "brandCode": "TEST",
-      "cardJson": "{\"back\": {\"token\": {\"color\": \"#FFFFFFFF\",\"font-size\": \"25pt\",\"font-family\": \"ShareTechMono-Regular\",\"font-weight\": \"Regular\",\"x\": 470,\"y\": 340}}}",
       "certVersion": "v1",
       "claimCode": "test123",
       "created": "2022-07-12T10:37:19.335Z",
@@ -146,8 +177,27 @@ describe('mapper - item', () => {
 
   it('throws error if skn is not \'STATIC\' or \'VIDEO\'', () => {
     expect(() => {
-      instance.toDTO({ ...ENTITY1, skn: 'INVALID' })
+      instance.toRetailerDto({ ...ENTITY1, skn: 'INVALID' })
     }).toThrow("unsupported skn value 'INVALID'. Must be 'STATIC' or 'VIDEO'")
+  });
+
+});
+
+
+describe('mapper - item - internal', () => {
+
+  const instance = new ItemDTOMapper(
+    "https://assets.example.com",
+    "https://flex-dev.sknups.gg",
+    "https://app-dev.sknups.gg",
+  );
+
+  it('creates item dto structure', () => {
+    expect(instance.toInternalDto(ENTITY1_FULL)).toEqual(DTO1_INTERNAL)
+  });
+
+  it('can handle numeric timestamp', () => {
+    expect(instance.toInternalDto({ ...ENTITY1_FULL, created: new Date(1657622239335) })).toEqual(DTO1_INTERNAL);
   });
 
 });

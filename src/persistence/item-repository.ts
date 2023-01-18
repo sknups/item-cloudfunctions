@@ -53,10 +53,10 @@ export class ItemRepository {
     );
   }
 
-  public async byThumbprint(platformCode: string, thumbprint: string): Promise<ProjectedItemEntity | null> {
+  public async byThumbprint(platformCode: string, thumbprint: string): Promise<ItemEntity | null> {
     logger.debug(`byThumbprint - platformCode = '${platformCode}' thumbprint = '${thumbprint}'`)
 
-    const item: ProjectedItemEntity = await getEntity(ItemRepository.context, 'item', thumbprint);
+    const item: ItemEntity = await getEntity(ItemRepository.context, 'item', thumbprint);
 
     if (item && item.platformCode === platformCode && item.state !== 'DELETED') {
       return item;

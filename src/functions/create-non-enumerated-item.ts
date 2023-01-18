@@ -127,7 +127,7 @@ export class CreateNonEnumeratedItem {
     const event = itemEntityToCreateItemEvent(item, audit, audit.key.toString());
     await _publisher(cfg).publishEvent(event);
 
-    const response = new ItemDTOMapper(cfg.assetsUrl, cfg.flexUrl, cfg.sknAppUrl).toDTO(item);
+    const response = new ItemDTOMapper(cfg.assetsUrl, cfg.flexUrl, cfg.sknAppUrl).toRetailerDto(item);
     res.status(StatusCodes.OK).json(response);
   }
 }

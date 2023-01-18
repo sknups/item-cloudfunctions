@@ -27,7 +27,7 @@ cat <<EOF > .env
 GCLOUD_PROJECT=drm-apps-01-43b0
 CF_BASE_URL=https://europe-west2-drm-apps-01-43b0.cloudfunctions.net
 EMAIL_HASHING_SECRET='#oBbMZrt56ti'
-FLEX_URL=https://flex-dev.sknups.gg
+FLEX_URL=https://flex-dev.sknups.com
 LOG_FORMAT=simple
 SKNAPP_URL=https://app-dev.sknups.com
 ASSETS_URL=https://assets-dev.sknups.gg
