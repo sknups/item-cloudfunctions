@@ -7,6 +7,7 @@ import { AppError, UNCATEGORIZED_ERROR } from '../app.errors';
 import { ItemDTOMapper } from '../mapper/item-mapper';
 import { AllConfig } from 'config/all-config';
 import { ItemDto } from '../dto/item.dto';
+import { ItemEntity } from '../entity/item.entity';
 
 export class GetItem {
 
@@ -31,17 +32,26 @@ export class GetItem {
     }
 
     if (!platform || platform.length === 0 || !token || token.length === 0) {
-      res.status(StatusCodes.BAD_REQUEST).send('platform code and ownership token must be provided in path');
+      res.status(StatusCodes.BAD_REQUEST).send('platform code and ownership token (or nft.address) must be provided in path');
       return;
     }
 
-    logger.debug(`Received request for drm-item - platform '${platform}' token '${token}'`);
-    let entity
+    const keyType = token.startsWith('nft.') ? 'nftAddress' : 'token';
+    if (keyType === 'nftAddress') {
+      token = token.substring(4);
+    }
+
+    logger.debug(`Received request for drm-item - platform '${platform}' ${keyType} '${token}'`);
+    let entity: ItemEntity;
     try {
-      entity = await GetItem.repository.byThumbprint(platform, token);
+      if (keyType === 'nftAddress') {
+        entity = await GetItem.repository.byNftAddress(platform, token);
+      } else {
+        entity = await GetItem.repository.byThumbprint(platform, token);
+      }
 
       if (entity === null) {
-        logger.debug(`item not found platform '${platform}' token '${token}'`);
+        logger.debug(`item not found platform '${platform}' ${keyType} '${token}'`);
         res.sendStatus(StatusCodes.NOT_FOUND);
         return;
       }

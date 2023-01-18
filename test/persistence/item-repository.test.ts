@@ -1,7 +1,7 @@
 import { Datastore } from '@google-cloud/datastore';
 import { ITEM_PROJECTION } from '../../src/entity/item.entity';
 import { ItemRepository } from '../../src/persistence/item-repository';
-import { SALE_ENTITY, GIVEAWAY_ENTITY } from '../mocks-item';
+import { SALE_ENTITY, GIVEAWAY_ENTITY, SALE_ENTITY_MINTED } from '../mocks-item';
 
 const PLATFORM = 'TEST';
 const EMAIL = '495a8c7b1ab6fd611377ba81fe75cdead63f0ebe88a9260806a3fba790400805';
@@ -32,6 +32,22 @@ const SALE_QUERY_DATA = {
   ownerAddress: null,
   state: 'UNBOXED',
 };
+
+const SALE_QUERY_DATA_FULL = {
+  ...SALE_QUERY_DATA,
+  updated: SALE_QUERY_DATA.created,
+  brandName: 'TEST',
+  brandWholesalePrice: 80,
+  brandWholesalerShare: 50,
+  nftAddress: null,
+}
+
+const SALE_QUERY_DATA_MINTED = {
+  ...SALE_QUERY_DATA_FULL,
+  nftState: 'MINTED',
+  nftAddress: SALE_ENTITY_MINTED.nftAddress,
+  ownerAddress: SALE_ENTITY_MINTED.ownerAddress,
+}
 
 const GIVEAWAY_QUERY_DATA = {
   [Datastore.KEY]: { name: '07e6554733' },
@@ -269,6 +285,48 @@ describe('persistence', () => {
       getSpy.mockReturnValueOnce([{ ...SALE_QUERY_DATA, state: 'DELETED' }] as any);
 
       const result = await instance.byThumbprint(PLATFORM, SALE_ENTITY.key);
+
+      expect(result).toEqual(null);
+    });
+
+  });
+
+  describe('byNftAddress', () => {
+
+    beforeEach(function () {
+      runQuerySpy.mockReturnValueOnce([[SALE_QUERY_DATA_MINTED]] as any);
+    });
+
+    it('uses correct query', async () => {
+      await instance.byNftAddress(PLATFORM, SALE_ENTITY_MINTED.nftAddress as string);
+
+      const expectedQuery = {
+        namespace: 'drm',
+        kinds: ['item'],
+        filters: [{ name: 'nftAddress', op: '=', val: SALE_ENTITY_MINTED.nftAddress }],
+      };
+
+      expect(runQuerySpy).toHaveBeenCalledTimes(1);
+      expect(runQuerySpy).toHaveBeenLastCalledWith(expect.objectContaining(expectedQuery));
+    });
+
+    it('transforms results', async () => {
+      const result = await instance.byNftAddress(PLATFORM, SALE_ENTITY_MINTED.nftAddress as string);
+
+      expect(result).toEqual(SALE_ENTITY_MINTED);
+    });
+
+    it('returns null for platform mismatch', async () => {
+      const result = await instance.byNftAddress('INVALID', SALE_ENTITY_MINTED.nftAddress as string);
+
+      expect(result).toEqual(null);
+    });
+
+    it('returns null for DELETED state', async () => {
+      runQuerySpy.mockReset();
+      runQuerySpy.mockReturnValueOnce([[{ ...SALE_QUERY_DATA_MINTED, state: 'DELETED' }]] as any);
+
+      const result = await instance.byNftAddress(PLATFORM, SALE_ENTITY_MINTED.nftAddress as string);
 
       expect(result).toEqual(null);
     });

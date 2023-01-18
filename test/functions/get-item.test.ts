@@ -5,7 +5,7 @@ import * as MockExpressResponse from 'mock-express-response';
 import { getItem } from '../../src';
 import { StatusCodes } from 'http-status-codes';
 import { ItemRepository } from '../../src/persistence/item-repository';
-import { SALE_ENTITY_FULL } from '../mocks-item';
+import { SALE_ENTITY_FULL, SALE_ENTITY_MINTED } from '../mocks-item';
 import { ItemNftState, ItemSource } from '../../src/dto/item.dto';
 import { LegacyRetailerItemDto } from '../../src/dto/item-retailer.dto';
 import { InternalItemDto } from '../../src/dto/item-internal.dto';
@@ -110,7 +110,7 @@ describe('function - get-item - retailer', () => {
     await instance(req, res);
 
     expect(res.statusCode).toEqual(StatusCodes.BAD_REQUEST);
-    expect(res._getString()).toContain('platform code and ownership token must be provided in path');
+    expect(res._getString()).toContain('platform code and ownership token (or nft.address) must be provided in path');
   });
 
   it('ignores path additional element', async () => {
@@ -149,6 +149,7 @@ describe('function - get-item - retailer', () => {
 
 describe('function - get-item - internal', () => {
   const byThumbprintSpy = jest.spyOn(ItemRepository.prototype, 'byThumbprint');
+  const byNftAddressSpy = jest.spyOn(ItemRepository.prototype, 'byNftAddress');
 
   const platform = "SKN";
   const token = "338a6b3128";
@@ -162,6 +163,7 @@ describe('function - get-item - internal', () => {
   beforeEach(() => {
     res = new MockExpressResponse();
     byThumbprintSpy.mockReturnValueOnce(Promise.resolve({ ...SALE_ENTITY_FULL, claimCode: 'test123', stockKeepingUnitRarity: 1 }));
+    byNftAddressSpy.mockReturnValueOnce(Promise.resolve({ ...SALE_ENTITY_MINTED, claimCode: 'test123', stockKeepingUnitRarity: 1 }));
   });
 
   afterEach(() => {
@@ -185,5 +187,23 @@ describe('function - get-item - internal', () => {
     expect(byThumbprintSpy).toHaveBeenCalledTimes(1);
     expect(byThumbprintSpy).toHaveBeenLastCalledWith(platform, token);
     expect(res._getJSON()).toEqual(SALE_DTO_INTERNAL);
+  });
+
+  it('returns item by nftAddress', async () => {
+    const nftAddress = 'SOL.devnet.abc123';
+    req.path = `/${platform}/nft.${nftAddress}`;
+
+    await instance(req, res);
+
+    expect(res.statusCode).toEqual(StatusCodes.OK);
+    expect(byThumbprintSpy).toHaveBeenCalledTimes(0);
+    expect(byNftAddressSpy).toHaveBeenCalledTimes(1);
+    expect(byNftAddressSpy).toHaveBeenLastCalledWith(platform, nftAddress);
+    expect(res._getJSON()).toEqual({
+      ...SALE_DTO_INTERNAL,
+      nftAddress: 'SOL.devnet.12345',
+      nftState: 'MINTED',
+      ownerAddress: 'SOL.devnet.67890',
+    });
   });
 });
