@@ -65,6 +65,23 @@ export class ItemRepository {
     }
   }
 
+  public async byNftAddress(platformCode: string, nftAddress: string): Promise<ItemEntity | null> {
+    logger.debug(`byNftAddress - platformCode = '${platformCode}' nftAddress = '${nftAddress}'`)
+
+    const items: ItemEntity[] = await findEntities(
+      ItemRepository.context,
+      'item',
+      [{ name: 'nftAddress', op: '=', val: nftAddress }],
+    );
+
+    const item = items.length > 0 ? items[0] : null;
+    if (item && item.platformCode === platformCode && item.state !== 'DELETED') {
+      return item;
+    } else {
+      return null;
+    }
+  }
+
   public async insertItem(item: ItemEntity, context?: DatastoreContext): Promise<void> {
     logger.debug(`insertItem - ownershipToken = '${item.key}' platformCode = '${item.platformCode}'`);
 

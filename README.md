@@ -58,12 +58,24 @@ For historic reasons some tests are in jest while others are in mocha. They will
 
 ### item-get
 
+Get by ownership token:
+
 ```bash
 BASE_URL=http://localhost:8080
 OWNERSHIP_TOKEN=00cb1c5b57
 
 curl $BASE_URL/item-get/SKN/$OWNERSHIP_TOKEN
 ```
+
+Get by nft address:
+
+```bash
+BASE_URL=http://localhost:8080
+NFT_ADDRESS=SOL.devnet.5KNMdb2sV1pm5fK28cH499fz32XJDFWxR69QFnR9fc2u
+
+curl $BASE_URL/item-get/SKN/nft.$NFT_ADDRESS
+```
+
 
 ### item-find
 
