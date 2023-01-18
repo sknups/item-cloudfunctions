@@ -45,27 +45,27 @@ const DTO1: LegacyRetailerItemDto = {
   "claimCode": "test123",
   "created": "2022-07-12T10:37:19.335Z",
   "description": "The air element. Octahedra are sparkling crystals of diamond, and magnetite.",
-  "flexHost": "https://flex-dev.sknups.gg",
+  "flexHost": "https://flex-dev.sknups.com",
   "giveaway": "test123",
   "issue": 14,
   "maxQty": 10000,
   "maximum": 10000,
   "media": {
     "info": {
-      "image": "https://flex-dev.sknups.gg/skn/v1/back/default/338a6b3128.jpg"
+      "image": "https://flex-dev.sknups.com/skn/v1/back/default/338a6b3128.jpg"
     },
     "model": {
       "config": "https://assets.example.com/sku.v1.3DConfig.TEST-OCTAHEDRON-COMMON.json",
       "glb": "https://assets.example.com/sku.v1.3DView.TEST-OCTAHEDRON-COMMON.glb"
     },
     "skn": {
-      "image": "https://flex-dev.sknups.gg/skn/v1/card/default/338a6b3128.jpg"
+      "image": "https://flex-dev.sknups.com/skn/v1/card/default/338a6b3128.jpg"
     },
     "snapchat": {
-      "image": "https://flex-dev.sknups.gg/skn/v1/card/snapchat/338a6b3128.png"
+      "image": "https://flex-dev.sknups.com/skn/v1/card/snapchat/338a6b3128.png"
     },
     "social": {
-      "image": "https://flex-dev.sknups.gg/skn/v1/card/og/338a6b3128.png"
+      "image": "https://flex-dev.sknups.com/skn/v1/card/og/338a6b3128.png"
     }
   },
   "name": "Common Octahedron",
@@ -76,7 +76,7 @@ const DTO1: LegacyRetailerItemDto = {
   "recommendedRetailPrice": 100,
   "rrp": 100,
   "saleQty": 14,
-  "sknappHost": "https://app-dev.sknups.gg",
+  "sknappHost": "https://app-dev.sknups.com",
   "sku": "TEST-OCTAHEDRON-COMMON",
   "source": ItemSource.SALE,
   "stockKeepingUnitCode": "TEST-OCTAHEDRON-COMMON",
@@ -112,8 +112,8 @@ describe('mapper - item - retailer', () => {
 
   const instance = new ItemDTOMapper(
     "https://assets.example.com",
-    "https://flex-dev.sknups.gg",
-    "https://app-dev.sknups.gg",
+    "https://flex-dev.sknups.com",
+    "https://app-dev.sknups.com",
   );
 
   it('creates item dto structure', () => {
@@ -132,14 +132,14 @@ describe('mapper - item - retailer', () => {
       "claimCode": "test123",
       "created": "2022-07-12T10:37:19.335Z",
       "description": "The air element. Octahedra are sparkling crystals of diamond, and magnetite.",
-      "flexHost": "https://flex-dev.sknups.gg",
+      "flexHost": "https://flex-dev.sknups.com",
       "giveaway": "test123",
       "issue": 14,
       "maxQty": 10000,
       "maximum": 10000,
       "media": {
         "info": {
-          "image": "https://flex-dev.sknups.gg/skn/v1/back/default/338a6b3128.jpg"
+          "image": "https://flex-dev.sknups.com/skn/v1/back/default/338a6b3128.jpg"
         },
         "model": {
           "config": "https://assets.example.com/sku.v1.3DConfig.TEST-OCTAHEDRON-COMMON.json",
@@ -150,10 +150,10 @@ describe('mapper - item - retailer', () => {
           "video": "https://assets.example.com/sku.TEST-OCTAHEDRON-COMMON.skn.mp4"
         },
         "snapchat": {
-          "image": "https://flex-dev.sknups.gg/skn/v1/card/snapchat/338a6b3128.png"
+          "image": "https://flex-dev.sknups.com/skn/v1/card/snapchat/338a6b3128.png"
         },
         "social": {
-          "image": "https://flex-dev.sknups.gg/skn/v1/card/og/338a6b3128.png"
+          "image": "https://flex-dev.sknups.com/skn/v1/card/og/338a6b3128.png"
         }
       },
       "name": "Common Octahedron",
@@ -164,7 +164,7 @@ describe('mapper - item - retailer', () => {
       "recommendedRetailPrice": 100,
       "rrp": 100,
       "saleQty": 14,
-      "sknappHost": "https://app-dev.sknups.gg",
+      "sknappHost": "https://app-dev.sknups.com",
       "sku": "TEST-OCTAHEDRON-COMMON",
       "source": "SALE",
       "stockKeepingUnitCode": "TEST-OCTAHEDRON-COMMON",
@@ -188,8 +188,8 @@ describe('mapper - item - internal', () => {
 
   const instance = new ItemDTOMapper(
     "https://assets.example.com",
-    "https://flex-dev.sknups.gg",
-    "https://app-dev.sknups.gg",
+    "https://flex-dev.sknups.com",
+    "https://app-dev.sknups.com",
   );
 
   it('creates item dto structure', () => {
