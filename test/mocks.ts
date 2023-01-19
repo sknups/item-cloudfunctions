@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ClassConstructor } from 'class-transformer';
 import { mocked } from 'jest-mock';
 import { EventPublisher } from '../src/eventstreaming/event-publisher';
 import { MutationResult } from '../src/helpers/persistence/mutation-result';
@@ -23,6 +22,7 @@ export function mockSku(code: string): Sku {
     tier: 'GIVEAWAY',
     skn: 'STATIC',
     version: '2',
+    permissions: ['METAPLEX_MINT'],
   };
 }
 
@@ -61,6 +61,8 @@ const catalog = {
       switch (skuCode) {
         case 'skuCode':
           return mockSku('skuCode');
+        case 'TEST-OCTAHEDRON-COMMON':
+          return mockSku('TEST-OCTAHEDRON-COMMON');
         case 'skuv1': {
           const sku = mockSku('skuv1');
           sku.version = '1';
@@ -69,6 +71,11 @@ const catalog = {
         case 'skuWithMaxQty': {
           const sku = mockSku('skuWithMaxQty');
           sku.maxQty = 500;
+          return sku;
+        }
+        case 'skuWithoutMint': {
+          const sku = mockSku('skuWithoutMint');
+          sku.permissions = [];
           return sku;
         }
         default:

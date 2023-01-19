@@ -6,10 +6,9 @@ import logger from '../helpers/logger';
 import { parseAndValidateRequestData } from '../helpers/validation';
 import { ALREADY_EXISTS } from '../persistence/datastore-constants';
 import { randomBytes } from 'crypto';
-import { EventPublisher } from '../eventstreaming/event-publisher';
-import { itemEntityToCreateItemEvent, skuToItemEntity } from '../helpers/item-mapper';
+import { itemEntityToItemEvent, skuToItemEntity } from '../helpers/item-mapper';
 import { AppError, OWNERSHIP_TOKEN_RETRIES_EXCEEDED, SKU_NOT_FOUND, SKU_NOT_SUPPORTED } from '../app.errors';
-import { ItemEvent } from '../eventstreaming/item-event';
+import { ItemEventType } from '../eventstreaming/item-event';
 import { CreateNonEnumeratedItemRequestDTO } from '../dto/create-non-enumerated-item-request.dto';
 import { commitTransaction, DatastoreContext, rollbackTransaction, startTransaction } from '../helpers/datastore/datastore.helper';
 import { ItemRepository } from '../persistence/item-repository';
@@ -17,17 +16,8 @@ import { ItemEntity } from '../entity/item.entity';
 import { AuditEntity } from '../entity/audit.entity';
 import { MutationResult } from '../helpers/persistence/mutation-result';
 import { ItemDTOMapper } from '../mapper/item-mapper';
-import { Sku, getSku } from '../client/catalog/catalog.client';
-
-let _publisherInstance: EventPublisher<ItemEvent> = null;
-function _publisher(cfg: AllConfig) {
-  if (!_publisherInstance) {
-    _publisherInstance = new EventPublisher(cfg.itemEventTopic);
-  }
-  return _publisherInstance;
-}
-
-const repository = new ItemRepository();
+import { Sku } from '../client/catalog/catalog.client';
+import { getSkuOrThrow, publisher, repository } from '../helpers/util';
 
 const MAX_OWNERSHIP_TOKEN_RETRIES = 3;
 
@@ -56,9 +46,9 @@ async function _createItemAndAuditWithRetries(item: ItemEntity): Promise<AuditEn
     const context: DatastoreContext = await startTransaction(ItemRepository.context);
 
     try {
-      await repository.insertItem(item, context);
+      await repository().insertItem(item, context);
 
-      await repository.insertAudit(audit, context);
+      await repository().insertAudit(audit, context);
 
       commitResponse = await commitTransaction(context);
       success = true;
@@ -86,10 +76,7 @@ async function _createItemAndAuditWithRetries(item: ItemEntity): Promise<AuditEn
 
 
 async function _retrieveAndValidateSku(cfg: AllConfig, skuCode: string): Promise<Sku> {
-  const sku: Sku | null = await getSku(cfg, skuCode);
-  if (!sku) {
-    throw new AppError(SKU_NOT_FOUND(skuCode));
-  }
+  const sku: Sku = await getSkuOrThrow(cfg, skuCode);
   if (sku.version == '1' || sku.maxQty) {
     throw new AppError(SKU_NOT_SUPPORTED(skuCode));
   }
@@ -124,8 +111,8 @@ export class CreateNonEnumeratedItem {
     logger.info(`Manufactured item ${audit.entityId} from SKU "${item.stockKeepingUnitCode}" for giveaway "${item.claimCode}" with auditId ${audit.key}`);
 
     // Publish event
-    const event = itemEntityToCreateItemEvent(item, audit, audit.key.toString());
-    await _publisher(cfg).publishEvent(event);
+    const event = itemEntityToItemEvent(item, audit, audit.key.toString(), ItemEventType.CREATE);
+    await publisher(cfg).publishEvent(event);
 
     const response = new ItemDTOMapper(cfg.assetsUrl, cfg.flexUrl, cfg.sknAppUrl).toRetailerDto(item);
     res.status(StatusCodes.OK).json(response);

@@ -103,6 +103,57 @@ curl \
   -d '{"skuCode":"'$SKU_CODE'","claimCode":"'$CLAIM_CODE'","email":"'$EMAIL'","user":"'$USER'"}'
 ```
 
+### item-update
+
+MINTING:
+
+```bash
+ITEM_CODE=abc12def34
+BASE_URL=http://localhost:8080
+NFT_ADDRESS=SOL.devnet.$(date +%s)
+
+curl \
+  $BASE_URL/item-update/SKN/$ITEM_CODE \
+  -H 'Content-Type: application/json' \
+  -d '{"operation":"MINTING","nftAddress":"'$NFT_ADDRESS'","ownerAddress":"SOL.devnet.owner1"}'
+```
+
+MINT_FAILED:
+
+```bash
+BASE_URL=http://localhost:8080
+ITEM_CODE=abc12def34
+
+curl \
+  $BASE_URL/item-update/SKN/$ITEM_CODE \
+  -H 'Content-Type: application/json' \
+  -d '{"operation":"MINT_FAILED"}'
+```
+
+MINTED:
+
+```bash
+ITEM_CODE=abc12def34
+BASE_URL=http://localhost:8080
+
+curl \
+  $BASE_URL/item-update/SKN/$ITEM_CODE \
+  -H 'Content-Type: application/json' \
+  -d '{"operation":"MINTED"}'
+```
+
+OWNER_ADDRESS:
+
+```bash
+BASE_URL=http://localhost:8080
+NFT_ADDRESS=SOL.devnet.123456
+
+curl \
+  $BASE_URL/item-update/SKN/nft.$NFT_ADDRESS \
+  -H 'Content-Type: application/json' \
+  -d '{"operation":"OWNER_ADDRESS","ownerAddress":"SOL.devnet.dummy3"}'
+```
+
 ## Test GCP Deployment
 
 Deploy functions with `-tmp` suffix:
