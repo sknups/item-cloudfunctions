@@ -6,6 +6,7 @@ import { ItemRepository } from '../persistence/item-repository';
 import { AppError, UNCATEGORIZED_ERROR } from '../app.errors';
 import { ItemDTOMapper } from '../mapper/item-mapper';
 import { AllConfig } from 'config/all-config';
+import { ItemDto } from '../dto/item.dto';
 
 export class GetItem {
 
@@ -17,7 +18,8 @@ export class GetItem {
       return;
     }
 
-    const parts = req.path.split('/')
+    const parts = req.path.split('/');
+    const forRetailer: boolean = req.path.includes('/retailer');
 
     let platform;
 
@@ -36,7 +38,7 @@ export class GetItem {
     logger.debug(`Received request for drm-item - platform '${platform}' token '${token}'`);
     let entity
     try {
-      entity = await GetItem.repository.byThumbprint(platform,token);
+      entity = await GetItem.repository.byThumbprint(platform, token);
 
       if (entity === null) {
         logger.debug(`item not found platform '${platform}' token '${token}'`);
@@ -48,7 +50,8 @@ export class GetItem {
       throw new AppError(UNCATEGORIZED_ERROR, e);
     }
 
-    const item = new ItemDTOMapper(config.assetsUrl, config.flexUrl, config.sknAppUrl).toDTO(entity)
+    const mapper = new ItemDTOMapper(config.assetsUrl, config.flexUrl, config.sknAppUrl);
+    const item: ItemDto = forRetailer ? mapper.toRetailerDto(entity) : mapper.toInternalDto(entity);
 
     res.status(StatusCodes.OK).json(item);
   }

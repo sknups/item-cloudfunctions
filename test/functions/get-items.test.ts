@@ -7,9 +7,10 @@ import * as MockExpressResponse from 'mock-express-response';
 import { StatusCodes } from 'http-status-codes';
 import { ItemRepository } from '../../src/persistence/item-repository';
 import { GIVEAWAY_ENTITY, SALE_ENTITY } from '../mocks-item';
-import { ItemNftState, ItemSource, LegacyItemDto } from '../../src/dto/item.dto';
+import { ItemNftState, ItemSource } from '../../src/dto/item.dto';
+import { LegacyRetailerItemDto } from '../../src/dto/item-retailer.dto';
 
-const SALE_DTO: LegacyItemDto = {
+const SALE_DTO: LegacyRetailerItemDto = {
   "token": "338a6b3128",
   "thumbprint": "338a6b3128",
   "flexHost": "https://flex-dev.example.com",
@@ -19,7 +20,6 @@ const SALE_DTO: LegacyItemDto = {
   "maximum": 10000,
   "maxQty": 10000,
   "giveaway": null,
-  "cardJson": "{\"back\": {\"token\": {\"color\": \"#FFFFFFFF\",\"font-size\": \"25pt\",\"font-family\": \"ShareTechMono-Regular\",\"font-weight\": \"Regular\",\"x\": 470,\"y\": 340}}}",
   "description": "The air element. Octahedra are sparkling crystals of diamond, and magnetite.",
   "brand": "TEST",
   "brandCode": "TEST",
@@ -58,10 +58,9 @@ const SALE_DTO: LegacyItemDto = {
   }
 };
 
-const GIVEAWAY_DTO = {
+const GIVEAWAY_DTO: LegacyRetailerItemDto = {
   "thumbprint": "07e6554733",
   "token": "07e6554733",
-  "cardJson": null,
   "version": "1",
   "flexHost": "https://flex-dev.example.com",
   "sknappHost": "https://app-dev.example.com",
@@ -70,8 +69,8 @@ const GIVEAWAY_DTO = {
   "issue": 8,
   "maxQty": 100,
   "maximum": 100,
-  "source": "GIVEAWAY",
-  "nftState": "UNMINTED",
+  "source": ItemSource.GIVEAWAY,
+  "nftState": ItemNftState.UNMINTED,
   "platform": "TEST",
   "platformCode": "TEST",
   "claimCode": "claim-123",

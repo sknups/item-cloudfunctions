@@ -1,4 +1,4 @@
-import { ProjectedItemEntity } from '../src/entity/item.entity';
+import { ItemEntity, ProjectedItemEntity } from '../src/entity/item.entity';
 
 export const SALE_ENTITY: ProjectedItemEntity = {
   brandCode: 'TEST',
@@ -24,6 +24,15 @@ export const SALE_ENTITY: ProjectedItemEntity = {
   version: '1',
   state: 'UNBOXED',
 };
+
+export const SALE_ENTITY_FULL: ItemEntity = {
+  ...SALE_ENTITY,
+  updated: SALE_ENTITY.created,
+  brandName: 'TEST',
+  brandWholesalePrice: 80,
+  brandWholesalerShare: 50,
+  nftAddress: null,
+}
 
 export const GIVEAWAY_ENTITY: ProjectedItemEntity = {
   brandCode: 'TEST',

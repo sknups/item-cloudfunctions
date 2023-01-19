@@ -5,10 +5,12 @@ import * as MockExpressResponse from 'mock-express-response';
 import { getItem } from '../../src';
 import { StatusCodes } from 'http-status-codes';
 import { ItemRepository } from '../../src/persistence/item-repository';
-import { SALE_ENTITY } from '../mocks-item';
-import { ItemNftState, ItemSource, LegacyItemDto } from '../../src/dto/item.dto';
+import { SALE_ENTITY_FULL } from '../mocks-item';
+import { ItemNftState, ItemSource } from '../../src/dto/item.dto';
+import { LegacyRetailerItemDto } from '../../src/dto/item-retailer.dto';
+import { InternalItemDto } from '../../src/dto/item-internal.dto';
 
-const SALE_DTO: LegacyItemDto = {
+const SALE_DTO_RETAIL: LegacyRetailerItemDto = {
   "token": "338a6b3128",
   "thumbprint": "338a6b3128",
   "flexHost": "https://flex-dev.example.com",
@@ -18,7 +20,6 @@ const SALE_DTO: LegacyItemDto = {
   "maximum": 10000,
   "maxQty": 10000,
   "giveaway": "test123",
-  "cardJson": "{\"back\": {\"token\": {\"color\": \"#FFFFFFFF\",\"font-size\": \"25pt\",\"font-family\": \"ShareTechMono-Regular\",\"font-weight\": \"Regular\",\"x\": 470,\"y\": 340}}}",
   "description": "The air element. Octahedra are sparkling crystals of diamond, and magnetite.",
   "brand": "TEST",
   "brandCode": "TEST",
@@ -57,9 +58,31 @@ const SALE_DTO: LegacyItemDto = {
   }
 };
 
+const SALE_DTO_INTERNAL: InternalItemDto = {
+  "token": "338a6b3128",
+  "issue": 14,
+  "maximum": 10000,
+  "giveaway": "test123",
+  "description": "The air element. Octahedra are sparkling crystals of diamond, and magnetite.",
+  "brand": "TEST",
+  "sku": "TEST-OCTAHEDRON-COMMON",
+  "name": "Common Octahedron",
+  "rarity": 1,
+  "version": "1",
+  "created": "2022-07-12T10:37:19.335Z",
+  "platform": "TEST",
+  "nftState": ItemNftState.UNMINTED,
+  "rrp": 100,
+  "source": ItemSource.SALE,
+  "tier": "GREEN",
+  "cardJson": "{\"back\": {\"token\": {\"color\": \"#FFFFFFFF\",\"font-size\": \"25pt\",\"font-family\": \"ShareTechMono-Regular\",\"font-weight\": \"Regular\",\"x\": 470,\"y\": 340}}}",
+  "nftAddress": null,
+  "ownerAddress": null,
+}
+
 const instance = getItem;
 
-describe('function - get-item', () => {
+describe('function - get-item - retailer', () => {
 
   const byThumbprintSpy = jest.spyOn(ItemRepository.prototype, 'byThumbprint');
 
@@ -67,14 +90,14 @@ describe('function - get-item', () => {
   const token = "338a6b3128";
   const req = {
     method: 'GET',
-    path: `/${platform}/${token}`,
+    path: `/retailer/${platform}/${token}`,
   } as Request;
 
   let res = new MockExpressResponse();
 
   beforeEach(() => {
     res = new MockExpressResponse();
-    byThumbprintSpy.mockReturnValueOnce(Promise.resolve({ ...SALE_ENTITY, claimCode: 'test123', stockKeepingUnitRarity: 1 }));
+    byThumbprintSpy.mockReturnValueOnce(Promise.resolve({ ...SALE_ENTITY_FULL, claimCode: 'test123', stockKeepingUnitRarity: 1 }));
   });
 
   afterEach(() => {
@@ -93,7 +116,7 @@ describe('function - get-item', () => {
   it('ignores path additional element', async () => {
     const req = {
       method: 'GET',
-      path: `/bla/${platform}/${token}`,
+      path: `/retailer/bla/${platform}/${token}`,
     } as Request;
 
     await instance(req, res);
@@ -108,17 +131,7 @@ describe('function - get-item', () => {
     expect(res.statusCode).toEqual(StatusCodes.OK);
     expect(byThumbprintSpy).toHaveBeenCalledTimes(1);
     expect(byThumbprintSpy).toHaveBeenLastCalledWith(platform, token);
-    expect(res._getJSON()).toEqual(SALE_DTO);
-  });
-
-  it('supports item with null card', async () => {
-    byThumbprintSpy.mockReset();
-    byThumbprintSpy.mockReturnValueOnce(Promise.resolve({ ...SALE_ENTITY, claimCode: 'test123', stockKeepingUnitRarity: 1, card: null }));
-
-    await instance(req, res);
-
-    expect(res.statusCode).toEqual(StatusCodes.OK);
-    expect(res._getJSON()).toEqual({ ...SALE_DTO, cardJson: null });
+    expect(res._getJSON()).toEqual(SALE_DTO_RETAIL);
   });
 
   it('returns 404 if item not found', async () => {
@@ -131,4 +144,46 @@ describe('function - get-item', () => {
     expect(res._getString()).toEqual('Not Found');
   })
 
+});
+
+
+describe('function - get-item - internal', () => {
+  const byThumbprintSpy = jest.spyOn(ItemRepository.prototype, 'byThumbprint');
+
+  const platform = "SKN";
+  const token = "338a6b3128";
+  const req = {
+    method: 'GET',
+    path: `/${platform}/${token}`,
+  } as Request;
+
+  let res = new MockExpressResponse();
+
+  beforeEach(() => {
+    res = new MockExpressResponse();
+    byThumbprintSpy.mockReturnValueOnce(Promise.resolve({ ...SALE_ENTITY_FULL, claimCode: 'test123', stockKeepingUnitRarity: 1 }));
+  });
+
+  afterEach(() => {
+    jest.resetAllMocks();
+  });
+
+  it('supports item with null card', async () => {
+    byThumbprintSpy.mockReset();
+    byThumbprintSpy.mockReturnValueOnce(Promise.resolve({ ...SALE_ENTITY_FULL, claimCode: 'test123', stockKeepingUnitRarity: 1, card: null }));
+
+    await instance(req, res);
+
+    expect(res.statusCode).toEqual(StatusCodes.OK);
+    expect(res._getJSON()).toEqual({ ...SALE_DTO_INTERNAL, cardJson: null });
+  });
+
+  it('returns item', async () => {
+    await instance(req, res);
+
+    expect(res.statusCode).toEqual(StatusCodes.OK);
+    expect(byThumbprintSpy).toHaveBeenCalledTimes(1);
+    expect(byThumbprintSpy).toHaveBeenLastCalledWith(platform, token);
+    expect(res._getJSON()).toEqual(SALE_DTO_INTERNAL);
+  });
 });

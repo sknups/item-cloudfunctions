@@ -60,7 +60,7 @@ export class GetItems {
       }
 
       const mapper = new ItemDTOMapper(config.assetsUrl, config.flexUrl, config.sknAppUrl)
-      const items = entities.map(entity => mapper.toDTO(entity))
+      const items = entities.map(entity => mapper.toRetailerDto(entity))
     
       res.status(StatusCodes.OK).json(items);
     } catch (e) {
