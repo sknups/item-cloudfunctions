@@ -42,6 +42,14 @@ export function SKU_NOT_SUPPORTED(sku: string): ErrorReason {
   }
 }
 
+export function SKU_PERMISSION_MISSING(sku: string, permission: string): ErrorReason {
+  return {
+    code: 'ITEM_00003',
+    message: `Required permission ${permission} does not exist on sku ${sku}`,
+    statusCode: StatusCodes.FORBIDDEN,
+  }
+}
+
 /**
  * This error may occur if there is a collision when generating an ownership token.
  *
@@ -58,6 +66,22 @@ export function OWNERSHIP_TOKEN_RETRIES_EXCEEDED(attempts: number): ErrorReason 
     code: 'ITEM_00100',
     message: `Could not assign an available ownership token after ${attempts} attempts`,
     statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
+  }
+}
+
+export function UNEXPECTED_NFT_STATE(expectedState: string, actual: string): ErrorReason {
+  return {
+    code: 'ITEM_00101',
+    message: `Expected item to be in state ${expectedState} but was ${actual}`,
+    statusCode: StatusCodes.CONFLICT,
+  }
+}
+
+export function ITEM_NOT_FOUND(platform: string, token: string): ErrorReason {
+  return {
+    code: 'ITEM_00102',
+    message: `Item with platform ${platform} and code ${token} not found`,
+    statusCode: StatusCodes.NOT_FOUND,
   }
 }
 

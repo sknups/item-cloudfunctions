@@ -1,5 +1,5 @@
 import { AllConfig } from '../config/all-config';
-import { ItemEvent } from '../eventstreaming/item-event';
+import { ItemEvent, ItemEventType } from '../eventstreaming/item-event';
 import { ItemEntity } from '../entity/item.entity';
 import { AuditEntity } from '../entity/audit.entity';
 import { hashEmail } from '../hashing/index';
@@ -46,14 +46,14 @@ export function skuToItemEntity(
   }
 }
 
-export function itemEntityToCreateItemEvent(item: ItemEntity, audit: AuditEntity, eventId: string): ItemEvent {
+export function itemEntityToItemEvent(item: ItemEntity, audit: AuditEntity, eventId: string, eventType: ItemEventType): ItemEvent {
   const event = new ItemEvent();
   event.brandCode = item.brandCode;
   event.brandName = item.brandName;
   event.brandWholesalePrice = item.brandWholesalePrice;
   event.brandWholesalerShare = item.brandWholesalerShare;
   event.claimCode = item.claimCode;
-  event.dataEvent = 'CREATE';
+  event.dataEvent = ItemEventType[eventType];
   event.dataTimestamp = audit.date;
   event.eventId = eventId;
   event.itemCode = audit.entityId;

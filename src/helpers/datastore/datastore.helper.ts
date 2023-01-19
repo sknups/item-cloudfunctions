@@ -104,6 +104,12 @@ export async function insertEntity(context: DatastoreContext, kind: string, enti
   await ds.insert(_mapToDatastoreEntity(context, kind, entity));
 }
 
+export async function updateEntity(context: DatastoreContext, kind: string, entity: BaseEntity): Promise<void> {
+  const ds = context.tx ?? context.datastore;
+
+  await ds.update(_mapToDatastoreEntity(context, kind, entity));
+}
+
 export async function findEntities<T extends BaseEntity>(context: DatastoreContext, kind: string, filters: Filter[], projection?: string[]): Promise<T[]> {
   const ds = context.tx ?? context.datastore;
 

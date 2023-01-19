@@ -1,6 +1,6 @@
 import { AuditEntity } from '../entity/audit.entity';
 import { ItemEntity, ITEM_PROJECTION, ProjectedItemEntity } from '../entity/item.entity';
-import { createContext, DatastoreContext, findEntities, getEntity, insertEntity } from '../helpers/datastore/datastore.helper';
+import { createContext, DatastoreContext, findEntities, getEntity, insertEntity, updateEntity } from '../helpers/datastore/datastore.helper';
 import logger from '../helpers/logger';
 
 export class ItemRepository {
@@ -53,10 +53,10 @@ export class ItemRepository {
     );
   }
 
-  public async byThumbprint(platformCode: string, thumbprint: string): Promise<ItemEntity | null> {
+  public async byThumbprint(platformCode: string, thumbprint: string, context?: DatastoreContext): Promise<ItemEntity | null> {
     logger.debug(`byThumbprint - platformCode = '${platformCode}' thumbprint = '${thumbprint}'`)
 
-    const item: ItemEntity = await getEntity(ItemRepository.context, 'item', thumbprint);
+    const item: ItemEntity = await getEntity(context ?? ItemRepository.context, 'item', thumbprint);
 
     if (item && item.platformCode === platformCode && item.state !== 'DELETED') {
       return item;
@@ -65,11 +65,11 @@ export class ItemRepository {
     }
   }
 
-  public async byNftAddress(platformCode: string, nftAddress: string): Promise<ItemEntity | null> {
+  public async byNftAddress(platformCode: string, nftAddress: string, context?: DatastoreContext): Promise<ItemEntity | null> {
     logger.debug(`byNftAddress - platformCode = '${platformCode}' nftAddress = '${nftAddress}'`)
 
     const items: ItemEntity[] = await findEntities(
-      ItemRepository.context,
+      context ?? ItemRepository.context,
       'item',
       [{ name: 'nftAddress', op: '=', val: nftAddress }],
     );
@@ -88,10 +88,16 @@ export class ItemRepository {
     await insertEntity(context ?? ItemRepository.context, 'item', item);
   }
 
-  public async insertAudit(audit: AuditEntity, context?: DatastoreContext): Promise<void> {
+  public async updateItem(item: ItemEntity, context: DatastoreContext): Promise<void> {
+    logger.debug(`updateItem - ownershipToken = '${item.key}' platformCode = '${item.platformCode}'`);
+
+    await updateEntity(context, 'item', item);
+  }
+
+  public async insertAudit(audit: AuditEntity, context: DatastoreContext): Promise<void> {
     logger.debug(`insertAudit - entityId = '${audit.entityId}' toState = '${audit.toState}'`);
 
-    await insertEntity(context ?? ItemRepository.context, 'audit', audit);
+    await insertEntity(context, 'audit', audit);
   }
 
 }
