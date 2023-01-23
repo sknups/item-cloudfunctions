@@ -32,7 +32,7 @@ export type ProjectedItemEntity = NamedKeyEntity & {
   claimCode: string | null;
   created: Date;
   description: string;
-  emailHash: string;
+  emailHash: string | null;
   maxQty: number | null;
   nftState: string;
   ownerAddress: string | null;
@@ -46,7 +46,7 @@ export type ProjectedItemEntity = NamedKeyEntity & {
   stockKeepingUnitName: string;
   stockKeepingUnitRarity: number | null;
   tier: string | null;
-  user: string;
+  user: string | null;
   version: string;
 
 }

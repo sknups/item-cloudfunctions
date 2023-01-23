@@ -58,12 +58,24 @@ For historic reasons some tests are in jest while others are in mocha. They will
 
 ### item-get
 
+Get by ownership token:
+
 ```bash
 BASE_URL=http://localhost:8080
 OWNERSHIP_TOKEN=00cb1c5b57
 
 curl $BASE_URL/item-get/SKN/$OWNERSHIP_TOKEN
 ```
+
+Get by nft address:
+
+```bash
+BASE_URL=http://localhost:8080
+NFT_ADDRESS=SOL.devnet.5KNMdb2sV1pm5fK28cH499fz32XJDFWxR69QFnR9fc2u
+
+curl $BASE_URL/item-get/SKN/nft.$NFT_ADDRESS
+```
+
 
 ### item-find
 
@@ -89,6 +101,57 @@ curl \
   -H 'Content-Type: application/json' \
   $BASE_URL/item-create-non-enumerated \
   -d '{"skuCode":"'$SKU_CODE'","claimCode":"'$CLAIM_CODE'","email":"'$EMAIL'","user":"'$USER'"}'
+```
+
+### item-update
+
+MINTING:
+
+```bash
+ITEM_CODE=abc12def34
+BASE_URL=http://localhost:8080
+NFT_ADDRESS=SOL.devnet.$(date +%s)
+
+curl \
+  $BASE_URL/item-update/SKN/$ITEM_CODE \
+  -H 'Content-Type: application/json' \
+  -d '{"operation":"MINTING","nftAddress":"'$NFT_ADDRESS'","ownerAddress":"SOL.devnet.owner1"}'
+```
+
+MINT_FAILED:
+
+```bash
+BASE_URL=http://localhost:8080
+ITEM_CODE=abc12def34
+
+curl \
+  $BASE_URL/item-update/SKN/$ITEM_CODE \
+  -H 'Content-Type: application/json' \
+  -d '{"operation":"MINT_FAILED"}'
+```
+
+MINTED:
+
+```bash
+ITEM_CODE=abc12def34
+BASE_URL=http://localhost:8080
+
+curl \
+  $BASE_URL/item-update/SKN/$ITEM_CODE \
+  -H 'Content-Type: application/json' \
+  -d '{"operation":"MINTED"}'
+```
+
+OWNER_ADDRESS:
+
+```bash
+BASE_URL=http://localhost:8080
+NFT_ADDRESS=SOL.devnet.123456
+
+curl \
+  $BASE_URL/item-update/SKN/nft.$NFT_ADDRESS \
+  -H 'Content-Type: application/json' \
+  -d '{"operation":"OWNER_ADDRESS","ownerAddress":"SOL.devnet.dummy3"}'
 ```
 
 ## Test GCP Deployment

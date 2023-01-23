@@ -34,6 +34,13 @@ export const SALE_ENTITY_FULL: ItemEntity = {
   nftAddress: null,
 }
 
+export const SALE_ENTITY_MINTED: ItemEntity = {
+  ...SALE_ENTITY_FULL,
+  nftState: 'MINTED',
+  nftAddress: 'SOL.devnet.12345',
+  ownerAddress: 'SOL.devnet.67890',
+}
+
 export const GIVEAWAY_ENTITY: ProjectedItemEntity = {
   brandCode: 'TEST',
   card: null,
