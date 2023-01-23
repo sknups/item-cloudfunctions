@@ -66,11 +66,7 @@ export async function updateItemHandler(req: Request, res: Response, config: All
   let auditEntity: AuditEntity = null;
 
   try {
-    if (pathParams.keyType === 'nftAddress') {
-      itemEntity = await repository().byNftAddress(pathParams.platform, pathParams.key, context);
-    } else {
-      itemEntity = await repository().byThumbprint(pathParams.platform, pathParams.key, context);
-    }
+    itemEntity = await repository().byThumbprint(pathParams.platform, pathParams.key, context);
 
     if (!itemEntity) {
       throw new AppError(ITEM_NOT_FOUND(pathParams.platform, pathParams.key));

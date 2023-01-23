@@ -191,14 +191,14 @@ describe('function - get-item - internal', () => {
 
   it('returns item by nftAddress', async () => {
     const nftAddress = 'SOL.devnet.abc123';
-    req.path = `/${platform}/nft.${nftAddress}`;
+    req.path = `/_NFT_/${nftAddress}`;
 
     await instance(req, res);
 
     expect(res.statusCode).toEqual(StatusCodes.OK);
     expect(byThumbprintSpy).toHaveBeenCalledTimes(0);
     expect(byNftAddressSpy).toHaveBeenCalledTimes(1);
-    expect(byNftAddressSpy).toHaveBeenLastCalledWith(platform, nftAddress);
+    expect(byNftAddressSpy).toHaveBeenLastCalledWith(nftAddress);
     expect(res._getJSON()).toEqual({
       ...SALE_DTO_INTERNAL,
       nftAddress: 'SOL.devnet.12345',

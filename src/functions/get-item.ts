@@ -8,6 +8,7 @@ import { ItemDTOMapper } from '../mapper/item-mapper';
 import { AllConfig } from 'config/all-config';
 import { ItemDto } from '../dto/item.dto';
 import { ItemEntity } from '../entity/item.entity';
+import { parsePath } from '../helpers/util';
 
 export class GetItem {
 
@@ -19,39 +20,25 @@ export class GetItem {
       return;
     }
 
-    const parts = req.path.split('/');
-    const forRetailer: boolean = req.path.includes('/retailer');
-
-    let platform;
-
-    let token;
-
-    if (parts.length > 1) {
-      platform = parts[parts.length - 2];
-      token = parts[parts.length - 1];
-    }
-
-    if (!platform || platform.length === 0 || !token || token.length === 0) {
-      res.status(StatusCodes.BAD_REQUEST).send('platform code and ownership token (or nft.address) must be provided in path');
+    const pathParams = parsePath(req, res);
+    if (!pathParams) {
       return;
     }
 
-    const keyType = token.startsWith('nft.') ? 'nftAddress' : 'token';
-    if (keyType === 'nftAddress') {
-      token = token.substring(4);
-    }
+    // If the platform matches the magic string _NFT_ then query by nftAddress instead of token
+    const keyType = (!pathParams.retailer && pathParams.platform == '_NFT_') ? 'nftAddress' : 'token';
 
-    logger.debug(`Received request for drm-item - platform '${platform}' ${keyType} '${token}'`);
+    logger.debug(`Received request for drm-item - platform '${pathParams.platform}' ${keyType} '${pathParams.key}'`);
     let entity: ItemEntity;
     try {
       if (keyType === 'nftAddress') {
-        entity = await GetItem.repository.byNftAddress(platform, token);
+        entity = await GetItem.repository.byNftAddress(pathParams.key);
       } else {
-        entity = await GetItem.repository.byThumbprint(platform, token);
+        entity = await GetItem.repository.byThumbprint(pathParams.platform, pathParams.key);
       }
 
       if (entity === null) {
-        logger.debug(`item not found platform '${platform}' ${keyType} '${token}'`);
+        logger.debug(`item not found platform '${pathParams.platform}' ${keyType} '${pathParams.key}'`);
         res.sendStatus(StatusCodes.NOT_FOUND);
         return;
       }
@@ -61,7 +48,7 @@ export class GetItem {
     }
 
     const mapper = new ItemDTOMapper(config.assetsUrl, config.flexUrl, config.sknAppUrl);
-    const item: ItemDto = forRetailer ? mapper.toRetailerDto(entity) : mapper.toInternalDto(entity);
+    const item: ItemDto = pathParams.retailer ? mapper.toRetailerDto(entity) : mapper.toInternalDto(entity);
 
     res.status(StatusCodes.OK).json(item);
   }

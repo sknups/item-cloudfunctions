@@ -65,8 +65,8 @@ export class ItemRepository {
     }
   }
 
-  public async byNftAddress(platformCode: string, nftAddress: string, context?: DatastoreContext): Promise<ItemEntity | null> {
-    logger.debug(`byNftAddress - platformCode = '${platformCode}' nftAddress = '${nftAddress}'`)
+  public async byNftAddress(nftAddress: string, context?: DatastoreContext): Promise<ItemEntity | null> {
+    logger.debug(`byNftAddress - nftAddress = '${nftAddress}'`)
 
     const items: ItemEntity[] = await findEntities(
       context ?? ItemRepository.context,
@@ -75,7 +75,7 @@ export class ItemRepository {
     );
 
     const item = items.length > 0 ? items[0] : null;
-    if (item && item.platformCode === platformCode && item.state !== 'DELETED') {
+    if (item && item.state !== 'DELETED') {
       return item;
     } else {
       return null;
