@@ -1,8 +1,6 @@
 import { Request } from '@google-cloud/functions-framework';
 import { Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
-import { AppError, SKU_NOT_FOUND } from '../app.errors';
-import { Sku, getSku } from '../client/catalog/catalog.client';
 import { AllConfig } from '../config/all-config';
 import { EventPublisher } from '../eventstreaming/event-publisher';
 import { ItemEvent } from '../eventstreaming/item-event';
@@ -22,14 +20,6 @@ export function publisher(cfg: AllConfig): EventPublisher<ItemEvent> {
     _publisherInstance = new EventPublisher(cfg.itemEventTopic);
   }
   return _publisherInstance;
-}
-
-export async function getSkuOrThrow(cfg: AllConfig, skuCode: string): Promise<Sku> {
-  const sku: Sku | null = await getSku(cfg, skuCode);
-  if (!sku) {
-    throw new AppError(SKU_NOT_FOUND(skuCode));
-  }
-  return sku;
 }
 
 export type ItemPathParams = {
