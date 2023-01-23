@@ -298,7 +298,7 @@ describe('persistence', () => {
     });
 
     it('uses correct query', async () => {
-      await instance.byNftAddress(PLATFORM, SALE_ENTITY_MINTED.nftAddress as string);
+      await instance.byNftAddress(SALE_ENTITY_MINTED.nftAddress as string);
 
       const expectedQuery = {
         namespace: 'drm',
@@ -311,22 +311,16 @@ describe('persistence', () => {
     });
 
     it('transforms results', async () => {
-      const result = await instance.byNftAddress(PLATFORM, SALE_ENTITY_MINTED.nftAddress as string);
+      const result = await instance.byNftAddress(SALE_ENTITY_MINTED.nftAddress as string);
 
       expect(result).toEqual(SALE_ENTITY_MINTED);
-    });
-
-    it('returns null for platform mismatch', async () => {
-      const result = await instance.byNftAddress('INVALID', SALE_ENTITY_MINTED.nftAddress as string);
-
-      expect(result).toEqual(null);
     });
 
     it('returns null for DELETED state', async () => {
       runQuerySpy.mockReset();
       runQuerySpy.mockReturnValueOnce([[{ ...SALE_QUERY_DATA_MINTED, state: 'DELETED' }]] as any);
 
-      const result = await instance.byNftAddress(PLATFORM, SALE_ENTITY_MINTED.nftAddress as string);
+      const result = await instance.byNftAddress(SALE_ENTITY_MINTED.nftAddress as string);
 
       expect(result).toEqual(null);
     });

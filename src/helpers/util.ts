@@ -33,7 +33,6 @@ export async function getSkuOrThrow(cfg: AllConfig, skuCode: string): Promise<Sk
 }
 
 export type ItemPathParams = {
-  keyType: 'token' | 'nftAddress';
   key: string;
   platform: string;
   retailer: boolean;
@@ -49,12 +48,7 @@ export function parsePath(req: Request, res: Response): ItemPathParams | null {
   }
 
   const platform = parts[parts.length - 2];
+  const key = parts[parts.length - 1];
 
-  let key = parts[parts.length - 1];
-  const keyType = key.startsWith('nft.') ? 'nftAddress' : 'token';
-  if (keyType === 'nftAddress') {
-    key = key.substring(4);
-  }
-
-  return { keyType, key, platform, retailer };
+  return { key, platform, retailer };
 }
