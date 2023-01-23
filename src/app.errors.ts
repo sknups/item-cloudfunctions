@@ -34,7 +34,7 @@ export function SKU_NOT_FOUND(sku: string): ErrorReason {
   }
 }
 
-export function SKU_NOT_SUPPORTED(sku: string): ErrorReason {
+export function SKU_NOT_SUPPORTED_GIVEAWAY(sku: string): ErrorReason {
   return {
     code: 'ITEM_00002',
     message: `Giveaway not supported for sku ${sku}, it must be a v2 giveaway sku`,
@@ -49,6 +49,23 @@ export function SKU_PERMISSION_MISSING(sku: string, permission: string): ErrorRe
     statusCode: StatusCodes.FORBIDDEN,
   }
 }
+
+export function SKU_NOT_SUPPORTED_PURCHASE(sku: string): ErrorReason {
+  return {
+    code: 'ITEM_00004',
+    message: `Purchase not supported for sku ${sku}, it must has the 'SELL' permission and quantity`,
+    statusCode: StatusCodes.FORBIDDEN,
+  }
+}
+
+export function UPDATE_SKU_STOCK_FAILED(sku: string): ErrorReason {
+  return {
+    code: 'ITEM_00005',
+    message: `Failed to update stock for sku ${sku}`,
+    statusCode: StatusCodes.FORBIDDEN,
+  }
+}
+
 
 /**
  * This error may occur if there is a collision when generating an ownership token.
