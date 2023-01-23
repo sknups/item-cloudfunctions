@@ -116,8 +116,12 @@ describe('mapper - item - retailer', () => {
     "https://app-dev.sknups.com",
   );
 
-  it('creates item dto structure', () => {
+  it('creates item dto structure - STATIC', () => {
     expect(instance.toRetailerDto(ENTITY1)).toEqual(DTO1)
+  });
+
+  it('creates item dto structure - DYNAMIC', () => {
+    expect(instance.toRetailerDto({ ...ENTITY1, skn: 'DYNAMIC' })).toEqual(DTO1)
   });
 
   it('can handle numeric timestamp', () => {
@@ -175,10 +179,10 @@ describe('mapper - item - retailer', () => {
     })
   });
 
-  it('throws error if skn is not \'STATIC\' or \'VIDEO\'', () => {
+  it('throws error if skn is not \'STATIC\', \'DYNAMIC\' or \'VIDEO\'', () => {
     expect(() => {
       instance.toRetailerDto({ ...ENTITY1, skn: 'INVALID' })
-    }).toThrow("unsupported skn value 'INVALID'. Must be 'STATIC' or 'VIDEO'")
+    }).toThrow("unsupported skn value 'INVALID'. Must be 'STATIC', 'DYNAMIC' or 'VIDEO'")
   });
 
 });

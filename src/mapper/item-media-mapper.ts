@@ -36,6 +36,7 @@ export class ItemMediaDTOMapper {
 
     switch (skn) {
       case 'STATIC':
+      case 'DYNAMIC':
         return { image: `${flexHost}/skn/v1/card/default/${token}.jpg` };
       case 'VIDEO':
         return {
@@ -43,7 +44,7 @@ export class ItemMediaDTOMapper {
           video: `${this.assetsHost}/sku.${sku}.skn.mp4`,
         };
       default:
-        throw new Error(`unsupported skn value '${skn}'. Must be 'STATIC' or 'VIDEO'`)
+        throw new Error(`unsupported skn value '${skn}'. Must be 'STATIC', 'DYNAMIC' or 'VIDEO'`)
     }
 
   }
