@@ -6,7 +6,7 @@ import logger from '../../helpers/logger';
 
 export type Stock = {
   sku: string,
-  quantity: number,
+  stock: number,
 }
 
 export async function updateStock(cfg: AllConfig, skuCode: string): Promise<Stock | null> {
