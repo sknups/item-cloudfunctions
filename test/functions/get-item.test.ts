@@ -78,6 +78,7 @@ const SALE_DTO_INTERNAL: InternalItemDto = {
   "cardJson": "{\"back\": {\"token\": {\"color\": \"#FFFFFFFF\",\"font-size\": \"25pt\",\"font-family\": \"ShareTechMono-Regular\",\"font-weight\": \"Regular\",\"x\": 470,\"y\": 340}}}",
   "nftAddress": null,
   "ownerAddress": null,
+  "media": "{}"
 }
 
 const instance = getItem;

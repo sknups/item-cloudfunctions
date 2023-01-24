@@ -31,6 +31,7 @@ export class ItemDTOMapper {
       cardJson: entity.card,
       nftAddress: entity.nftAddress,
       ownerAddress: entity.ownerAddress,
+      media: entity.media
     }
 
   }

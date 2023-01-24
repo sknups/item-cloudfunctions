@@ -23,6 +23,7 @@ export const SALE_ENTITY: ProjectedItemEntity = {
   user: 'abc123',
   version: '1',
   state: 'UNBOXED',
+  media: '{}'
 };
 
 export const SALE_ENTITY_FULL: ItemEntity = {
@@ -32,6 +33,7 @@ export const SALE_ENTITY_FULL: ItemEntity = {
   brandWholesalePrice: 80,
   brandWholesalerShare: 50,
   nftAddress: null,
+  media: '{}'
 }
 
 export const SALE_ENTITY_MINTED: ItemEntity = {
@@ -64,4 +66,5 @@ export const GIVEAWAY_ENTITY: ProjectedItemEntity = {
   user: 'abc123',
   version: '1',
   state: 'UNBOXED',
+  media: '{}'
 };

@@ -31,6 +31,7 @@ const SALE_QUERY_DATA = {
   platformCode: 'TEST',
   ownerAddress: null,
   state: 'UNBOXED',
+  media: '{}'
 };
 
 const SALE_QUERY_DATA_FULL = {
@@ -72,6 +73,7 @@ const GIVEAWAY_QUERY_DATA = {
   platformCode: 'TEST',
   ownerAddress: null,
   state: 'UNBOXED',
+  media: '{}'
 };
 
 function _runQueryResponse(overrides: object, filterNames: string[]): any {
