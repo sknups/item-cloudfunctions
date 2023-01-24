@@ -27,6 +27,7 @@ const ENTITY1: ProjectedItemEntity = {
   tier: 'PREMIUM',
   user: 'user123',
   version: '1',
+  media: '{}'
 }
 
 const ENTITY1_FULL: ItemEntity = {
@@ -106,6 +107,7 @@ const DTO1_INTERNAL: InternalItemDto = {
   "cardJson": "{\"back\": {\"token\": {\"color\": \"#FFFFFFFF\",\"font-size\": \"25pt\",\"font-family\": \"ShareTechMono-Regular\",\"font-weight\": \"Regular\",\"x\": 470,\"y\": 340}}}",
   "nftAddress": null,
   "ownerAddress": null,
+  "media":"{}"
 }
 
 describe('mapper - item - retailer', () => {
