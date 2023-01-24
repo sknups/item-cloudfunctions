@@ -48,7 +48,7 @@ export type ProjectedItemEntity = NamedKeyEntity & {
   tier: string | null;
   user: string | null;
   version: string;
-
+  media: string | null;
 }
 
 export type ItemEntity = ProjectedItemEntity & UpdateableEntity & {

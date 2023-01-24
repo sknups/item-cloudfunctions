@@ -28,4 +28,9 @@ export class InternalItemDto extends ItemDto {
    */
   ownerAddress: string | null;
 
+  /**
+  * Internal media information for item as json string
+  */
+  media: string | null;
+
 }

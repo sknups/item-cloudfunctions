@@ -42,8 +42,9 @@ export function skuToItemEntity(
     stockKeepingUnitRarity: sku.rarity,
     tier: sku.tier,
     updated: created,
-    version: '2',
+    version: '3',
     skn: sku.skn,
+    media: sku.media || null
   }
 }
 
