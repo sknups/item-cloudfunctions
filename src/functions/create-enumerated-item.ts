@@ -41,13 +41,15 @@ export class CreateEnumeratedItem {
     //Decrement the stock 
     const skuStock = await _updateStockOrThrow(cfg, sku.code)
 
+    const saleQty = sku.maxQty - skuStock.stock;
+
     // Create item
     const item = skuToItemEntity(
       sku,
       requestDto.skuCode,
       _generateOwnershipToken(),
       null,
-      skuStock.stock,
+      saleQty,
       requestDto.email,
       requestDto.user,
       cfg,
