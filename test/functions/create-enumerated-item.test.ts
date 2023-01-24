@@ -185,4 +185,18 @@ describe('function - create-enumerated-item', () => {
     expect(eventMessage.skuCode).toEqual(body.skuCode);
   });
 
+
+  it('sets the sale quantity correctly on an item', async () => {
+    const auditId: number = Math.floor(Math.random() * 10000000000);
+    mocks.datastoreHelper.commitTransaction.mockReturnValueOnce(mockCommitTransactionResponse('audit', auditId));
+
+    const req = getMockReq({ method: 'POST', body });
+
+    await createEnumeratedItem(req, res);
+
+    expect(mocks.stock.updateStock).toHaveBeenCalledTimes(1);
+    expect(res.statusCode).toEqual(StatusCodes.OK);
+    expect(res._getJSON().saleQty).toEqual(57);
+  });
+
 });

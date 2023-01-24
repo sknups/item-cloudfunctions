@@ -133,7 +133,7 @@ const stock = {
         case 'premiumSku': {
           return  {
             sku: skuCode,
-            quantity: 42, 
+            stock: 42, 
           }
         }
 
