@@ -19,6 +19,15 @@ if [[ -z "$1" || "$1" == "$name" ]]; then
     --service-account=item-cf-write@drm-apps-01-43b0.iam.gserviceaccount.com
 fi
 
+name=item-create-enumerated-tmp
+if [[ -z "$1" || "$1" == "$name" ]]; then
+  gcloud functions deploy $name \
+    $common_args \
+    --entry-point=createEnumeratedItem \
+    --memory=512MB \
+    --service-account=item-cf-write@drm-apps-01-43b0.iam.gserviceaccount.com
+fi
+
 name=item-find-tmp
 if [[ -z "$1" || "$1" == "$name" ]]; then
   gcloud functions deploy $name \

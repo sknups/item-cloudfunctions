@@ -5,7 +5,7 @@ import { MutationResult } from '../src/helpers/persistence/mutation-result';
 import { Sku } from '../src/client/catalog/catalog.client';
 import { AllConfig } from '../src/config/all-config';
 
-export function mockSku(code: string): Sku {
+export function mockGiveawaySku(code: string): Sku {
   return {
     code,
     brandCode: 'brandCode',
@@ -23,6 +23,27 @@ export function mockSku(code: string): Sku {
     skn: 'STATIC',
     version: '2',
     permissions: ['METAPLEX_MINT'],
+  };
+}
+
+export function mockPurchaseSku(code: string): Sku {
+  return {
+    code,
+    brandCode: 'brandCode',
+    brandName: 'brandName',
+    brandWholesalePrice: 100,
+    brandWholesalerShare: 0.3,
+    card: 'card',
+    description: 'description',
+    maxQty: 99,
+    name: 'name',
+    platformCode: 'platformCode',
+    rarity: null,
+    recommendedRetailPrice: null,
+    tier: 'PREMIUM',
+    skn: 'STATIC',
+    version: '2',
+    permissions: ['SELL'],
   };
 }
 
@@ -60,24 +81,66 @@ const catalog = {
     .mockImplementation((_cfg: AllConfig, skuCode: string) => {
       switch (skuCode) {
         case 'skuCode':
-          return mockSku('skuCode');
+          return mockGiveawaySku(skuCode);
         case 'TEST-OCTAHEDRON-COMMON':
-          return mockSku('TEST-OCTAHEDRON-COMMON');
+          return mockGiveawaySku(skuCode);
         case 'skuv1': {
-          const sku = mockSku('skuv1');
+          const sku = mockGiveawaySku(skuCode);
           sku.version = '1';
           return sku;
         }
         case 'skuWithMaxQty': {
-          const sku = mockSku('skuWithMaxQty');
+          const sku = mockGiveawaySku(skuCode);
           sku.maxQty = 500;
           return sku;
         }
         case 'skuWithoutMint': {
-          const sku = mockSku('skuWithoutMint');
+          const sku = mockGiveawaySku(skuCode);
           sku.permissions = [];
           return sku;
         }
+
+        case 'premiumSku': {
+          return mockPurchaseSku(skuCode);
+        }
+
+        case 'premiumSkuNoStock': {
+          return mockPurchaseSku(skuCode);
+        }
+
+        case 'premiumSkuWithoutMaxQty': {
+          const sku = mockPurchaseSku(skuCode);
+          sku.maxQty = null
+          return sku;
+        }
+
+        case 'premiumSkuWithoutSellPermission': {
+          const sku = mockPurchaseSku(skuCode);
+          sku.permissions = ['METAPLEX_MINT']
+          return sku;
+        }
+
+        default:
+          return null;
+      }
+    }),
+}
+
+const stock = {
+  updateStock: jest.fn()
+    .mockImplementation((_cfg: AllConfig, skuCode: string) => {
+      switch (skuCode) {
+        case 'premiumSku': {
+          return  {
+            sku: skuCode,
+            quantity: 42, 
+          }
+        }
+
+        case 'premiumSkuNoStock': {
+          return null
+        }
+        
         default:
           return null;
       }
@@ -96,9 +159,11 @@ const eventPublisher = mocked(EventPublisher);
 
 export const mocks = {
   catalog,
+  stock,
   datastoreHelper,
   eventPublisher,
   mockClear: () => {
+    stock.updateStock.mockClear();
     catalog.getSku.mockClear();
     datastoreHelper.createContext.mockClear();
     datastoreHelper.insertEntity.mockClear();
@@ -112,5 +177,6 @@ export const mocks = {
 }
 
 jest.mock('../src/client/catalog/catalog.client', () => catalog);
+jest.mock('../src/client/catalog/stock.client', () => stock);
 jest.mock('../src/helpers/datastore/datastore.helper', () => datastoreHelper);
 jest.mock('../src/eventstreaming/event-publisher');

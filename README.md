@@ -103,6 +103,20 @@ curl \
   -d '{"skuCode":"'$SKU_CODE'","claimCode":"'$CLAIM_CODE'","email":"'$EMAIL'","user":"'$USER'"}'
 ```
 
+### item-create-enumerated
+
+```bash
+BASE_URL=http://localhost:8080
+SKU_CODE=TEST-DODECAHEDRON-BLUE
+EMAIL=devtesting@sknups.com
+USER=devtesting
+
+curl \
+  -H 'Content-Type: application/json' \
+  $BASE_URL/item-create-enumerated \
+  -d '{"skuCode":"'$SKU_CODE'","email":"'$EMAIL'","user":"'$USER'"}'
+```
+
 ### item-update
 
 MINTING:

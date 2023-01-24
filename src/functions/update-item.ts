@@ -1,22 +1,22 @@
 import { Request } from '@google-cloud/functions-framework';
 import { Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
-import { AppError, ITEM_NOT_FOUND, SKU_NOT_FOUND, SKU_PERMISSION_MISSING, UNEXPECTED_NFT_STATE } from '../app.errors';
+import { AppError, ITEM_NOT_FOUND, SKU_PERMISSION_MISSING, UNEXPECTED_NFT_STATE } from '../app.errors';
 import { AllConfig } from '../config/all-config';
 import { UpdateItemRequestDto, UpdateItemOperation } from '../dto/update-item-request.dto';
 import { AuditEntity } from '../entity/audit.entity';
 import { ItemEntity } from '../entity/item.entity';
-import { EventPublisher } from '../eventstreaming/event-publisher';
 import { ItemEventType } from '../eventstreaming/item-event';
 import { commitTransaction, DatastoreContext, rollbackTransaction, startTransaction } from '../helpers/datastore/datastore.helper';
 import { itemEntityToItemEvent } from '../helpers/item-mapper';
 import logger from '../helpers/logger';
-import { getSkuOrThrow, parsePath, publisher, repository } from '../helpers/util';
+import { parsePath, publisher, repository } from '../helpers/util';
 import { parseAndValidateRequestData } from '../helpers/validation';
 import { ItemDTOMapper } from '../mapper/item-mapper';
 import { ItemRepository } from '../persistence/item-repository';
 import { MutationResult } from '../helpers/persistence/mutation-result';
 import { Sku } from '../client/catalog/catalog.client';
+import { getSkuOrThrow } from '../helpers/sku';
 
 const _OPERATION_TO_NFT_STATE = {
   [UpdateItemOperation.MINTED]: {
