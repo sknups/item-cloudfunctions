@@ -53,7 +53,7 @@ export function SKU_PERMISSION_MISSING(sku: string, permission: string): ErrorRe
 export function SKU_NOT_SUPPORTED_PURCHASE(sku: string): ErrorReason {
   return {
     code: 'ITEM_00004',
-    message: `Purchase not supported for sku ${sku}, it must has the 'SELL' permission and quantity`,
+    message: `Purchase not supported for sku ${sku}, it must have the 'SELL' permission and a quantity`,
     statusCode: StatusCodes.FORBIDDEN,
   }
 }
