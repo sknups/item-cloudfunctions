@@ -47,14 +47,14 @@ export class CreateEnumeratedItem {
       requestDto.skuCode,
       _generateOwnershipToken(),
       null,
-      skuStock.quantity,
+      skuStock.stock,
       requestDto.email,
       requestDto.user,
       cfg,
     );
 
     const audit = await _createItemAndAuditWithRetries(item);
-    logger.info(`Manufactured item ${audit.entityId} from SKU "${item.stockKeepingUnitCode}" for giveaway "${item.claimCode}" with auditId ${audit.key}`);
+    logger.info(`Manufactured item ${audit.entityId} from SKU "${item.stockKeepingUnitCode}" with auditId ${audit.key}`);
 
     // Publish event
     const event = itemEntityToItemEvent(item, audit, audit.key.toString(), ItemEventType.CREATE);
