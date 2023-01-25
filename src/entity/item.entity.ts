@@ -9,7 +9,6 @@ export const ITEM_PROJECTION = [
   'description',
   'emailHash',
   'maxQty',
-  'media',
   'nftState',
   'ownerAddress',
   'platformCode',
