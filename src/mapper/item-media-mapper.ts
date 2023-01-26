@@ -1,7 +1,11 @@
-import { ImageMediaDto, ItemMediaDto, PrimaryMediaDto, SecondaryMediaDto, VideoMediaDto } from '../dto/item-media.dto';
+import { PrimaryMediaDto } from '../dto/item-media-primary.dto';
+import { SecondaryMediaDto } from '../dto/item-media-secondary.dto';
+import { ImageMediaUrlsDto, ItemMediaTypeDto, VideoMediaUrlsDto } from '../dto/item-media-type.dto';
+import { ItemMediaDto } from '../dto/item-media.dto';
 import { ProjectedItemEntity } from '../entity/item.entity';
+import { ItemEntityMedia, ItemEntityMediaType, parseMedia } from './item-media-json-parser';
 
-function _getImageBlock(baseUrl: string): ImageMediaDto {
+function _getImageBlock(baseUrl: string): ImageMediaUrlsDto {
   return {
     jpeg: `${baseUrl}.jpg`,
     png: `${baseUrl}.png`,
@@ -9,10 +13,30 @@ function _getImageBlock(baseUrl: string): ImageMediaDto {
   }
 }
 
-function _getVideoBlock(baseUrl: string): VideoMediaDto {
+function _getVideoBlock(baseUrl: string): VideoMediaUrlsDto {
   return {
     mp4: `${baseUrl}.mp4`,
   }
+}
+
+function _legacySknToMedia(entity: ProjectedItemEntity): ItemEntityMedia {
+  const supportedSkn: string[] = [
+    ItemEntityMediaType.DYNAMIC.toString(),
+    ItemEntityMediaType.VIDEO.toString(),
+  ];
+
+  if (!supportedSkn.includes(entity.skn)) {
+    throw new Error(`Unsupported legacy skn value '${entity.skn}' supported vaues: ${supportedSkn}`);
+  }
+
+  return {
+    primary: {
+      type: ItemEntityMediaType[entity.skn],
+    },
+    secondary: [{
+      type: ItemEntityMediaType.DYNAMIC,
+    }],
+  };
 }
 
 export class ItemMediaDTOMapper {
@@ -23,18 +47,12 @@ export class ItemMediaDTOMapper {
   ) { }
 
   toDTO(entity: ProjectedItemEntity): ItemMediaDto {
-    let primary: PrimaryMediaDto;
-    let secondary: SecondaryMediaDto[];
-
-    if (['1', '2'].includes(entity.version)) {
-      [primary, secondary] = this.getMediaFromSkn(entity.stockKeepingUnitCode, entity.skn, entity.key);
-    } else {
-      [primary, secondary] = this.getMedia(entity.media, entity.stockKeepingUnitCode, entity.key);
-    }
+    // Use entity.media if available (v3+) otherwise convert skn property to media (v1,v2)
+    const media: ItemEntityMedia = parseMedia(entity.media) || _legacySknToMedia(entity);
 
     return {
-      primary,
-      secondary,
+      primary: this.mapPrimaryMedia(media.primary.type, entity),
+      secondary: media.secondary.map((s, i) => this.mapSecondaryMedia(s.type, entity, i, s.link)),
       social: {
         default: {
           image: _getImageBlock(`${this.flexHost}/skn/v1/card/og/${entity.key}`),
@@ -51,105 +69,45 @@ export class ItemMediaDTOMapper {
 
   }
 
-  private getMedia(mediaJson: string, sku: string, token: string): [PrimaryMediaDto, SecondaryMediaDto[]] {
+  private mapMedia(type: ItemEntityMediaType, item: ProjectedItemEntity, suffix: string): PrimaryMediaDto {
+    const flexSuffix = suffix.replace('.', '/');
 
-    const media = JSON.parse(mediaJson);
-
-    let primary: PrimaryMediaDto;
-    const secondary: SecondaryMediaDto[] = [];
-
-    switch (media.primary.type) {
-      case 'STATIC':
-        primary = {
-          type: 'IMAGE',
-          image: _getImageBlock(`${this.assetsHost}/sku.${sku}.primary`),
+    switch (type) {
+      case ItemEntityMediaType.STATIC:
+        return {
+          type: ItemMediaTypeDto.IMAGE,
+          image: _getImageBlock(`${this.assetsHost}/sku.${item.stockKeepingUnitCode}.${suffix}`),
         };
-        break;
-      case 'DYNAMIC':
-        primary = {
-          type: 'IMAGE',
-          image: _getImageBlock(`${this.flexHost}/skn/v1/card/primary/${token}`),
+      case ItemEntityMediaType.DYNAMIC:
+        return {
+          type: ItemMediaTypeDto.IMAGE,
+          image: _getImageBlock(`${this.flexHost}/skn/v1/${flexSuffix}/${item.key}`),
         };
-        break;
-      case 'VIDEO':
-        primary = {
-          type: 'VIDEO',
-          image: _getImageBlock(`${this.assetsHost}/sku.${sku}.primary`),
-          video: _getVideoBlock(`${this.assetsHost}/sku.${sku}.primary`),
+      case ItemEntityMediaType.VIDEO:
+        return {
+          type: ItemMediaTypeDto.VIDEO,
+          image: _getImageBlock(`${this.assetsHost}/sku.${item.stockKeepingUnitCode}.${suffix}`),
+          video: _getVideoBlock(`${this.assetsHost}/sku.${item.stockKeepingUnitCode}.${suffix}`),
         };
-        break;
       default:
-        throw new Error(`unsupported primary media type '${media.primary.type}'. Must be 'STATIC', 'DYNAMIC' or 'VIDEO'`);
+        // Should never happen unles a new type is introduced into ItemEntityMediaType without a case statement above
+        throw new Error(`unsupported media type '${type}'`);
     }
-
-    for (const [i, s] of media.secondary.entries()) {
-      switch (s.type) {
-        case 'STATIC':
-          secondary.push({
-            type: 'IMAGE',
-            image: _getImageBlock(`${this.assetsHost}/sku.${sku}.secondary.${i}`),
-            link: s.link,
-          });
-          break;
-        case 'DYNAMIC':
-          secondary.push({
-            type: 'IMAGE',
-            image: _getImageBlock(`${this.flexHost}/skn/v1/card/secondary/${i}/${token}`),
-            link: s.link,
-          });
-          break;
-        case 'VIDEO':
-          secondary.push({
-            type: 'VIDEO',
-            image: _getImageBlock(`${this.assetsHost}/sku.${sku}.secondary.${i}`),
-            video: _getVideoBlock(`${this.assetsHost}/sku.${sku}.secondary.${i}`),
-            link: s.link,
-          });
-          break;
-        case 'YOUTUBE':
-          secondary.push({
-            type: 'VIDEO',
-            src: s.src,
-          });
-          break;
-        default:
-          throw new Error(`unsupported primary media type '${media.primary.type}'. Must be 'STATIC', 'DYNAMIC', 'VIDEO' or 'YOUTUBE'`);
-      }
-    }
-
-    return [primary, secondary];
-
   }
 
-  private getMediaFromSkn(sku: string, skn: string, token: string): [PrimaryMediaDto, SecondaryMediaDto[]] {
-
-    let primary: PrimaryMediaDto;
-
-    switch (skn) {
-      case 'STATIC':  // TODO (sam) once we are confident that v1/v2 items are always DYNAMIC, this line can be removed
-      case 'DYNAMIC':
-        primary = {
-          type: 'IMAGE',
-          image: _getImageBlock(`${this.flexHost}/skn/v1/card/default/${token}`),
-        };
-        break;
-      case 'VIDEO':
-        primary = {
-          type: 'VIDEO',
-          image: _getImageBlock(`${this.assetsHost}/sku.${sku}.skn`),
-          video: _getVideoBlock(`${this.assetsHost}/sku.${sku}.skn`),
-        };
-        break;
-      default:
-        throw new Error(`unsupported skn value '${skn}'. Must be 'STATIC', 'DYNAMIC' or 'VIDEO'`)
-    }
-
-    const secondary: SecondaryMediaDto[] = [{
-      type: 'IMAGE',
-      image: _getImageBlock(`${this.flexHost}/skn/v1/back/default/${token}`),
-    }];
-
-    return [primary, secondary];
-
+  private mapPrimaryMedia(type: ItemEntityMediaType, item: ProjectedItemEntity): PrimaryMediaDto {
+    return this.mapMedia(type, item, 'primary');
   }
+
+  private mapSecondaryMedia(type: ItemEntityMediaType, item: ProjectedItemEntity, index: number, link?: string): SecondaryMediaDto {
+    const media = this.mapMedia(type, item, `secondary.${index}`);
+
+    return {
+      ...media,
+      link,
+    };
+  }
+
+
+
 }

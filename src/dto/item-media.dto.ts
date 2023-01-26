@@ -1,9 +1,13 @@
+import { PrimaryMediaDto } from './item-media-primary.dto';
+import { SecondaryMediaDto } from './item-media-secondary.dto';
+import { ImageMediaUrlsDto } from './item-media-type.dto';
+
 export class ItemMediaDto {
 
   /**
-   * Primary media links for skn (previously known as the card front)
+   * Primary media links for skn.
    *
-   * Supports images and video
+   * Supports images and video.
    */
   primary: PrimaryMediaDto;
 
@@ -12,87 +16,35 @@ export class ItemMediaDto {
    *
    * May be of size 0.
    *
-   * Support images, video and youtube.
+   * Supports images, video and youtube.
    * Images and video can include an optional hyperlink.
    *
-   * For legacy SKN (v1 and v2) this contains only the info media (or card back)
+   * For legacy SKN (v1 and v2) this contains only the info media.
    */
   secondary: SecondaryMediaDto[];
 
   /**
-   * Links to social media, used in metadata tags for unfurling
+   * Links to social media, used in metadata tags for unfurling.
    * 
-   * Supports images
+   * Supports images.
    */
   social: SocialMediaDto;
 
   /**
-   * Links to the 3d model and configuration
+   * Links to the 3d model and configuration.
    */
   model: ModelMediaDto;
-
-}
-
-export class ImageMediaDto {
-  jpeg: string;
-  png: string;
-  webp: string;
-}
-
-export class VideoMediaDto {
-  mp4: string;
-}
-
-export class PrimaryMediaDto {
-
-  type: 'IMAGE' | 'VIDEO';
-
-  /**
-   * Populated for both IMAGE and VIDEO types.
-   */
-  image: ImageMediaDto;
-
-  /**
-   * Populated only for the VIDEO type.
-   */
-  video?: VideoMediaDto;
-
-}
-
-export class SecondaryMediaDto {
-
-  type: 'IMAGE' | 'VIDEO' | 'YOUTUBE';
-
-  /**
-   * Populated for IMAGE and VIDEO types.
-   */
-  image?: ImageMediaDto;
-
-  /**
-   * Populated only for the VIDEO type.
-   */
-  video?: VideoMediaDto;
-
-  /**
-   * Populated only for the YOUTUBE type.
-   */
-  src?: string;
-
-  /**
-   * Optional, MAY be populated for the IMAGE and VIDEO types.
-   */
-  link?: string;
 
 }
 
 export class SocialMediaDto {
 
   default: {
-    image: ImageMediaDto
+    image: ImageMediaUrlsDto
   };
 
   snapchat: {
-    image: ImageMediaDto
+    image: ImageMediaUrlsDto
   };
 
 }
