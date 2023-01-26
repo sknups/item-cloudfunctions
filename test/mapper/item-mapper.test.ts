@@ -3,6 +3,7 @@ import { ItemEntity, ProjectedItemEntity } from '../../src/entity/item.entity';
 import { ItemNftState, ItemSource } from '../../src/dto/item.dto';
 import { LegacyRetailerItemDto } from '../../src/dto/item-retailer.dto';
 import { InternalItemDto } from '../../src/dto/item-internal.dto';
+import { ItemMediaTypeDto } from '../../src/dto/item-media-type.dto';
 
 const ENTITY1: ProjectedItemEntity = {
   key: '338a6b3128',
@@ -18,7 +19,7 @@ const ENTITY1: ProjectedItemEntity = {
   platformCode: 'SKN',
   recommendedRetailPrice: 100,
   saleQty: 14,
-  skn: 'STATIC',
+  skn: 'DYNAMIC',
   source: 'SALE',
   state: 'UNBOXED',
   stockKeepingUnitCode: 'TEST-OCTAHEDRON-COMMON',
@@ -27,7 +28,7 @@ const ENTITY1: ProjectedItemEntity = {
   tier: 'PREMIUM',
   user: 'user123',
   version: '1',
-  media: '{}'
+  media: null,
 }
 
 const ENTITY1_FULL: ItemEntity = {
@@ -53,20 +54,20 @@ const DTO1: LegacyRetailerItemDto = {
   "maximum": 10000,
   "media": {
     "primary": {
-      "type": "IMAGE",
+      "type": ItemMediaTypeDto.IMAGE,
       "image": {
-        "jpeg": "https://flex-dev.sknups.com/skn/v1/card/default/338a6b3128.jpg",
-        "png": "https://flex-dev.sknups.com/skn/v1/card/default/338a6b3128.png",
-        "webp": "https://flex-dev.sknups.com/skn/v1/card/default/338a6b3128.webp"
+        "jpeg": "https://flex-dev.sknups.com/skn/v1/primary/338a6b3128.jpg",
+        "png": "https://flex-dev.sknups.com/skn/v1/primary/338a6b3128.png",
+        "webp": "https://flex-dev.sknups.com/skn/v1/primary/338a6b3128.webp"
       }
     },
     "secondary": [
       {
-        "type": "IMAGE",
+        "type": ItemMediaTypeDto.IMAGE,
         "image": {
-          "jpeg": "https://flex-dev.sknups.com/skn/v1/back/default/338a6b3128.jpg",
-          "png": "https://flex-dev.sknups.com/skn/v1/back/default/338a6b3128.png",
-          "webp": "https://flex-dev.sknups.com/skn/v1/back/default/338a6b3128.webp"
+          "jpeg": "https://flex-dev.sknups.com/skn/v1/secondary/0/338a6b3128.jpg",
+          "png": "https://flex-dev.sknups.com/skn/v1/secondary/0/338a6b3128.png",
+          "webp": "https://flex-dev.sknups.com/skn/v1/secondary/0/338a6b3128.webp"
         }
       }
     ],
@@ -129,7 +130,7 @@ const DTO1_INTERNAL: InternalItemDto = {
   "cardJson": "{\"back\": {\"token\": {\"color\": \"#FFFFFFFF\",\"font-size\": \"25pt\",\"font-family\": \"ShareTechMono-Regular\",\"font-weight\": \"Regular\",\"x\": 470,\"y\": 340}}}",
   "nftAddress": null,
   "ownerAddress": null,
-  "media": "{}"
+  "media": null,
 }
 
 describe('mapper - item - retailer', () => {
@@ -169,21 +170,21 @@ describe('mapper - item - retailer', () => {
         "primary": {
           "type": "VIDEO",
           "image": {
-            "jpeg": "https://assets.example.com/sku.TEST-OCTAHEDRON-COMMON.skn.jpg",
-            "png": "https://assets.example.com/sku.TEST-OCTAHEDRON-COMMON.skn.png",
-            "webp": "https://assets.example.com/sku.TEST-OCTAHEDRON-COMMON.skn.webp"
+            "jpeg": "https://assets.example.com/sku.TEST-OCTAHEDRON-COMMON.primary.jpg",
+            "png": "https://assets.example.com/sku.TEST-OCTAHEDRON-COMMON.primary.png",
+            "webp": "https://assets.example.com/sku.TEST-OCTAHEDRON-COMMON.primary.webp"
           },
           "video": {
-            "mp4": "https://assets.example.com/sku.TEST-OCTAHEDRON-COMMON.skn.mp4"
+            "mp4": "https://assets.example.com/sku.TEST-OCTAHEDRON-COMMON.primary.mp4"
           }
         },
         "secondary": [
           {
             "type": "IMAGE",
             "image": {
-              "jpeg": "https://flex-dev.sknups.com/skn/v1/back/default/338a6b3128.jpg",
-              "png": "https://flex-dev.sknups.com/skn/v1/back/default/338a6b3128.png",
-              "webp": "https://flex-dev.sknups.com/skn/v1/back/default/338a6b3128.webp"
+              "jpeg": "https://flex-dev.sknups.com/skn/v1/secondary/0/338a6b3128.jpg",
+              "png": "https://flex-dev.sknups.com/skn/v1/secondary/0/338a6b3128.png",
+              "webp": "https://flex-dev.sknups.com/skn/v1/secondary/0/338a6b3128.webp"
             }
           }
         ],
@@ -227,10 +228,10 @@ describe('mapper - item - retailer', () => {
     })
   });
 
-  it('throws error if skn is not \'STATIC\', \'DYNAMIC\' or \'VIDEO\'', () => {
+  it('throws error if skn is not \'DYNAMIC\' or \'VIDEO\'', () => {
     expect(() => {
-      instance.toRetailerDto({ ...ENTITY1, skn: 'INVALID' })
-    }).toThrow("unsupported skn value 'INVALID'. Must be 'STATIC', 'DYNAMIC' or 'VIDEO'")
+      instance.toRetailerDto({ ...ENTITY1, skn: 'STATIC' })
+    }).toThrow("Unsupported legacy skn value 'STATIC'");
   });
 
 });

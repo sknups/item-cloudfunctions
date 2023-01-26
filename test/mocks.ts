@@ -20,7 +20,7 @@ export function mockGiveawaySku(code: string): Sku {
     rarity: null,
     recommendedRetailPrice: null,
     tier: 'GIVEAWAY',
-    skn: 'STATIC',
+    skn: 'DYNAMIC',
     version: '2',
     permissions: ['METAPLEX_MINT'],
   };
@@ -41,7 +41,7 @@ export function mockPurchaseSku(code: string): Sku {
     rarity: null,
     recommendedRetailPrice: null,
     tier: 'PREMIUM',
-    skn: 'STATIC',
+    skn: 'DYNAMIC',
     version: '2',
     permissions: ['SELL'],
   };
