@@ -52,21 +52,43 @@ const DTO1: LegacyRetailerItemDto = {
   "maxQty": 10000,
   "maximum": 10000,
   "media": {
-    "info": {
-      "image": "https://flex-dev.sknups.com/skn/v1/back/default/338a6b3128.jpg"
+    "primary": {
+      "type": "IMAGE",
+      "image": {
+        "jpeg": "https://flex-dev.sknups.com/skn/v1/card/default/338a6b3128.jpg",
+        "png": "https://flex-dev.sknups.com/skn/v1/card/default/338a6b3128.png",
+        "webp": "https://flex-dev.sknups.com/skn/v1/card/default/338a6b3128.webp"
+      }
+    },
+    "secondary": [
+      {
+        "type": "IMAGE",
+        "image": {
+          "jpeg": "https://flex-dev.sknups.com/skn/v1/back/default/338a6b3128.jpg",
+          "png": "https://flex-dev.sknups.com/skn/v1/back/default/338a6b3128.png",
+          "webp": "https://flex-dev.sknups.com/skn/v1/back/default/338a6b3128.webp"
+        }
+      }
+    ],
+    "social": {
+      "default": {
+        "image": {
+          "jpeg": "https://flex-dev.sknups.com/skn/v1/card/og/338a6b3128.jpg",
+          "png": "https://flex-dev.sknups.com/skn/v1/card/og/338a6b3128.png",
+          "webp": "https://flex-dev.sknups.com/skn/v1/card/og/338a6b3128.webp"
+        }
+      },
+      "snapchat": {
+        "image": {
+          "jpeg": "https://flex-dev.sknups.com/skn/v1/card/snapchat/338a6b3128.jpg",
+          "png": "https://flex-dev.sknups.com/skn/v1/card/snapchat/338a6b3128.png",
+          "webp": "https://flex-dev.sknups.com/skn/v1/card/snapchat/338a6b3128.webp"
+        }
+      }
     },
     "model": {
-      "config": "https://assets.example.com/sku.v1.3DConfig.TEST-OCTAHEDRON-COMMON.json",
-      "glb": "https://assets.example.com/sku.v1.3DView.TEST-OCTAHEDRON-COMMON.glb"
-    },
-    "skn": {
-      "image": "https://flex-dev.sknups.com/skn/v1/card/default/338a6b3128.jpg"
-    },
-    "snapchat": {
-      "image": "https://flex-dev.sknups.com/skn/v1/card/snapchat/338a6b3128.png"
-    },
-    "social": {
-      "image": "https://flex-dev.sknups.com/skn/v1/card/og/338a6b3128.png"
+      "glb": "https://assets.example.com/sku.v1.3DView.TEST-OCTAHEDRON-COMMON.glb",
+      "config": "https://assets.example.com/sku.v1.3DConfig.TEST-OCTAHEDRON-COMMON.json"
     }
   },
   "name": "Common Octahedron",
@@ -107,7 +129,7 @@ const DTO1_INTERNAL: InternalItemDto = {
   "cardJson": "{\"back\": {\"token\": {\"color\": \"#FFFFFFFF\",\"font-size\": \"25pt\",\"font-family\": \"ShareTechMono-Regular\",\"font-weight\": \"Regular\",\"x\": 470,\"y\": 340}}}",
   "nftAddress": null,
   "ownerAddress": null,
-  "media":"{}"
+  "media": "{}"
 }
 
 describe('mapper - item - retailer', () => {
@@ -144,22 +166,46 @@ describe('mapper - item - retailer', () => {
       "maxQty": 10000,
       "maximum": 10000,
       "media": {
-        "info": {
-          "image": "https://flex-dev.sknups.com/skn/v1/back/default/338a6b3128.jpg"
+        "primary": {
+          "type": "VIDEO",
+          "image": {
+            "jpeg": "https://assets.example.com/sku.TEST-OCTAHEDRON-COMMON.skn.jpg",
+            "png": "https://assets.example.com/sku.TEST-OCTAHEDRON-COMMON.skn.png",
+            "webp": "https://assets.example.com/sku.TEST-OCTAHEDRON-COMMON.skn.webp"
+          },
+          "video": {
+            "mp4": "https://assets.example.com/sku.TEST-OCTAHEDRON-COMMON.skn.mp4"
+          }
+        },
+        "secondary": [
+          {
+            "type": "IMAGE",
+            "image": {
+              "jpeg": "https://flex-dev.sknups.com/skn/v1/back/default/338a6b3128.jpg",
+              "png": "https://flex-dev.sknups.com/skn/v1/back/default/338a6b3128.png",
+              "webp": "https://flex-dev.sknups.com/skn/v1/back/default/338a6b3128.webp"
+            }
+          }
+        ],
+        "social": {
+          "default": {
+            "image": {
+              "jpeg": "https://flex-dev.sknups.com/skn/v1/card/og/338a6b3128.jpg",
+              "png": "https://flex-dev.sknups.com/skn/v1/card/og/338a6b3128.png",
+              "webp": "https://flex-dev.sknups.com/skn/v1/card/og/338a6b3128.webp"
+            }
+          },
+          "snapchat": {
+            "image": {
+              "jpeg": "https://flex-dev.sknups.com/skn/v1/card/snapchat/338a6b3128.jpg",
+              "png": "https://flex-dev.sknups.com/skn/v1/card/snapchat/338a6b3128.png",
+              "webp": "https://flex-dev.sknups.com/skn/v1/card/snapchat/338a6b3128.webp"
+            }
+          }
         },
         "model": {
-          "config": "https://assets.example.com/sku.v1.3DConfig.TEST-OCTAHEDRON-COMMON.json",
-          "glb": "https://assets.example.com/sku.v1.3DView.TEST-OCTAHEDRON-COMMON.glb"
-        },
-        "skn": {
-          "image": "https://assets.example.com/sku.TEST-OCTAHEDRON-COMMON.skn.jpg",
-          "video": "https://assets.example.com/sku.TEST-OCTAHEDRON-COMMON.skn.mp4"
-        },
-        "snapchat": {
-          "image": "https://flex-dev.sknups.com/skn/v1/card/snapchat/338a6b3128.png"
-        },
-        "social": {
-          "image": "https://flex-dev.sknups.com/skn/v1/card/og/338a6b3128.png"
+          "glb": "https://assets.example.com/sku.v1.3DView.TEST-OCTAHEDRON-COMMON.glb",
+          "config": "https://assets.example.com/sku.v1.3DConfig.TEST-OCTAHEDRON-COMMON.json"
         }
       },
       "name": "Common Octahedron",

@@ -8,18 +8,12 @@ export class ItemDTOMapper {
 
   private mediaMapper: ItemMediaDTOMapper;
 
-  private flexHost: string;
-
-  private sknappHost: string;
-
   constructor(
     assetsHost: string,
-    flexHost: string,
-    sknappHost: string
+    private readonly flexHost: string,
+    private readonly sknappHost: string
   ) {
-    this.mediaMapper = new ItemMediaDTOMapper(assetsHost);
-    this.flexHost = flexHost;
-    this.sknappHost = sknappHost;
+    this.mediaMapper = new ItemMediaDTOMapper(assetsHost, flexHost);
   }
 
   toInternalDto(entity: ItemEntity): InternalItemDto {
@@ -41,12 +35,7 @@ export class ItemDTOMapper {
 
     const dto: RetailerItemDto = {
       ...baseDto,
-      media: this.mediaMapper.toDTO(
-        this.flexHost,
-        entity.stockKeepingUnitCode,
-        entity.skn,
-        entity.key,
-      ),
+      media: this.mediaMapper.toDTO(entity),
     }
 
     return {
