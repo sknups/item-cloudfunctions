@@ -39,21 +39,43 @@ const SALE_DTO_RETAIL: LegacyRetailerItemDto = {
   "source": ItemSource.SALE,
   "tier": "GREEN",
   "media": {
-    "info": {
-      "image": "https://flex-dev.example.com/skn/v1/back/default/338a6b3128.jpg"
+    "primary": {
+      "type": "IMAGE",
+      "image": {
+        "jpeg": "https://flex-dev.example.com/skn/v1/card/default/338a6b3128.jpg",
+        "png": "https://flex-dev.example.com/skn/v1/card/default/338a6b3128.png",
+        "webp": "https://flex-dev.example.com/skn/v1/card/default/338a6b3128.webp"
+      }
+    },
+    "secondary": [
+      {
+        "type": "IMAGE",
+        "image": {
+          "jpeg": "https://flex-dev.example.com/skn/v1/back/default/338a6b3128.jpg",
+          "png": "https://flex-dev.example.com/skn/v1/back/default/338a6b3128.png",
+          "webp": "https://flex-dev.example.com/skn/v1/back/default/338a6b3128.webp"
+        }
+      }
+    ],
+    "social": {
+      "default": {
+        "image": {
+          "jpeg": "https://flex-dev.example.com/skn/v1/card/og/338a6b3128.jpg",
+          "png": "https://flex-dev.example.com/skn/v1/card/og/338a6b3128.png",
+          "webp": "https://flex-dev.example.com/skn/v1/card/og/338a6b3128.webp"
+        }
+      },
+      "snapchat": {
+        "image": {
+          "jpeg": "https://flex-dev.example.com/skn/v1/card/snapchat/338a6b3128.jpg",
+          "png": "https://flex-dev.example.com/skn/v1/card/snapchat/338a6b3128.png",
+          "webp": "https://flex-dev.example.com/skn/v1/card/snapchat/338a6b3128.webp"
+        }
+      }
     },
     "model": {
-      "config": "https://assets-dev.example.com/sku.v1.3DConfig.TEST-OCTAHEDRON-COMMON.json",
-      "glb": "https://assets-dev.example.com/sku.v1.3DView.TEST-OCTAHEDRON-COMMON.glb"
-    },
-    "skn": {
-      "image": "https://flex-dev.example.com/skn/v1/card/default/338a6b3128.jpg"
-    },
-    "snapchat": {
-      "image": "https://flex-dev.example.com/skn/v1/card/snapchat/338a6b3128.png"
-    },
-    "social": {
-      "image": "https://flex-dev.example.com/skn/v1/card/og/338a6b3128.png"
+      "glb": "https://assets-dev.example.com/sku.v1.3DView.TEST-OCTAHEDRON-COMMON.glb",
+      "config": "https://assets-dev.example.com/sku.v1.3DConfig.TEST-OCTAHEDRON-COMMON.json"
     }
   }
 };

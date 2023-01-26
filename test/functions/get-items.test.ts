@@ -39,21 +39,43 @@ const SALE_DTO: LegacyRetailerItemDto = {
   "source": ItemSource.SALE,
   "tier": "GREEN",
   "media": {
-    "info": {
-      "image": "https://flex-dev.example.com/skn/v1/back/default/338a6b3128.jpg"
+    "primary": {
+      "type": "IMAGE",
+      "image": {
+        "jpeg": "https://flex-dev.example.com/skn/v1/card/default/338a6b3128.jpg",
+        "png": "https://flex-dev.example.com/skn/v1/card/default/338a6b3128.png",
+        "webp": "https://flex-dev.example.com/skn/v1/card/default/338a6b3128.webp"
+      }
+    },
+    "secondary": [
+      {
+        "type": "IMAGE",
+        "image": {
+          "jpeg": "https://flex-dev.example.com/skn/v1/back/default/338a6b3128.jpg",
+          "png": "https://flex-dev.example.com/skn/v1/back/default/338a6b3128.png",
+          "webp": "https://flex-dev.example.com/skn/v1/back/default/338a6b3128.webp"
+        }
+      }
+    ],
+    "social": {
+      "default": {
+        "image": {
+          "jpeg": "https://flex-dev.example.com/skn/v1/card/og/338a6b3128.jpg",
+          "png": "https://flex-dev.example.com/skn/v1/card/og/338a6b3128.png",
+          "webp": "https://flex-dev.example.com/skn/v1/card/og/338a6b3128.webp"
+        }
+      },
+      "snapchat": {
+        "image": {
+          "jpeg": "https://flex-dev.example.com/skn/v1/card/snapchat/338a6b3128.jpg",
+          "png": "https://flex-dev.example.com/skn/v1/card/snapchat/338a6b3128.png",
+          "webp": "https://flex-dev.example.com/skn/v1/card/snapchat/338a6b3128.webp"
+        }
+      }
     },
     "model": {
-      "config": "https://assets-dev.example.com/sku.v1.3DConfig.TEST-OCTAHEDRON-COMMON.json",
-      "glb": "https://assets-dev.example.com/sku.v1.3DView.TEST-OCTAHEDRON-COMMON.glb"
-    },
-    "skn": {
-      "image": "https://flex-dev.example.com/skn/v1/card/default/338a6b3128.jpg"
-    },
-    "snapchat": {
-      "image": "https://flex-dev.example.com/skn/v1/card/snapchat/338a6b3128.png"
-    },
-    "social": {
-      "image": "https://flex-dev.example.com/skn/v1/card/og/338a6b3128.png"
+      "glb": "https://assets-dev.example.com/sku.v1.3DView.TEST-OCTAHEDRON-COMMON.glb",
+      "config": "https://assets-dev.example.com/sku.v1.3DConfig.TEST-OCTAHEDRON-COMMON.json"
     }
   }
 };
@@ -87,22 +109,46 @@ const GIVEAWAY_DTO: LegacyRetailerItemDto = {
   "created": "2022-05-31T16:14:32.253Z",
   "rarity": null,
   "media": {
-    "info": {
-      "image": "https://flex-dev.example.com/skn/v1/back/default/07e6554733.jpg"
+    "primary": {
+      "type": "VIDEO",
+      "image": {
+        "jpeg": "https://assets-dev.example.com/sku.TEST-CUBE-RARE.skn.jpg",
+        "png": "https://assets-dev.example.com/sku.TEST-CUBE-RARE.skn.png",
+        "webp": "https://assets-dev.example.com/sku.TEST-CUBE-RARE.skn.webp"
+      },
+      "video": {
+        "mp4": "https://assets-dev.example.com/sku.TEST-CUBE-RARE.skn.mp4"
+      }
+    },
+    "secondary": [
+      {
+        "type": "IMAGE",
+        "image": {
+          "jpeg": "https://flex-dev.example.com/skn/v1/back/default/07e6554733.jpg",
+          "png": "https://flex-dev.example.com/skn/v1/back/default/07e6554733.png",
+          "webp": "https://flex-dev.example.com/skn/v1/back/default/07e6554733.webp"
+        }
+      }
+    ],
+    "social": {
+      "default": {
+        "image": {
+          "jpeg": "https://flex-dev.example.com/skn/v1/card/og/07e6554733.jpg",
+          "png": "https://flex-dev.example.com/skn/v1/card/og/07e6554733.png",
+          "webp": "https://flex-dev.example.com/skn/v1/card/og/07e6554733.webp"
+        }
+      },
+      "snapchat": {
+        "image": {
+          "jpeg": "https://flex-dev.example.com/skn/v1/card/snapchat/07e6554733.jpg",
+          "png": "https://flex-dev.example.com/skn/v1/card/snapchat/07e6554733.png",
+          "webp": "https://flex-dev.example.com/skn/v1/card/snapchat/07e6554733.webp"
+        }
+      }
     },
     "model": {
-      "config": "https://assets-dev.example.com/sku.v1.3DConfig.TEST-CUBE-RARE.json",
-      "glb": "https://assets-dev.example.com/sku.v1.3DView.TEST-CUBE-RARE.glb"
-    },
-    "skn": {
-      "image": "https://assets-dev.example.com/sku.TEST-CUBE-RARE.skn.jpg",
-      "video": "https://assets-dev.example.com/sku.TEST-CUBE-RARE.skn.mp4"
-    },
-    "snapchat": {
-      "image": "https://flex-dev.example.com/skn/v1/card/snapchat/07e6554733.png"
-    },
-    "social": {
-      "image": "https://flex-dev.example.com/skn/v1/card/og/07e6554733.png"
+      "glb": "https://assets-dev.example.com/sku.v1.3DView.TEST-CUBE-RARE.glb",
+      "config": "https://assets-dev.example.com/sku.v1.3DConfig.TEST-CUBE-RARE.json"
     }
   }
 };
@@ -259,16 +305,12 @@ describe('function - get-items', () => {
     const dto333 = { ...GIVEAWAY_DTO, thumbprint: '333', token: '333' };
 
     for (const dto of [dto111, dto222, dto333]) {
-      const newMedia = {};
-
-      for (const key of ['info', 'model', 'skn', 'snapchat', 'social']) {
-        const oldMedia = dto.media[key];
-        newMedia[key] = { ...oldMedia };
-        if (oldMedia.image) {
-          newMedia[key].image = oldMedia.image.replace(/338a6b3128|07e6554733/, dto.token);
-        }
+      const oldMediaJson = JSON.stringify(dto.media);
+      let newMediaJson = oldMediaJson;
+      while (newMediaJson.includes('338a6b3128') || newMediaJson.includes('07e6554733')) {
+        newMediaJson = newMediaJson.replace(/338a6b3128|07e6554733/, dto.token);
       }
-      dto.media = newMedia as any;
+      dto.media = JSON.parse(newMediaJson);
     }
 
     expect(res._getJSON()).toEqual([
