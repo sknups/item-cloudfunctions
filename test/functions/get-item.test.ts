@@ -7,9 +7,10 @@ import { StatusCodes } from 'http-status-codes';
 import { ItemRepository } from '../../src/persistence/item-repository';
 import { SALE_ENTITY_FULL, SALE_ENTITY_MINTED } from '../mocks-item';
 import { ItemNftState, ItemSource } from '../../src/dto/item.dto';
-import { LegacyRetailerItemDto } from '../../src/dto/item-retailer.dto';
-import { InternalItemDto } from '../../src/dto/item-internal.dto';
+import { LegacyRetailerItemDto } from '../../src/dto/retailer/item-retailer.dto';
+import { InternalItemDto } from '../../src/dto/internal/item-internal.dto';
 import { ItemMediaTypeDto } from '../../src/dto/item-media-type.dto';
+import { InternalItemMediaTypeDto } from '../../src/dto/internal/item-media-internal.dto';
 
 const SALE_DTO_RETAIL: LegacyRetailerItemDto = {
   "token": "338a6b3128",
@@ -98,10 +99,19 @@ const SALE_DTO_INTERNAL: InternalItemDto = {
   "rrp": 100,
   "source": ItemSource.SALE,
   "tier": "GREEN",
-  "cardJson": "{\"back\": {\"token\": {\"color\": \"#FFFFFFFF\",\"font-size\": \"25pt\",\"font-family\": \"ShareTechMono-Regular\",\"font-weight\": \"Regular\",\"x\": 470,\"y\": 340}}}",
+  "cardJson": "{\"front\":[{\"text\":\"${issue} of ${maximum}\",\"color\":\"#FFFFFFFF\",\"size\":\"30pt\",\"font\":\"Share Tech Mono\",\"weight\":\"Regular\",\"align\":\"center\",\"x\":450,\"y\":1310}],\"back\":[{\"text\":\"OWNERSHIP TOKEN:\",\"color\":\"#FFFFFFFF\",\"size\":\"25pt\",\"font\":\"Share Tech Mono\",\"weight\":\"Regular\",\"align\":\"center\",\"x\":450,\"y\":1260},{\"text\":\"${token}\",\"color\":\"#FFFFFFFF\",\"size\":\"30pt\",\"font\":\"Share Tech Mono\",\"weight\":\"Regular\",\"align\":\"center\",\"x\":450,\"y\":1310}]}",
   "nftAddress": null,
   "ownerAddress": null,
-  "media": null,
+  "media": {
+    "primary": {
+      "type": InternalItemMediaTypeDto.DYNAMIC,
+      "labels": [{ "text": "${issue} of ${maximum}", "color": "#FFFFFFFF", "size": "30pt", "font": "Share Tech Mono", "weight": "Regular", "align": "center", "x": 450, "y": 1310 }],
+    },
+    "secondary": [{
+      "type": InternalItemMediaTypeDto.DYNAMIC,
+      "labels": [{ "text": "OWNERSHIP TOKEN:", "color": "#FFFFFFFF", "size": "25pt", "font": "Share Tech Mono", "weight": "Regular", "align": "center", "x": 450, "y": 1260 }, { "text": "${token}", "color": "#FFFFFFFF", "size": "30pt", "font": "Share Tech Mono", "weight": "Regular", "align": "center", "x": 450, "y": 1310 }]
+    }]
+  },
 }
 
 const instance = getItem;
@@ -201,7 +211,7 @@ describe('function - get-item - internal', () => {
     await instance(req, res);
 
     expect(res.statusCode).toEqual(StatusCodes.OK);
-    expect(res._getJSON()).toEqual({ ...SALE_DTO_INTERNAL, cardJson: null });
+    expect(res._getJSON()).toEqual({ ...SALE_DTO_INTERNAL, cardJson: null, media: null });
   });
 
   it('returns item', async () => {

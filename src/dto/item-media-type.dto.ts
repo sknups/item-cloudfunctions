@@ -7,8 +7,6 @@ export enum ItemMediaTypeDto {
 
   VIDEO = 'VIDEO',
 
-  YOUTUBE = 'YOUTUBE',
-
 }
 
 /**
@@ -58,16 +56,5 @@ export class VideoMediaDto {
   image: ImageMediaUrlsDto;
 
   video: VideoMediaUrlsDto;
-
-}
-
-/**
- * Defines the available properties for YOUTUBE media.
- */
-export class YoutubeMediaTypeDto {
-
-  type: ItemMediaTypeDto.YOUTUBE;
-
-  youtube: string;
 
 }

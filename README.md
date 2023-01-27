@@ -52,8 +52,6 @@ The unit tests can be run using the following command.
 npm test
 ```
 
-For historic reasons some tests are in jest while others are in mocha. They will be merged at some point.
-
 ## Functions
 
 ### item-get

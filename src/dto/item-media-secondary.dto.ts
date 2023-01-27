@@ -1,4 +1,4 @@
-import { ImageMediaDto, VideoMediaDto, YoutubeMediaTypeDto } from './item-media-type.dto';
+import { ImageMediaDto, VideoMediaDto } from './item-media-type.dto';
 
 /**
  * Extension for secondary media to provide an optional link
@@ -18,4 +18,4 @@ export class SecondaryVideoMediaDto extends VideoMediaDto {
 
 }
 
-export type SecondaryMediaDto = SecondaryImageMediaDto | SecondaryVideoMediaDto | YoutubeMediaTypeDto;
+export type SecondaryMediaDto = SecondaryImageMediaDto | SecondaryVideoMediaDto;
