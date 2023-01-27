@@ -1,7 +1,12 @@
-import { PrimaryMediaDto } from './item-media-primary.dto';
-import { SecondaryMediaDto } from './item-media-secondary.dto';
-import { ImageMediaUrlsDto } from './item-media-type.dto';
+import { PrimaryMediaDto } from '../item-media-primary.dto';
+import { SecondaryMediaDto } from '../item-media-secondary.dto';
+import { ImageMediaUrlsDto } from '../item-media-type.dto';
 
+/**
+ * The item media exposed to retailers.
+ * 
+ * This is transformed from the 'media' property stored in datastore into a series of image/video links.
+ */
 export class ItemMediaDto {
 
   /**

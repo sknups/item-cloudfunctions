@@ -8,7 +8,7 @@ import { StatusCodes } from 'http-status-codes';
 import { ItemRepository } from '../../src/persistence/item-repository';
 import { GIVEAWAY_ENTITY, SALE_ENTITY } from '../mocks-item';
 import { ItemNftState, ItemSource } from '../../src/dto/item.dto';
-import { LegacyRetailerItemDto } from '../../src/dto/item-retailer.dto';
+import { LegacyRetailerItemDto } from '../../src/dto/retailer/item-retailer.dto';
 import { ItemMediaTypeDto } from '../../src/dto/item-media-type.dto';
 
 const SALE_DTO: LegacyRetailerItemDto = {

@@ -1,14 +1,16 @@
+import "reflect-metadata";
 import { ItemDTOMapper } from "../../src/mapper/item-mapper";
 import { ItemEntity, ProjectedItemEntity } from '../../src/entity/item.entity';
 import { ItemNftState, ItemSource } from '../../src/dto/item.dto';
-import { LegacyRetailerItemDto } from '../../src/dto/item-retailer.dto';
-import { InternalItemDto } from '../../src/dto/item-internal.dto';
+import { LegacyRetailerItemDto } from '../../src/dto/retailer/item-retailer.dto';
+import { InternalItemDto } from '../../src/dto/internal/item-internal.dto';
 import { ItemMediaTypeDto } from '../../src/dto/item-media-type.dto';
+import { InternalItemMediaTypeDto } from '../../src/dto/internal/item-media-internal.dto';
 
 const ENTITY1: ProjectedItemEntity = {
   key: '338a6b3128',
   brandCode: 'TEST',
-  card: '{"back": {"token": {"color": "#FFFFFFFF","font-size": "25pt","font-family": "ShareTechMono-Regular","font-weight": "Regular","x": 470,"y": 340}}}',
+  card: '{\"front\":[{\"text\":\"${issue} of ${maximum}\",\"color\":\"#FFFFFFFF\",\"size\":\"30pt\",\"font\":\"Share Tech Mono\",\"weight\":\"Regular\",\"align\":\"center\",\"x\":450,\"y\":1310}],\"back\":[{\"text\":\"OWNERSHIP TOKEN:\",\"color\":\"#FFFFFFFF\",\"size\":\"25pt\",\"font\":\"Share Tech Mono\",\"weight\":\"Regular\",\"align\":\"center\",\"x\":450,\"y\":1260},{\"text\":\"${token}\",\"color\":\"#FFFFFFFF\",\"size\":\"30pt\",\"font\":\"Share Tech Mono\",\"weight\":\"Regular\",\"align\":\"center\",\"x\":450,\"y\":1310}]}',
   claimCode: 'test123',
   created: new Date(1657622239335),
   description: 'The air element. Octahedra are sparkling crystals of diamond, and magnetite.',
@@ -127,10 +129,19 @@ const DTO1_INTERNAL: InternalItemDto = {
   "rrp": 100,
   "source": ItemSource.SALE,
   "tier": "PREMIUM",
-  "cardJson": "{\"back\": {\"token\": {\"color\": \"#FFFFFFFF\",\"font-size\": \"25pt\",\"font-family\": \"ShareTechMono-Regular\",\"font-weight\": \"Regular\",\"x\": 470,\"y\": 340}}}",
+  "cardJson": "{\"front\":[{\"text\":\"${issue} of ${maximum}\",\"color\":\"#FFFFFFFF\",\"size\":\"30pt\",\"font\":\"Share Tech Mono\",\"weight\":\"Regular\",\"align\":\"center\",\"x\":450,\"y\":1310}],\"back\":[{\"text\":\"OWNERSHIP TOKEN:\",\"color\":\"#FFFFFFFF\",\"size\":\"25pt\",\"font\":\"Share Tech Mono\",\"weight\":\"Regular\",\"align\":\"center\",\"x\":450,\"y\":1260},{\"text\":\"${token}\",\"color\":\"#FFFFFFFF\",\"size\":\"30pt\",\"font\":\"Share Tech Mono\",\"weight\":\"Regular\",\"align\":\"center\",\"x\":450,\"y\":1310}]}",
   "nftAddress": null,
   "ownerAddress": null,
-  "media": null,
+  "media": {
+    "primary": {
+      "type": InternalItemMediaTypeDto.DYNAMIC,
+      "labels": [{ "text": "${issue} of ${maximum}", "color": "#FFFFFFFF", "size": "30pt", "font": "Share Tech Mono", "weight": "Regular", "align": "center", "x": 450, "y": 1310 }],
+    },
+    "secondary": [{
+      "type": InternalItemMediaTypeDto.DYNAMIC,
+      "labels": [{ "text": "OWNERSHIP TOKEN:", "color": "#FFFFFFFF", "size": "25pt", "font": "Share Tech Mono", "weight": "Regular", "align": "center", "x": 450, "y": 1260 }, { "text": "${token}", "color": "#FFFFFFFF", "size": "30pt", "font": "Share Tech Mono", "weight": "Regular", "align": "center", "x": 450, "y": 1310 }]
+    }]
+  },
 }
 
 describe('mapper - item - retailer', () => {

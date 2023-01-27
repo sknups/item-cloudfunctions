@@ -2,7 +2,7 @@ import { ItemEntity, ProjectedItemEntity } from '../src/entity/item.entity';
 
 export const SALE_ENTITY: ProjectedItemEntity = {
   brandCode: 'TEST',
-  card: '{"back": {"token": {"color": "#FFFFFFFF","font-size": "25pt","font-family": "ShareTechMono-Regular","font-weight": "Regular","x": 470,"y": 340}}}',
+  card: '{\"front\":[{\"text\":\"${issue} of ${maximum}\",\"color\":\"#FFFFFFFF\",\"size\":\"30pt\",\"font\":\"Share Tech Mono\",\"weight\":\"Regular\",\"align\":\"center\",\"x\":450,\"y\":1310}],\"back\":[{\"text\":\"OWNERSHIP TOKEN:\",\"color\":\"#FFFFFFFF\",\"size\":\"25pt\",\"font\":\"Share Tech Mono\",\"weight\":\"Regular\",\"align\":\"center\",\"x\":450,\"y\":1260},{\"text\":\"${token}\",\"color\":\"#FFFFFFFF\",\"size\":\"30pt\",\"font\":\"Share Tech Mono\",\"weight\":\"Regular\",\"align\":\"center\",\"x\":450,\"y\":1310}]}',
   claimCode: null,
   created: new Date(1657622239335),
   description: 'The air element. Octahedra are sparkling crystals of diamond, and magnetite.',

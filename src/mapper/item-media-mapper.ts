@@ -1,9 +1,10 @@
 import { PrimaryMediaDto } from '../dto/item-media-primary.dto';
 import { SecondaryMediaDto } from '../dto/item-media-secondary.dto';
 import { ImageMediaUrlsDto, ItemMediaTypeDto, VideoMediaUrlsDto } from '../dto/item-media-type.dto';
-import { ItemMediaDto } from '../dto/item-media.dto';
+import { ItemMediaDto } from '../dto/retailer/item-media-retailer.dto';
 import { ProjectedItemEntity } from '../entity/item.entity';
-import { ItemEntityMedia, ItemEntityMediaType, parseMedia } from './item-media-json-parser';
+import { parseMedia } from './item-media-json-parser';
+import { InternalItemMediaDto, InternalItemMediaTypeDto } from '../dto/internal/item-media-internal.dto';
 
 function _getImageBlock(baseUrl: string): ImageMediaUrlsDto {
   return {
@@ -19,10 +20,10 @@ function _getVideoBlock(baseUrl: string): VideoMediaUrlsDto {
   }
 }
 
-function _legacySknToMedia(entity: ProjectedItemEntity): ItemEntityMedia {
+function _legacySknToMedia(entity: ProjectedItemEntity): InternalItemMediaDto {
   const supportedSkn: string[] = [
-    ItemEntityMediaType.DYNAMIC.toString(),
-    ItemEntityMediaType.VIDEO.toString(),
+    InternalItemMediaTypeDto.DYNAMIC.toString(),
+    InternalItemMediaTypeDto.VIDEO.toString(),
   ];
 
   if (!supportedSkn.includes(entity.skn)) {
@@ -31,10 +32,10 @@ function _legacySknToMedia(entity: ProjectedItemEntity): ItemEntityMedia {
 
   return {
     primary: {
-      type: ItemEntityMediaType[entity.skn],
+      type: InternalItemMediaTypeDto[entity.skn],
     },
     secondary: [{
-      type: ItemEntityMediaType.DYNAMIC,
+      type: InternalItemMediaTypeDto.DYNAMIC,
     }],
   };
 }
@@ -48,7 +49,7 @@ export class ItemMediaDTOMapper {
 
   toDTO(entity: ProjectedItemEntity): ItemMediaDto {
     // Use entity.media if available (v3+) otherwise convert skn property to media (v1,v2)
-    const media: ItemEntityMedia = parseMedia(entity.media) || _legacySknToMedia(entity);
+    const media: InternalItemMediaDto = parseMedia(entity.media) || _legacySknToMedia(entity);
 
     return {
       primary: this.mapPrimaryMedia(media.primary.type, entity),
@@ -69,21 +70,21 @@ export class ItemMediaDTOMapper {
 
   }
 
-  private mapMedia(type: ItemEntityMediaType, item: ProjectedItemEntity, suffix: string): PrimaryMediaDto {
+  private mapMedia(type: InternalItemMediaTypeDto, item: ProjectedItemEntity, suffix: string): PrimaryMediaDto {
     const flexSuffix = suffix.replace('.', '/');
 
     switch (type) {
-      case ItemEntityMediaType.STATIC:
+      case InternalItemMediaTypeDto.STATIC:
         return {
           type: ItemMediaTypeDto.IMAGE,
           image: _getImageBlock(`${this.assetsHost}/sku.${item.stockKeepingUnitCode}.${suffix}`),
         };
-      case ItemEntityMediaType.DYNAMIC:
+      case InternalItemMediaTypeDto.DYNAMIC:
         return {
           type: ItemMediaTypeDto.IMAGE,
           image: _getImageBlock(`${this.flexHost}/skn/v1/${flexSuffix}/${item.key}`),
         };
-      case ItemEntityMediaType.VIDEO:
+      case InternalItemMediaTypeDto.VIDEO:
         return {
           type: ItemMediaTypeDto.VIDEO,
           image: _getImageBlock(`${this.assetsHost}/sku.${item.stockKeepingUnitCode}.${suffix}`),
@@ -95,11 +96,11 @@ export class ItemMediaDTOMapper {
     }
   }
 
-  private mapPrimaryMedia(type: ItemEntityMediaType, item: ProjectedItemEntity): PrimaryMediaDto {
+  private mapPrimaryMedia(type: InternalItemMediaTypeDto, item: ProjectedItemEntity): PrimaryMediaDto {
     return this.mapMedia(type, item, 'primary');
   }
 
-  private mapSecondaryMedia(type: ItemEntityMediaType, item: ProjectedItemEntity, index: number, link?: string): SecondaryMediaDto {
+  private mapSecondaryMedia(type: InternalItemMediaTypeDto, item: ProjectedItemEntity, index: number, link?: string): SecondaryMediaDto {
     const media = this.mapMedia(type, item, `secondary.${index}`);
 
     return {
