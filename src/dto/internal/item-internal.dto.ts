@@ -1,4 +1,5 @@
-import { ItemDto } from './item.dto';
+import { InternalItemMediaDto } from './item-media-internal.dto';
+import { ItemDto } from '../item.dto';
 
 /**
  * Extension of ItemDto to provide additional fields for internal consumption.
@@ -10,7 +11,9 @@ import { ItemDto } from './item.dto';
 export class InternalItemDto extends ItemDto {
 
   /**
-   * Card information as json string for the item
+   * Card information as json string for the item.
+   * 
+   * @deprecated use media.primary.labels instead.
    */
   cardJson: string | null;
 
@@ -29,8 +32,12 @@ export class InternalItemDto extends ItemDto {
   ownerAddress: string | null;
 
   /**
-  * Internal media information for item as json string
-  */
-  media: string | null;
+    * Internal media information for item.
+    * 
+    * For v3+ SKU this is based on the media property.
+    * For v2 SKU it is computed from the skn and card properties.
+    * For v1 SKU it is null.
+    */
+  media: InternalItemMediaDto | null;
 
 }

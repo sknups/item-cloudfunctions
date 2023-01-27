@@ -1,5 +1,5 @@
 import { Request } from '@google-cloud/functions-framework';
-import { validate, ValidatorOptions } from 'class-validator';
+import { validate, validateSync, ValidatorOptions, ValidationError as ValidationErrorCv } from 'class-validator';
 import { ClassConstructor, plainToClass } from 'class-transformer';
 
 export class ValidationError extends Error {
@@ -22,6 +22,35 @@ export async function parseAndValidateRequestData<T extends object>(dtoType: Cla
   return requestObject;
 }
 
+function _recursiveChildValidationErrors(property: string, child: ValidationErrorCv): string[] {
+  const msgs = Object.values(child.constraints || {})
+    .map(v => `${property}/${v}`)
+    .flat();
+
+  if (child.children) {
+    const childMsgs = child.children.map(c => _recursiveChildValidationErrors(`${property}/${child.property}`, c)).flat();
+    return msgs.concat(childMsgs);
+  }
+
+  return msgs;
+}
+
+function _throwIfValidationErrors(validationErrs: ValidationErrorCv[]): void {
+  if (validationErrs.length > 0) {
+    const msgs = validationErrs.map(ve => Object.values(ve.constraints || {})).flat();
+
+    const childMsgs = validationErrs.reduce<string[]>((msgs, ve) => {
+      if (ve.children) {
+        const newMsgs = ve.children.map(child => _recursiveChildValidationErrors(ve.property, child)).flat();
+        return msgs.concat(newMsgs);
+      }
+      return msgs;
+    }, []);
+
+    throw new ValidationError(msgs.concat(childMsgs));
+  }
+}
+
 /**
  * Validates the supplied object.
  *
@@ -30,8 +59,16 @@ export async function parseAndValidateRequestData<T extends object>(dtoType: Cla
  */
 export async function validateOrThrow(o: object, validatorOptions?: ValidatorOptions): Promise<void> {
   const validationErrs = await validate(o, validatorOptions);
-  if (validationErrs.length > 0) {
-    const msgs = validationErrs.map(ve => Object.values(ve.constraints || {})).flat(); // TODO map children
-    throw new ValidationError(msgs);
-  }
+  _throwIfValidationErrors(validationErrs);
+}
+
+/**
+ * Validates the supplied object.
+ *
+ * @param o the object to be validated
+ * @throws ValidationError if the validation fails
+ */
+export function validateSyncOrThrow(o: object, validatorOptions?: ValidatorOptions): void {
+  const validationErrs = validateSync(o, validatorOptions);
+  _throwIfValidationErrors(validationErrs);
 }

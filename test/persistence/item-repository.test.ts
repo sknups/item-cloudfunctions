@@ -23,15 +23,15 @@ const SALE_QUERY_DATA = {
   recommendedRetailPrice: 100,
   user: 'abc123',
   created: 1657622239335000,
-  card: '{"back": {"token": {"color": "#FFFFFFFF","font-size": "25pt","font-family": "ShareTechMono-Regular","font-weight": "Regular","x": 470,"y": 340}}}',
+  card: '{\"front\":[{\"text\":\"${issue} of ${maximum}\",\"color\":\"#FFFFFFFF\",\"size\":\"30pt\",\"font\":\"Share Tech Mono\",\"weight\":\"Regular\",\"align\":\"center\",\"x\":450,\"y\":1310}],\"back\":[{\"text\":\"OWNERSHIP TOKEN:\",\"color\":\"#FFFFFFFF\",\"size\":\"25pt\",\"font\":\"Share Tech Mono\",\"weight\":\"Regular\",\"align\":\"center\",\"x\":450,\"y\":1260},{\"text\":\"${token}\",\"color\":\"#FFFFFFFF\",\"size\":\"30pt\",\"font\":\"Share Tech Mono\",\"weight\":\"Regular\",\"align\":\"center\",\"x\":450,\"y\":1310}]}',
   stockKeepingUnitRarity: null,
   version: "1",
-  skn: "STATIC",
+  skn: "DYNAMIC",
   emailHash: '495a8c7b1ab6fd611377ba81fe75cdead63f0ebe88a9260806a3fba790400805',
   platformCode: 'TEST',
   ownerAddress: null,
   state: 'UNBOXED',
-  media: '{}'
+  media: null,
 };
 
 const SALE_QUERY_DATA_FULL = {
@@ -68,12 +68,12 @@ const GIVEAWAY_QUERY_DATA = {
   card: null,
   stockKeepingUnitRarity: null,
   version: "1",
-  skn: "STATIC",
+  skn: "DYNAMIC",
   emailHash: '495a8c7b1ab6fd611377ba81fe75cdead63f0ebe88a9260806a3fba790400805',
   platformCode: 'TEST',
   ownerAddress: null,
   state: 'UNBOXED',
-  media: '{}'
+  media: null,
 };
 
 function _runQueryResponse(overrides: object, filterNames: string[]): any {

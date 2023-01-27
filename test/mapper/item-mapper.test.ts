@@ -1,13 +1,16 @@
+import "reflect-metadata";
 import { ItemDTOMapper } from "../../src/mapper/item-mapper";
 import { ItemEntity, ProjectedItemEntity } from '../../src/entity/item.entity';
 import { ItemNftState, ItemSource } from '../../src/dto/item.dto';
-import { LegacyRetailerItemDto } from '../../src/dto/item-retailer.dto';
-import { InternalItemDto } from '../../src/dto/item-internal.dto';
+import { LegacyRetailerItemDto } from '../../src/dto/retailer/item-retailer.dto';
+import { InternalItemDto } from '../../src/dto/internal/item-internal.dto';
+import { ItemMediaTypeDto } from '../../src/dto/item-media-type.dto';
+import { InternalItemMediaTypeDto } from '../../src/dto/internal/item-media-internal.dto';
 
 const ENTITY1: ProjectedItemEntity = {
   key: '338a6b3128',
   brandCode: 'TEST',
-  card: '{"back": {"token": {"color": "#FFFFFFFF","font-size": "25pt","font-family": "ShareTechMono-Regular","font-weight": "Regular","x": 470,"y": 340}}}',
+  card: '{\"front\":[{\"text\":\"${issue} of ${maximum}\",\"color\":\"#FFFFFFFF\",\"size\":\"30pt\",\"font\":\"Share Tech Mono\",\"weight\":\"Regular\",\"align\":\"center\",\"x\":450,\"y\":1310}],\"back\":[{\"text\":\"OWNERSHIP TOKEN:\",\"color\":\"#FFFFFFFF\",\"size\":\"25pt\",\"font\":\"Share Tech Mono\",\"weight\":\"Regular\",\"align\":\"center\",\"x\":450,\"y\":1260},{\"text\":\"${token}\",\"color\":\"#FFFFFFFF\",\"size\":\"30pt\",\"font\":\"Share Tech Mono\",\"weight\":\"Regular\",\"align\":\"center\",\"x\":450,\"y\":1310}]}',
   claimCode: 'test123',
   created: new Date(1657622239335),
   description: 'The air element. Octahedra are sparkling crystals of diamond, and magnetite.',
@@ -18,7 +21,7 @@ const ENTITY1: ProjectedItemEntity = {
   platformCode: 'SKN',
   recommendedRetailPrice: 100,
   saleQty: 14,
-  skn: 'STATIC',
+  skn: 'DYNAMIC',
   source: 'SALE',
   state: 'UNBOXED',
   stockKeepingUnitCode: 'TEST-OCTAHEDRON-COMMON',
@@ -27,7 +30,7 @@ const ENTITY1: ProjectedItemEntity = {
   tier: 'PREMIUM',
   user: 'user123',
   version: '1',
-  media: '{}'
+  media: null,
 }
 
 const ENTITY1_FULL: ItemEntity = {
@@ -52,21 +55,43 @@ const DTO1: LegacyRetailerItemDto = {
   "maxQty": 10000,
   "maximum": 10000,
   "media": {
-    "info": {
-      "image": "https://flex-dev.sknups.com/skn/v1/back/default/338a6b3128.jpg"
+    "primary": {
+      "type": ItemMediaTypeDto.IMAGE,
+      "image": {
+        "jpeg": "https://flex-dev.sknups.com/skn/v1/primary/default/338a6b3128.jpg",
+        "png": "https://flex-dev.sknups.com/skn/v1/primary/default/338a6b3128.png",
+        "webp": "https://flex-dev.sknups.com/skn/v1/primary/default/338a6b3128.webp"
+      }
+    },
+    "secondary": [
+      {
+        "type": ItemMediaTypeDto.IMAGE,
+        "image": {
+          "jpeg": "https://flex-dev.sknups.com/skn/v1/secondary/0/default/338a6b3128.jpg",
+          "png": "https://flex-dev.sknups.com/skn/v1/secondary/0/default/338a6b3128.png",
+          "webp": "https://flex-dev.sknups.com/skn/v1/secondary/0/default/338a6b3128.webp"
+        }
+      }
+    ],
+    "social": {
+      "default": {
+        "image": {
+          "jpeg": "https://flex-dev.sknups.com/skn/v1/primary/og/338a6b3128.jpg",
+          "png": "https://flex-dev.sknups.com/skn/v1/primary/og/338a6b3128.png",
+          "webp": "https://flex-dev.sknups.com/skn/v1/primary/og/338a6b3128.webp"
+        }
+      },
+      "snapchat": {
+        "image": {
+          "jpeg": "https://flex-dev.sknups.com/skn/v1/primary/snapsticker/338a6b3128.jpg",
+          "png": "https://flex-dev.sknups.com/skn/v1/primary/snapsticker/338a6b3128.png",
+          "webp": "https://flex-dev.sknups.com/skn/v1/primary/snapsticker/338a6b3128.webp"
+        }
+      }
     },
     "model": {
-      "config": "https://assets.example.com/sku.v1.3DConfig.TEST-OCTAHEDRON-COMMON.json",
-      "glb": "https://assets.example.com/sku.v1.3DView.TEST-OCTAHEDRON-COMMON.glb"
-    },
-    "skn": {
-      "image": "https://flex-dev.sknups.com/skn/v1/card/default/338a6b3128.jpg"
-    },
-    "snapchat": {
-      "image": "https://flex-dev.sknups.com/skn/v1/card/snapchat/338a6b3128.png"
-    },
-    "social": {
-      "image": "https://flex-dev.sknups.com/skn/v1/card/og/338a6b3128.png"
+      "glb": "https://assets.example.com/sku.v1.3DView.TEST-OCTAHEDRON-COMMON.glb",
+      "config": "https://assets.example.com/sku.v1.3DConfig.TEST-OCTAHEDRON-COMMON.json"
     }
   },
   "name": "Common Octahedron",
@@ -104,10 +129,19 @@ const DTO1_INTERNAL: InternalItemDto = {
   "rrp": 100,
   "source": ItemSource.SALE,
   "tier": "PREMIUM",
-  "cardJson": "{\"back\": {\"token\": {\"color\": \"#FFFFFFFF\",\"font-size\": \"25pt\",\"font-family\": \"ShareTechMono-Regular\",\"font-weight\": \"Regular\",\"x\": 470,\"y\": 340}}}",
+  "cardJson": "{\"front\":[{\"text\":\"${issue} of ${maximum}\",\"color\":\"#FFFFFFFF\",\"size\":\"30pt\",\"font\":\"Share Tech Mono\",\"weight\":\"Regular\",\"align\":\"center\",\"x\":450,\"y\":1310}],\"back\":[{\"text\":\"OWNERSHIP TOKEN:\",\"color\":\"#FFFFFFFF\",\"size\":\"25pt\",\"font\":\"Share Tech Mono\",\"weight\":\"Regular\",\"align\":\"center\",\"x\":450,\"y\":1260},{\"text\":\"${token}\",\"color\":\"#FFFFFFFF\",\"size\":\"30pt\",\"font\":\"Share Tech Mono\",\"weight\":\"Regular\",\"align\":\"center\",\"x\":450,\"y\":1310}]}",
   "nftAddress": null,
   "ownerAddress": null,
-  "media":"{}"
+  "media": {
+    "primary": {
+      "type": InternalItemMediaTypeDto.DYNAMIC,
+      "labels": [{ "text": "${issue} of ${maximum}", "color": "#FFFFFFFF", "size": "30pt", "font": "Share Tech Mono", "weight": "Regular", "align": "center", "x": 450, "y": 1310 }],
+    },
+    "secondary": [{
+      "type": InternalItemMediaTypeDto.DYNAMIC,
+      "labels": [{ "text": "OWNERSHIP TOKEN:", "color": "#FFFFFFFF", "size": "25pt", "font": "Share Tech Mono", "weight": "Regular", "align": "center", "x": 450, "y": 1260 }, { "text": "${token}", "color": "#FFFFFFFF", "size": "30pt", "font": "Share Tech Mono", "weight": "Regular", "align": "center", "x": 450, "y": 1310 }]
+    }]
+  },
 }
 
 describe('mapper - item - retailer', () => {
@@ -144,22 +178,46 @@ describe('mapper - item - retailer', () => {
       "maxQty": 10000,
       "maximum": 10000,
       "media": {
-        "info": {
-          "image": "https://flex-dev.sknups.com/skn/v1/back/default/338a6b3128.jpg"
+        "primary": {
+          "type": "VIDEO",
+          "image": {
+            "jpeg": "https://assets.example.com/sku.TEST-OCTAHEDRON-COMMON.primary.jpg",
+            "png": "https://assets.example.com/sku.TEST-OCTAHEDRON-COMMON.primary.png",
+            "webp": "https://assets.example.com/sku.TEST-OCTAHEDRON-COMMON.primary.webp"
+          },
+          "video": {
+            "mp4": "https://assets.example.com/sku.TEST-OCTAHEDRON-COMMON.primary.mp4"
+          }
+        },
+        "secondary": [
+          {
+            "type": "IMAGE",
+            "image": {
+              "jpeg": "https://flex-dev.sknups.com/skn/v1/secondary/0/default/338a6b3128.jpg",
+              "png": "https://flex-dev.sknups.com/skn/v1/secondary/0/default/338a6b3128.png",
+              "webp": "https://flex-dev.sknups.com/skn/v1/secondary/0/default/338a6b3128.webp"
+            }
+          }
+        ],
+        "social": {
+          "default": {
+            "image": {
+              "jpeg": "https://flex-dev.sknups.com/skn/v1/primary/og/338a6b3128.jpg",
+              "png": "https://flex-dev.sknups.com/skn/v1/primary/og/338a6b3128.png",
+              "webp": "https://flex-dev.sknups.com/skn/v1/primary/og/338a6b3128.webp"
+            }
+          },
+          "snapchat": {
+            "image": {
+              "jpeg": "https://flex-dev.sknups.com/skn/v1/primary/snapsticker/338a6b3128.jpg",
+              "png": "https://flex-dev.sknups.com/skn/v1/primary/snapsticker/338a6b3128.png",
+              "webp": "https://flex-dev.sknups.com/skn/v1/primary/snapsticker/338a6b3128.webp"
+            }
+          }
         },
         "model": {
-          "config": "https://assets.example.com/sku.v1.3DConfig.TEST-OCTAHEDRON-COMMON.json",
-          "glb": "https://assets.example.com/sku.v1.3DView.TEST-OCTAHEDRON-COMMON.glb"
-        },
-        "skn": {
-          "image": "https://assets.example.com/sku.TEST-OCTAHEDRON-COMMON.skn.jpg",
-          "video": "https://assets.example.com/sku.TEST-OCTAHEDRON-COMMON.skn.mp4"
-        },
-        "snapchat": {
-          "image": "https://flex-dev.sknups.com/skn/v1/card/snapchat/338a6b3128.png"
-        },
-        "social": {
-          "image": "https://flex-dev.sknups.com/skn/v1/card/og/338a6b3128.png"
+          "glb": "https://assets.example.com/sku.v1.3DView.TEST-OCTAHEDRON-COMMON.glb",
+          "config": "https://assets.example.com/sku.v1.3DConfig.TEST-OCTAHEDRON-COMMON.json"
         }
       },
       "name": "Common Octahedron",
@@ -181,10 +239,10 @@ describe('mapper - item - retailer', () => {
     })
   });
 
-  it('throws error if skn is not \'STATIC\', \'DYNAMIC\' or \'VIDEO\'', () => {
+  it('throws error if skn is not \'DYNAMIC\' or \'VIDEO\'', () => {
     expect(() => {
-      instance.toRetailerDto({ ...ENTITY1, skn: 'INVALID' })
-    }).toThrow("unsupported skn value 'INVALID'. Must be 'STATIC', 'DYNAMIC' or 'VIDEO'")
+      instance.toRetailerDto({ ...ENTITY1, skn: 'STATIC' })
+    }).toThrow("Unsupported legacy skn value 'STATIC'");
   });
 
 });

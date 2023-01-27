@@ -2,7 +2,7 @@ import { ItemEntity, ProjectedItemEntity } from '../src/entity/item.entity';
 
 export const SALE_ENTITY: ProjectedItemEntity = {
   brandCode: 'TEST',
-  card: '{"back": {"token": {"color": "#FFFFFFFF","font-size": "25pt","font-family": "ShareTechMono-Regular","font-weight": "Regular","x": 470,"y": 340}}}',
+  card: '{\"front\":[{\"text\":\"${issue} of ${maximum}\",\"color\":\"#FFFFFFFF\",\"size\":\"30pt\",\"font\":\"Share Tech Mono\",\"weight\":\"Regular\",\"align\":\"center\",\"x\":450,\"y\":1310}],\"back\":[{\"text\":\"OWNERSHIP TOKEN:\",\"color\":\"#FFFFFFFF\",\"size\":\"25pt\",\"font\":\"Share Tech Mono\",\"weight\":\"Regular\",\"align\":\"center\",\"x\":450,\"y\":1260},{\"text\":\"${token}\",\"color\":\"#FFFFFFFF\",\"size\":\"30pt\",\"font\":\"Share Tech Mono\",\"weight\":\"Regular\",\"align\":\"center\",\"x\":450,\"y\":1310}]}',
   claimCode: null,
   created: new Date(1657622239335),
   description: 'The air element. Octahedra are sparkling crystals of diamond, and magnetite.',
@@ -14,7 +14,7 @@ export const SALE_ENTITY: ProjectedItemEntity = {
   ownerAddress: null,
   platformCode: 'TEST',
   recommendedRetailPrice: 100,
-  skn: 'STATIC',
+  skn: 'DYNAMIC',
   source: 'SALE',
   stockKeepingUnitCode: 'TEST-OCTAHEDRON-COMMON',
   stockKeepingUnitName: 'Common Octahedron',
@@ -23,7 +23,7 @@ export const SALE_ENTITY: ProjectedItemEntity = {
   user: 'abc123',
   version: '1',
   state: 'UNBOXED',
-  media: '{}'
+  media: null,
 };
 
 export const SALE_ENTITY_FULL: ItemEntity = {
@@ -33,7 +33,7 @@ export const SALE_ENTITY_FULL: ItemEntity = {
   brandWholesalePrice: 80,
   brandWholesalerShare: 50,
   nftAddress: null,
-  media: '{}'
+  media: null,
 }
 
 export const SALE_ENTITY_MINTED: ItemEntity = {
@@ -57,7 +57,7 @@ export const GIVEAWAY_ENTITY: ProjectedItemEntity = {
   ownerAddress: null,
   platformCode: 'TEST',
   recommendedRetailPrice: 1000,
-  skn: 'STATIC',
+  skn: 'DYNAMIC',
   source: 'GIVEAWAY',
   stockKeepingUnitCode: 'TEST-CUBE-RARE',
   stockKeepingUnitName: 'Rare Cube',
@@ -66,5 +66,5 @@ export const GIVEAWAY_ENTITY: ProjectedItemEntity = {
   user: 'abc123',
   version: '1',
   state: 'UNBOXED',
-  media: '{}'
+  media: null,
 };

@@ -7,8 +7,10 @@ import { StatusCodes } from 'http-status-codes';
 import { ItemRepository } from '../../src/persistence/item-repository';
 import { SALE_ENTITY_FULL, SALE_ENTITY_MINTED } from '../mocks-item';
 import { ItemNftState, ItemSource } from '../../src/dto/item.dto';
-import { LegacyRetailerItemDto } from '../../src/dto/item-retailer.dto';
-import { InternalItemDto } from '../../src/dto/item-internal.dto';
+import { LegacyRetailerItemDto } from '../../src/dto/retailer/item-retailer.dto';
+import { InternalItemDto } from '../../src/dto/internal/item-internal.dto';
+import { ItemMediaTypeDto } from '../../src/dto/item-media-type.dto';
+import { InternalItemMediaTypeDto } from '../../src/dto/internal/item-media-internal.dto';
 
 const SALE_DTO_RETAIL: LegacyRetailerItemDto = {
   "token": "338a6b3128",
@@ -39,21 +41,43 @@ const SALE_DTO_RETAIL: LegacyRetailerItemDto = {
   "source": ItemSource.SALE,
   "tier": "GREEN",
   "media": {
-    "info": {
-      "image": "https://flex-dev.example.com/skn/v1/back/default/338a6b3128.jpg"
+    "primary": {
+      "type": ItemMediaTypeDto.IMAGE,
+      "image": {
+        "jpeg": "https://flex-dev.example.com/skn/v1/primary/default/338a6b3128.jpg",
+        "png": "https://flex-dev.example.com/skn/v1/primary/default/338a6b3128.png",
+        "webp": "https://flex-dev.example.com/skn/v1/primary/default/338a6b3128.webp"
+      }
+    },
+    "secondary": [
+      {
+        "type": ItemMediaTypeDto.IMAGE,
+        "image": {
+          "jpeg": "https://flex-dev.example.com/skn/v1/secondary/0/default/338a6b3128.jpg",
+          "png": "https://flex-dev.example.com/skn/v1/secondary/0/default/338a6b3128.png",
+          "webp": "https://flex-dev.example.com/skn/v1/secondary/0/default/338a6b3128.webp"
+        }
+      }
+    ],
+    "social": {
+      "default": {
+        "image": {
+          "jpeg": "https://flex-dev.example.com/skn/v1/primary/og/338a6b3128.jpg",
+          "png": "https://flex-dev.example.com/skn/v1/primary/og/338a6b3128.png",
+          "webp": "https://flex-dev.example.com/skn/v1/primary/og/338a6b3128.webp"
+        }
+      },
+      "snapchat": {
+        "image": {
+          "jpeg": "https://flex-dev.example.com/skn/v1/primary/snapsticker/338a6b3128.jpg",
+          "png": "https://flex-dev.example.com/skn/v1/primary/snapsticker/338a6b3128.png",
+          "webp": "https://flex-dev.example.com/skn/v1/primary/snapsticker/338a6b3128.webp"
+        }
+      }
     },
     "model": {
-      "config": "https://assets-dev.example.com/sku.v1.3DConfig.TEST-OCTAHEDRON-COMMON.json",
-      "glb": "https://assets-dev.example.com/sku.v1.3DView.TEST-OCTAHEDRON-COMMON.glb"
-    },
-    "skn": {
-      "image": "https://flex-dev.example.com/skn/v1/card/default/338a6b3128.jpg"
-    },
-    "snapchat": {
-      "image": "https://flex-dev.example.com/skn/v1/card/snapchat/338a6b3128.png"
-    },
-    "social": {
-      "image": "https://flex-dev.example.com/skn/v1/card/og/338a6b3128.png"
+      "glb": "https://assets-dev.example.com/sku.v1.3DView.TEST-OCTAHEDRON-COMMON.glb",
+      "config": "https://assets-dev.example.com/sku.v1.3DConfig.TEST-OCTAHEDRON-COMMON.json"
     }
   }
 };
@@ -75,10 +99,19 @@ const SALE_DTO_INTERNAL: InternalItemDto = {
   "rrp": 100,
   "source": ItemSource.SALE,
   "tier": "GREEN",
-  "cardJson": "{\"back\": {\"token\": {\"color\": \"#FFFFFFFF\",\"font-size\": \"25pt\",\"font-family\": \"ShareTechMono-Regular\",\"font-weight\": \"Regular\",\"x\": 470,\"y\": 340}}}",
+  "cardJson": "{\"front\":[{\"text\":\"${issue} of ${maximum}\",\"color\":\"#FFFFFFFF\",\"size\":\"30pt\",\"font\":\"Share Tech Mono\",\"weight\":\"Regular\",\"align\":\"center\",\"x\":450,\"y\":1310}],\"back\":[{\"text\":\"OWNERSHIP TOKEN:\",\"color\":\"#FFFFFFFF\",\"size\":\"25pt\",\"font\":\"Share Tech Mono\",\"weight\":\"Regular\",\"align\":\"center\",\"x\":450,\"y\":1260},{\"text\":\"${token}\",\"color\":\"#FFFFFFFF\",\"size\":\"30pt\",\"font\":\"Share Tech Mono\",\"weight\":\"Regular\",\"align\":\"center\",\"x\":450,\"y\":1310}]}",
   "nftAddress": null,
   "ownerAddress": null,
-  "media": "{}"
+  "media": {
+    "primary": {
+      "type": InternalItemMediaTypeDto.DYNAMIC,
+      "labels": [{ "text": "${issue} of ${maximum}", "color": "#FFFFFFFF", "size": "30pt", "font": "Share Tech Mono", "weight": "Regular", "align": "center", "x": 450, "y": 1310 }],
+    },
+    "secondary": [{
+      "type": InternalItemMediaTypeDto.DYNAMIC,
+      "labels": [{ "text": "OWNERSHIP TOKEN:", "color": "#FFFFFFFF", "size": "25pt", "font": "Share Tech Mono", "weight": "Regular", "align": "center", "x": 450, "y": 1260 }, { "text": "${token}", "color": "#FFFFFFFF", "size": "30pt", "font": "Share Tech Mono", "weight": "Regular", "align": "center", "x": 450, "y": 1310 }]
+    }]
+  },
 }
 
 const instance = getItem;
@@ -178,7 +211,7 @@ describe('function - get-item - internal', () => {
     await instance(req, res);
 
     expect(res.statusCode).toEqual(StatusCodes.OK);
-    expect(res._getJSON()).toEqual({ ...SALE_DTO_INTERNAL, cardJson: null });
+    expect(res._getJSON()).toEqual({ ...SALE_DTO_INTERNAL, cardJson: null, media: null });
   });
 
   it('returns item', async () => {

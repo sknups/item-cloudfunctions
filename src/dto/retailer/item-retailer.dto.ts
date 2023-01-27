@@ -1,5 +1,5 @@
-import { ItemMediaDto } from './item-media.dto';
-import { ItemDto } from './item.dto';
+import { ItemMediaDto } from './item-media-retailer.dto';
+import { ItemDto } from '../item.dto';
 
 /**
  * Extension of ItemDto to provide additional fields for retailer consumption.
