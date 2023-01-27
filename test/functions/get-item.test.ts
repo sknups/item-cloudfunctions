@@ -44,34 +44,34 @@ const SALE_DTO_RETAIL: LegacyRetailerItemDto = {
     "primary": {
       "type": ItemMediaTypeDto.IMAGE,
       "image": {
-        "jpeg": "https://flex-dev.example.com/skn/v1/primary/338a6b3128.jpg",
-        "png": "https://flex-dev.example.com/skn/v1/primary/338a6b3128.png",
-        "webp": "https://flex-dev.example.com/skn/v1/primary/338a6b3128.webp"
+        "jpeg": "https://flex-dev.example.com/skn/v1/primary/default/338a6b3128.jpg",
+        "png": "https://flex-dev.example.com/skn/v1/primary/default/338a6b3128.png",
+        "webp": "https://flex-dev.example.com/skn/v1/primary/default/338a6b3128.webp"
       }
     },
     "secondary": [
       {
         "type": ItemMediaTypeDto.IMAGE,
         "image": {
-          "jpeg": "https://flex-dev.example.com/skn/v1/secondary/0/338a6b3128.jpg",
-          "png": "https://flex-dev.example.com/skn/v1/secondary/0/338a6b3128.png",
-          "webp": "https://flex-dev.example.com/skn/v1/secondary/0/338a6b3128.webp"
+          "jpeg": "https://flex-dev.example.com/skn/v1/secondary/0/default/338a6b3128.jpg",
+          "png": "https://flex-dev.example.com/skn/v1/secondary/0/default/338a6b3128.png",
+          "webp": "https://flex-dev.example.com/skn/v1/secondary/0/default/338a6b3128.webp"
         }
       }
     ],
     "social": {
       "default": {
         "image": {
-          "jpeg": "https://flex-dev.example.com/skn/v1/card/og/338a6b3128.jpg",
-          "png": "https://flex-dev.example.com/skn/v1/card/og/338a6b3128.png",
-          "webp": "https://flex-dev.example.com/skn/v1/card/og/338a6b3128.webp"
+          "jpeg": "https://flex-dev.example.com/skn/v1/primary/og/338a6b3128.jpg",
+          "png": "https://flex-dev.example.com/skn/v1/primary/og/338a6b3128.png",
+          "webp": "https://flex-dev.example.com/skn/v1/primary/og/338a6b3128.webp"
         }
       },
       "snapchat": {
         "image": {
-          "jpeg": "https://flex-dev.example.com/skn/v1/card/snapchat/338a6b3128.jpg",
-          "png": "https://flex-dev.example.com/skn/v1/card/snapchat/338a6b3128.png",
-          "webp": "https://flex-dev.example.com/skn/v1/card/snapchat/338a6b3128.webp"
+          "jpeg": "https://flex-dev.example.com/skn/v1/primary/snapsticker/338a6b3128.jpg",
+          "png": "https://flex-dev.example.com/skn/v1/primary/snapsticker/338a6b3128.png",
+          "webp": "https://flex-dev.example.com/skn/v1/primary/snapsticker/338a6b3128.webp"
         }
       }
     },

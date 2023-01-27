@@ -56,10 +56,10 @@ export class ItemMediaDTOMapper {
       secondary: media.secondary.map((s, i) => this.mapSecondaryMedia(s.type, entity, i, s.link)),
       social: {
         default: {
-          image: _getImageBlock(`${this.flexHost}/skn/v1/card/og/${entity.key}`),
+          image: _getImageBlock(`${this.flexHost}/skn/v1/primary/og/${entity.key}`),
         },
         snapchat: {
-          image: _getImageBlock(`${this.flexHost}/skn/v1/card/snapchat/${entity.key}`),
+          image: _getImageBlock(`${this.flexHost}/skn/v1/primary/snapsticker/${entity.key}`),
         },
       },
       model: {
@@ -71,7 +71,7 @@ export class ItemMediaDTOMapper {
   }
 
   private mapMedia(type: InternalItemMediaTypeDto, item: ProjectedItemEntity, suffix: string): PrimaryMediaDto {
-    const flexSuffix = suffix.replace('.', '/');
+    const flexSuffix = suffix.replace('.', '/') + '/default';
 
     switch (type) {
       case InternalItemMediaTypeDto.STATIC:
