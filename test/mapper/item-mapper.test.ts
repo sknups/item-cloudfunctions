@@ -4,7 +4,7 @@ import { ItemEntity, ProjectedItemEntity } from '../../src/entity/item.entity';
 import { ItemNftState, ItemSource } from '../../src/dto/item.dto';
 import { LegacyRetailerItemDto } from '../../src/dto/retailer/item-retailer.dto';
 import { InternalItemDto } from '../../src/dto/internal/item-internal.dto';
-import { ItemMediaTypeDto } from '../../src/dto/item-media-type.dto';
+import { RetailerItemMediaTypeDto } from '../../src/dto/retailer/item-media-retailer.dto';
 import { InternalItemMediaTypeDto } from '../../src/dto/internal/item-media-internal.dto';
 
 const ENTITY1: ProjectedItemEntity = {
@@ -56,7 +56,7 @@ const DTO1: LegacyRetailerItemDto = {
   "maximum": 10000,
   "media": {
     "primary": {
-      "type": ItemMediaTypeDto.IMAGE,
+      "type": RetailerItemMediaTypeDto.IMAGE,
       "image": {
         "jpeg": "https://flex-dev.sknups.com/skn/v1/primary/default/338a6b3128.jpg",
         "png": "https://flex-dev.sknups.com/skn/v1/primary/default/338a6b3128.png",
@@ -65,7 +65,7 @@ const DTO1: LegacyRetailerItemDto = {
     },
     "secondary": [
       {
-        "type": ItemMediaTypeDto.IMAGE,
+        "type": RetailerItemMediaTypeDto.IMAGE,
         "image": {
           "jpeg": "https://flex-dev.sknups.com/skn/v1/secondary/0/default/338a6b3128.jpg",
           "png": "https://flex-dev.sknups.com/skn/v1/secondary/0/default/338a6b3128.png",

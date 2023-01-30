@@ -9,7 +9,7 @@ import { ItemRepository } from '../../src/persistence/item-repository';
 import { GIVEAWAY_ENTITY, SALE_ENTITY } from '../mocks-item';
 import { ItemNftState, ItemSource } from '../../src/dto/item.dto';
 import { LegacyRetailerItemDto } from '../../src/dto/retailer/item-retailer.dto';
-import { ItemMediaTypeDto } from '../../src/dto/item-media-type.dto';
+import { RetailerItemMediaTypeDto } from '../../src/dto/retailer/item-media-retailer.dto';
 
 const SALE_DTO: LegacyRetailerItemDto = {
   "token": "338a6b3128",
@@ -41,7 +41,7 @@ const SALE_DTO: LegacyRetailerItemDto = {
   "tier": "GREEN",
   "media": {
     "primary": {
-      "type": ItemMediaTypeDto.IMAGE,
+      "type": RetailerItemMediaTypeDto.IMAGE,
       "image": {
         "jpeg": "https://flex-dev.example.com/skn/v1/primary/default/338a6b3128.jpg",
         "png": "https://flex-dev.example.com/skn/v1/primary/default/338a6b3128.png",
@@ -50,7 +50,7 @@ const SALE_DTO: LegacyRetailerItemDto = {
     },
     "secondary": [
       {
-        "type": ItemMediaTypeDto.IMAGE,
+        "type": RetailerItemMediaTypeDto.IMAGE,
         "image": {
           "jpeg": "https://flex-dev.example.com/skn/v1/secondary/0/default/338a6b3128.jpg",
           "png": "https://flex-dev.example.com/skn/v1/secondary/0/default/338a6b3128.png",
@@ -111,7 +111,7 @@ const GIVEAWAY_DTO: LegacyRetailerItemDto = {
   "rarity": null,
   "media": {
     "primary": {
-      "type": ItemMediaTypeDto.VIDEO,
+      "type": RetailerItemMediaTypeDto.VIDEO,
       "image": {
         "jpeg": "https://assets-dev.example.com/sku.TEST-CUBE-RARE.primary.jpg",
         "png": "https://assets-dev.example.com/sku.TEST-CUBE-RARE.primary.png",
@@ -123,7 +123,7 @@ const GIVEAWAY_DTO: LegacyRetailerItemDto = {
     },
     "secondary": [
       {
-        "type": ItemMediaTypeDto.IMAGE,
+        "type": RetailerItemMediaTypeDto.IMAGE,
         "image": {
           "jpeg": "https://flex-dev.example.com/skn/v1/secondary/0/default/07e6554733.jpg",
           "png": "https://flex-dev.example.com/skn/v1/secondary/0/default/07e6554733.png",

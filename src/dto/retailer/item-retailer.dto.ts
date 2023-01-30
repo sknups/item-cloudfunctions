@@ -1,4 +1,4 @@
-import { ItemMediaDto } from './item-media-retailer.dto';
+import { RetailerItemMediaDto } from './item-media-retailer.dto';
 import { ItemDto } from '../item.dto';
 
 /**
@@ -11,7 +11,7 @@ export class RetailerItemDto extends ItemDto {
   /**
    * media links for the item
    */
-  media: ItemMediaDto;
+  media: RetailerItemMediaDto;
 
 }
 

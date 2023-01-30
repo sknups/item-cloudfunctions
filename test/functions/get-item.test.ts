@@ -9,7 +9,7 @@ import { SALE_ENTITY_FULL, SALE_ENTITY_MINTED } from '../mocks-item';
 import { ItemNftState, ItemSource } from '../../src/dto/item.dto';
 import { LegacyRetailerItemDto } from '../../src/dto/retailer/item-retailer.dto';
 import { InternalItemDto } from '../../src/dto/internal/item-internal.dto';
-import { ItemMediaTypeDto } from '../../src/dto/item-media-type.dto';
+import { RetailerItemMediaTypeDto } from '../../src/dto/retailer/item-media-retailer.dto';
 import { InternalItemMediaTypeDto } from '../../src/dto/internal/item-media-internal.dto';
 
 const SALE_DTO_RETAIL: LegacyRetailerItemDto = {
@@ -42,7 +42,7 @@ const SALE_DTO_RETAIL: LegacyRetailerItemDto = {
   "tier": "GREEN",
   "media": {
     "primary": {
-      "type": ItemMediaTypeDto.IMAGE,
+      "type": RetailerItemMediaTypeDto.IMAGE,
       "image": {
         "jpeg": "https://flex-dev.example.com/skn/v1/primary/default/338a6b3128.jpg",
         "png": "https://flex-dev.example.com/skn/v1/primary/default/338a6b3128.png",
@@ -51,7 +51,7 @@ const SALE_DTO_RETAIL: LegacyRetailerItemDto = {
     },
     "secondary": [
       {
-        "type": ItemMediaTypeDto.IMAGE,
+        "type": RetailerItemMediaTypeDto.IMAGE,
         "image": {
           "jpeg": "https://flex-dev.example.com/skn/v1/secondary/0/default/338a6b3128.jpg",
           "png": "https://flex-dev.example.com/skn/v1/secondary/0/default/338a6b3128.png",
