@@ -1,9 +1,9 @@
-import { PrimaryMediaDto } from '../dto/retailer/item-media-retailer-primary.dto';
-import { SecondaryMediaDto } from '../dto/retailer/item-media-retailer-secondary.dto';
-import { RetailerItemMediaDto, RetailerItemMediaTypeDto, ImageMediaUrlsDto, VideoMediaUrlsDto } from '../dto/retailer/item-media-retailer.dto';
-import { ProjectedItemEntity } from '../entity/item.entity';
-import { parseMedia } from './item-media-json-parser';
-import { InternalItemMediaDto, InternalItemMediaTypeDto } from '../dto/internal/item-media-internal.dto';
+import { PrimaryMediaDto } from '../../dto/retailer/item-media-retailer-primary.dto';
+import { SecondaryMediaDto } from '../../dto/retailer/item-media-retailer-secondary.dto';
+import { RetailerItemMediaDto, RetailerItemMediaTypeDto, ImageMediaUrlsDto, VideoMediaUrlsDto } from '../../dto/retailer/item-media-retailer.dto';
+import { ProjectedItemEntity } from '../../entity/item.entity';
+import { parseMedia } from '../item-media-json-parser';
+import { InternalItemMediaDto, InternalItemMediaTypeDto } from '../../dto/internal/item-media-internal.dto';
 
 function _getImageBlock(baseUrl: string): ImageMediaUrlsDto {
   return {

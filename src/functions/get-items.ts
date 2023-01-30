@@ -8,7 +8,7 @@ import { parseAndValidateRequestData } from '../helpers/validation';
 import { ItemRepository } from '../persistence/item-repository';
 import { AppError, UNCATEGORIZED_ERROR } from '../app.errors';
 import { hashEmail } from '../hashing';
-import { ItemDTOMapper } from '../mapper/item-mapper';
+import { RetailerItemMapper } from '../mapper/retailer/item-mapper-retailer';
 
 export class GetItems {
 
@@ -59,8 +59,8 @@ export class GetItems {
         }
       }
 
-      const mapper = new ItemDTOMapper(config.assetsUrl, config.flexUrl, config.sknAppUrl)
-      const items = entities.map(entity => mapper.toRetailerDto(entity))
+      const mapper = new RetailerItemMapper(config.assetsUrl, config.flexUrl, config.sknAppUrl)
+      const items = entities.map(entity => mapper.toDto(entity))
     
       res.status(StatusCodes.OK).json(items);
     } catch (e) {
