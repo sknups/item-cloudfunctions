@@ -22,32 +22,37 @@ export async function parseAndValidateRequestData<T extends object>(dtoType: Cla
   return requestObject;
 }
 
-function _recursiveChildValidationErrors(property: string, child: ValidationErrorCv): string[] {
-  const msgs = Object.values(child.constraints || {})
-    .map(v => `${property}/${v}`)
-    .flat();
+/**
+ * Maps a set of ValidationErrors into an array of string messages.
+ *
+ * This is called recursively to include all "child" error messages.
+ *
+ * It will return:
+ *   - The error messages found in the 'constraints' property of each ValidationError
+ *   - The error messages (recursively) found in each 'children[*].constraints'
+ *
+ * Child messages include a prefix to identify the property name in the parent, eg: "propInParent/propInChild must be a string"
+ *
+ * @param validationErrs the set of validation errors to be mapped
+ * @param messagePrefix a prefix used to identify the property being validated (only required for children)
+ * @returns an array of error messages
+ */
+function _recursiveMapValidationErrorMessages(validationErrs: ValidationErrorCv[], messagePrefix: string = ''): string[] {
+  const messages = validationErrs.filter(ve => ve.constraints)
+    .map(ve => Object.values(ve.constraints))
+    .flat()
+    .map(msg => `${messagePrefix}${msg}`);
 
-  if (child.children) {
-    const childMsgs = child.children.map(c => _recursiveChildValidationErrors(`${property}/${child.property}`, c)).flat();
-    return msgs.concat(childMsgs);
-  }
-
-  return msgs;
+  return messages.concat(
+    validationErrs.filter(ve => ve.children)
+      .map(ve => _recursiveMapValidationErrorMessages(ve.children, `${messagePrefix}${ve.property}/`))
+      .flat()
+  );
 }
 
 function _throwIfValidationErrors(validationErrs: ValidationErrorCv[]): void {
   if (validationErrs.length > 0) {
-    const msgs = validationErrs.map(ve => Object.values(ve.constraints || {})).flat();
-
-    const childMsgs = validationErrs.reduce<string[]>((msgs, ve) => {
-      if (ve.children) {
-        const newMsgs = ve.children.map(child => _recursiveChildValidationErrors(ve.property, child)).flat();
-        return msgs.concat(newMsgs);
-      }
-      return msgs;
-    }, []);
-
-    throw new ValidationError(msgs.concat(childMsgs));
+    throw new ValidationError(_recursiveMapValidationErrorMessages(validationErrs));
   }
 }
 
