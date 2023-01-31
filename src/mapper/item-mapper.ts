@@ -1,9 +1,9 @@
 import { ItemDto, ItemNftState, ItemSource } from '../dto/item.dto';
-import { ProjectedItemEntity } from "../entity/item.entity";
+import { ItemEntity } from "../entity/item.entity";
 
-export abstract class AbstractItemMapper<T extends ItemDto, E extends ProjectedItemEntity = ProjectedItemEntity> {
+export abstract class AbstractItemMapper<T extends ItemDto> {
 
-  public toDto(entity: E): T {
+  public toDto(entity: ItemEntity): T {
 
     const baseDto: ItemDto = this.toBaseDto(entity);
 
@@ -11,9 +11,9 @@ export abstract class AbstractItemMapper<T extends ItemDto, E extends ProjectedI
 
   }
 
-  protected abstract toDtoFromBaseDto(entity: E, baseDto: ItemDto): T;
+  protected abstract toDtoFromBaseDto(entity: ItemEntity, baseDto: ItemDto): T;
 
-  private toBaseDto(entity: ProjectedItemEntity): ItemDto {
+  private toBaseDto(entity: ItemEntity): ItemDto {
 
     return {
       brand: entity.brandCode,

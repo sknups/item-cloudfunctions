@@ -1,5 +1,5 @@
 import { AuditEntity } from '../entity/audit.entity';
-import { ItemEntity, ITEM_PROJECTION, ProjectedItemEntity } from '../entity/item.entity';
+import { ItemEntity } from '../entity/item.entity';
 import { createContext, DatastoreContext, findEntities, getEntity, insertEntity, updateEntity } from '../helpers/datastore/datastore.helper';
 import logger from '../helpers/logger';
 
@@ -7,50 +7,43 @@ export class ItemRepository {
 
   public static context = createContext('drm');
 
-  public async byEmailHash(platformCode: string, emailHash: string): Promise<ProjectedItemEntity[]> {
+  public async byEmailHash(platformCode: string, emailHash: string): Promise<ItemEntity[]> {
     logger.debug(`getItemsByEmailHash - platformCode = '${platformCode}' emailHash = '${emailHash}'`)
 
-    return await findEntities(
+    return await findEntities<ItemEntity>(
       ItemRepository.context,
       'item',
       [
         { name: 'platformCode', op: '=', val: platformCode },
         { name: 'emailHash', op: '=', val: emailHash },
-        { name: 'state', op: '!=', val: 'DELETED' },
       ],
-      ITEM_PROJECTION,
-    );
+    ).then(items => items.filter(item => item.state !== 'DELETED'));
   }
 
-  public async byWalletAddress(platformCode: string, ownerAddress: string): Promise<ProjectedItemEntity[]> {
+  public async byWalletAddress(platformCode: string, ownerAddress: string): Promise<ItemEntity[]> {
     logger.debug(`getItemsByWalletAddress - platformCode = '${platformCode}' ownerAddress = '${ownerAddress}'`)
 
-    return await findEntities(
+    return await findEntities<ItemEntity>(
       ItemRepository.context,
       'item',
       [
         { name: 'platformCode', op: '=', val: platformCode },
         { name: 'ownerAddress', op: '=', val: ownerAddress },
-        { name: 'nftState', op: '=', val: 'MINTED' },
-        { name: 'state', op: '!=', val: 'DELETED' },
       ],
-      ITEM_PROJECTION,
-    );
+    ).then(items => items.filter(item => item.state !== 'DELETED' && item.nftState === 'MINTED'));
   }
 
-  public async byUser(platformCode: string, user: string): Promise<ProjectedItemEntity[]> {
+  public async byUser(platformCode: string, user: string): Promise<ItemEntity[]> {
     logger.debug(`byUser - platformCode = '${platformCode}' user = '${user}'`)
 
-    return await findEntities(
+    return await findEntities<ItemEntity>(
       ItemRepository.context,
       'item',
       [
         { name: 'platformCode', op: '=', val: platformCode },
         { name: 'user', op: '=', val: user },
-        { name: 'state', op: '!=', val: 'DELETED' },
       ],
-      ITEM_PROJECTION,
-    );
+    ).then(items => items.filter(item => item.state !== 'DELETED'));
   }
 
   public async byThumbprint(platformCode: string, thumbprint: string, context?: DatastoreContext): Promise<ItemEntity | null> {

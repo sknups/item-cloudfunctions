@@ -24,7 +24,7 @@ function _convertLegacyCardJsonToMedia(cardJson: string): InternalItemMediaDto |
   };
 }
 
-export class InternalItemMapper extends AbstractItemMapper<InternalItemDto, ItemEntity> {
+export class InternalItemMapper extends AbstractItemMapper<InternalItemDto> {
 
   protected toDtoFromBaseDto(entity: ItemEntity, baseDto: ItemDto): InternalItemDto {
 
