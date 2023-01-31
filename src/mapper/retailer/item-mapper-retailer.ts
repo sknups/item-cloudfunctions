@@ -1,6 +1,6 @@
 import { ItemDto } from '../../dto/item.dto';
 import { LegacyRetailerItemDto } from '../../dto/retailer/item-retailer.dto';
-import { ProjectedItemEntity } from '../../entity/item.entity';
+import { ItemEntity } from '../../entity/item.entity';
 import { AbstractItemMapper } from '../item-mapper';
 import { ItemMediaDTOMapper } from './item-media-mapper-retailer';
 
@@ -17,7 +17,7 @@ export class RetailerItemMapper extends AbstractItemMapper<LegacyRetailerItemDto
     this.mediaMapper = new ItemMediaDTOMapper(assetsHost, flexHost);
   }
 
-  protected toDtoFromBaseDto(entity: ProjectedItemEntity, baseDto: ItemDto): LegacyRetailerItemDto {
+  protected toDtoFromBaseDto(entity: ItemEntity, baseDto: ItemDto): LegacyRetailerItemDto {
 
     return {
       ...baseDto,

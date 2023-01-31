@@ -9,8 +9,8 @@ import { ItemRepository } from '../../src/persistence/item-repository';
 import { TEST_ENTITIES } from '../test-data-entities';
 import { TEST_DTOS } from '../test-data-dtos';
 
-const SALE_ENTITY = TEST_ENTITIES.v2.sale.projected;
-const GIVEAWAY_ENTITY = TEST_ENTITIES.v2.giveaway.projected;
+const SALE_ENTITY = TEST_ENTITIES.v2.sale;
+const GIVEAWAY_ENTITY = TEST_ENTITIES.v2.giveaway;
 const SALE_DTO = TEST_DTOS.v2.sale.retailer;
 const GIVEAWAY_DTO = TEST_DTOS.v2.giveaway.retailer;
 
