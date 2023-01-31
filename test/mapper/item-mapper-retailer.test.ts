@@ -11,8 +11,12 @@ describe('mapper - item - retailer', () => {
     "https://app-dev.sknups.com",
   );
 
-  it('creates item dto structure', () => {
+  it('creates item dto structure - v2', () => {
     expect(instance.toDto(TEST_ENTITIES.v2.sale.projected)).toEqual(TEST_DTOS.v2.sale.retailer)
+  });
+
+  it('creates item dto structure - v3', () => {
+    expect(instance.toDto(TEST_ENTITIES.v3.sale.projected)).toEqual(TEST_DTOS.v3.sale.retailer)
   });
 
   it('can handle numeric timestamp', () => {

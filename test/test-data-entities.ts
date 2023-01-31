@@ -49,6 +49,41 @@ const MINTED_ENTITY_V2: ItemEntity = {
   ownerAddress: 'SOL.devnet.67890',
 };
 
+const SALE_ENTITY_V3_PROJECTED: ProjectedItemEntity = {
+  "key": "26459e2001",
+  "brandCode": "TEST",
+  "card": null,
+  "claimCode": null,
+  "created": new Date("2023-01-31T11:42:40.057Z"),
+  "description": "The fire element. Simplest of all polyhedra, strongest of all pyramids, the tetrahedron has only four prickly vertices.",
+  "emailHash": "8b246c38d16a2432ef1b9e3b79279b65d0ba514ad648e99d741d695c66c02fab",
+  "maxQty": 2500,
+  "media": "{\"primary\":{\"type\":\"VIDEO\"},\"secondary\":[{\"type\":\"VIDEO\",\"link\":\"https://sknups.com\"},{\"type\":\"STATIC\",\"link\":\"https://sknups.com\"},{\"type\":\"DYNAMIC\",\"labels\":[{\"text\":\"${token}\",\"color\":\"#FFFFFFAA\",\"size\":\"30pt\",\"font\":\"Share Tech Mono\",\"weight\":\"Regular\",\"align\":\"center\",\"x\":450,\"y\":1220}],\"link\":\"https://sknups.com\"}]}",
+  "nftState": "UNMINTED",
+  "ownerAddress": null,
+  "platformCode": "SKN",
+  "recommendedRetailPrice": 10000,
+  "saleQty": 2,
+  "skn": null,
+  "source": "SALE",
+  "state": "UNBOXED",
+  "stockKeepingUnitCode": "TEST-TETRAHEDRON-PURPLE",
+  "stockKeepingUnitName": "Purple Tetrahedron",
+  "stockKeepingUnitRarity": null,
+  "tier": "PURPLE",
+  "user": "cyP1XYi0y6NadKRXqMbmF9R1vz53",
+  "version": "3"
+};
+
+const SALE_ENTITY_V3: ItemEntity = {
+  ...SALE_ENTITY_V3_PROJECTED,
+  "brandName": "TEST",
+  "brandWholesalePrice": 10000,
+  "brandWholesalerShare": 0.5,
+  "nftAddress": null,
+  "updated": new Date("2023-01-31T11:42:40.058Z"),
+};
+
 export const GIVEAWAY_ENTITY_V2_PROJECTED: ProjectedItemEntity = {
   "key": "fc07c88901",
   "brandCode": "TEST",
@@ -84,6 +119,41 @@ const GIVEAWAY_ENTITY_V2: ItemEntity = {
   "updated": new Date("2023-01-31T09:41:50.936Z"),
 };
 
+export const GIVEAWAY_ENTITY_V3_PROJECTED: ProjectedItemEntity = {
+  "key": "ecd5aa6b03",
+  "brandCode": "TEST",
+  "card": null,
+  "claimCode": "tetrahedron",
+  "created": new Date("2023-01-31T09:40:43.010Z"),
+  "description": "The fire element. Simplest of all polyhedra, strongest of all pyramids, the tetrahedron has only four prickly vertices.",
+  "emailHash": "8b246c38d16a2432ef1b9e3b79279b65d0ba514ad648e99d741d695c66c02fab",
+  "maxQty": null,
+  "media": "{\"primary\":{\"type\":\"STATIC\"},\"secondary\":[{\"type\":\"DYNAMIC\",\"labels\":[{\"text\":\"${token}\",\"color\":\"#FFFFFFAA\",\"size\":\"30pt\",\"font\":\"Share Tech Mono\",\"weight\":\"Regular\",\"align\":\"center\",\"x\":450,\"y\":1220}]}]}",
+  "nftState": "UNMINTED",
+  "ownerAddress": null,
+  "platformCode": "SKN",
+  "recommendedRetailPrice": null,
+  "saleQty": null,
+  "skn": null,
+  "source": "GIVEAWAY",
+  "state": "UNBOXED",
+  "stockKeepingUnitCode": "TEST-TETRAHEDRON-GIVEAWAY",
+  "stockKeepingUnitName": "Giveaway Tetrahedron",
+  "stockKeepingUnitRarity": null,
+  "tier": "GIVEAWAY",
+  "user": "cyP1XYi0y6NadKRXqMbmF9R1vz53",
+  "version": "3"
+};
+
+const GIVEAWAY_ENTITY_V3: ItemEntity = {
+  ...GIVEAWAY_ENTITY_V3_PROJECTED,
+  "brandName": "TEST",
+  "brandWholesalePrice": null,
+  "brandWholesalerShare": 0.5,
+  "nftAddress": null,
+  "updated": new Date("2023-01-31T09:40:43.010Z"),
+};
+
 export const TEST_ENTITIES = {
   v2: {
     sale: {
@@ -97,9 +167,16 @@ export const TEST_ENTITIES = {
     giveaway: {
       projected: GIVEAWAY_ENTITY_V2_PROJECTED,
       full: GIVEAWAY_ENTITY_V2,
-    }
+    },
   },
   v3: {
-
+    sale: {
+      projected: SALE_ENTITY_V3_PROJECTED,
+      full: SALE_ENTITY_V3,
+    },
+    giveaway: {
+      projected: GIVEAWAY_ENTITY_V3_PROJECTED,
+      full: GIVEAWAY_ENTITY_V3,
+    },
   },
 }
