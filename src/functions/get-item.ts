@@ -4,7 +4,8 @@ import { StatusCodes } from 'http-status-codes';
 import logger from '../helpers/logger';
 import { ItemRepository } from '../persistence/item-repository';
 import { AppError, UNCATEGORIZED_ERROR } from '../app.errors';
-import { ItemDTOMapper } from '../mapper/item-mapper';
+import { InternalItemMapper } from '../mapper/internal/item-mapper-internal';
+import { RetailerItemMapper } from '../mapper/retailer/item-mapper-retailer';
 import { AllConfig } from 'config/all-config';
 import { ItemDto } from '../dto/item.dto';
 import { ItemEntity } from '../entity/item.entity';
@@ -47,8 +48,8 @@ export class GetItem {
       throw new AppError(UNCATEGORIZED_ERROR, e);
     }
 
-    const mapper = new ItemDTOMapper(config.assetsUrl, config.flexUrl, config.sknAppUrl);
-    const item: ItemDto = pathParams.retailer ? mapper.toRetailerDto(entity) : mapper.toInternalDto(entity);
+    const mapper = pathParams.retailer ? new RetailerItemMapper(config.assetsUrl, config.flexUrl, config.sknAppUrl) : new InternalItemMapper();
+    const item: ItemDto = mapper.toDto(entity);
 
     res.status(StatusCodes.OK).json(item);
   }

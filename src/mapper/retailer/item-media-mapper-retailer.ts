@@ -1,10 +1,9 @@
-import { PrimaryMediaDto } from '../dto/item-media-primary.dto';
-import { SecondaryMediaDto } from '../dto/item-media-secondary.dto';
-import { ImageMediaUrlsDto, ItemMediaTypeDto, VideoMediaUrlsDto } from '../dto/item-media-type.dto';
-import { ItemMediaDto } from '../dto/retailer/item-media-retailer.dto';
-import { ProjectedItemEntity } from '../entity/item.entity';
-import { parseMedia } from './item-media-json-parser';
-import { InternalItemMediaDto, InternalItemMediaTypeDto } from '../dto/internal/item-media-internal.dto';
+import { PrimaryMediaDto } from '../../dto/retailer/item-media-retailer-primary.dto';
+import { SecondaryMediaDto } from '../../dto/retailer/item-media-retailer-secondary.dto';
+import { RetailerItemMediaDto, RetailerItemMediaTypeDto, ImageMediaUrlsDto, VideoMediaUrlsDto } from '../../dto/retailer/item-media-retailer.dto';
+import { ProjectedItemEntity } from '../../entity/item.entity';
+import { parseMedia } from '../item-media-json-parser';
+import { InternalItemMediaDto, InternalItemMediaTypeDto } from '../../dto/internal/item-media-internal.dto';
 
 function _getImageBlock(baseUrl: string): ImageMediaUrlsDto {
   return {
@@ -47,7 +46,7 @@ export class ItemMediaDTOMapper {
     private readonly flexHost: string,
   ) { }
 
-  toDTO(entity: ProjectedItemEntity): ItemMediaDto {
+  toDTO(entity: ProjectedItemEntity): RetailerItemMediaDto {
     // Use entity.media if available (v3+) otherwise convert skn property to media (v1,v2)
     const media: InternalItemMediaDto = parseMedia(entity.media) || _legacySknToMedia(entity);
 
@@ -76,17 +75,17 @@ export class ItemMediaDTOMapper {
     switch (type) {
       case InternalItemMediaTypeDto.STATIC:
         return {
-          type: ItemMediaTypeDto.IMAGE,
+          type: RetailerItemMediaTypeDto.IMAGE,
           image: _getImageBlock(`${this.assetsHost}/sku.${item.stockKeepingUnitCode}.${suffix}`),
         };
       case InternalItemMediaTypeDto.DYNAMIC:
         return {
-          type: ItemMediaTypeDto.IMAGE,
+          type: RetailerItemMediaTypeDto.IMAGE,
           image: _getImageBlock(`${this.flexHost}/skn/v1/${flexSuffix}/${item.key}`),
         };
       case InternalItemMediaTypeDto.VIDEO:
         return {
-          type: ItemMediaTypeDto.VIDEO,
+          type: RetailerItemMediaTypeDto.VIDEO,
           image: _getImageBlock(`${this.assetsHost}/sku.${item.stockKeepingUnitCode}.${suffix}`),
           video: _getVideoBlock(`${this.assetsHost}/sku.${item.stockKeepingUnitCode}.${suffix}`),
         };

@@ -6,153 +6,13 @@ import { Request } from '@google-cloud/functions-framework';
 import * as MockExpressResponse from 'mock-express-response';
 import { StatusCodes } from 'http-status-codes';
 import { ItemRepository } from '../../src/persistence/item-repository';
-import { GIVEAWAY_ENTITY, SALE_ENTITY } from '../mocks-item';
-import { ItemNftState, ItemSource } from '../../src/dto/item.dto';
-import { LegacyRetailerItemDto } from '../../src/dto/retailer/item-retailer.dto';
-import { ItemMediaTypeDto } from '../../src/dto/item-media-type.dto';
+import { TEST_ENTITIES } from '../test-data-entities';
+import { TEST_DTOS } from '../test-data-dtos';
 
-const SALE_DTO: LegacyRetailerItemDto = {
-  "token": "338a6b3128",
-  "thumbprint": "338a6b3128",
-  "flexHost": "https://flex-dev.example.com",
-  "sknappHost": "https://app-dev.example.com",
-  "issue": 14,
-  "saleQty": 14,
-  "maximum": 10000,
-  "maxQty": 10000,
-  "giveaway": null,
-  "description": "The air element. Octahedra are sparkling crystals of diamond, and magnetite.",
-  "brand": "TEST",
-  "brandCode": "TEST",
-  "sku": "TEST-OCTAHEDRON-COMMON",
-  "stockKeepingUnitCode": "TEST-OCTAHEDRON-COMMON",
-  "name": "Common Octahedron",
-  "rarity": null,
-  "version": "1",
-  "claimCode": null,
-  "created": "2022-07-12T10:37:19.335Z",
-  "platform": "TEST",
-  "platformCode": "TEST",
-  "certVersion": "v1",
-  "nftState": ItemNftState.UNMINTED,
-  "recommendedRetailPrice": 100,
-  "rrp": 100,
-  "source": ItemSource.SALE,
-  "tier": "GREEN",
-  "media": {
-    "primary": {
-      "type": ItemMediaTypeDto.IMAGE,
-      "image": {
-        "jpeg": "https://flex-dev.example.com/skn/v1/primary/default/338a6b3128.jpg",
-        "png": "https://flex-dev.example.com/skn/v1/primary/default/338a6b3128.png",
-        "webp": "https://flex-dev.example.com/skn/v1/primary/default/338a6b3128.webp"
-      }
-    },
-    "secondary": [
-      {
-        "type": ItemMediaTypeDto.IMAGE,
-        "image": {
-          "jpeg": "https://flex-dev.example.com/skn/v1/secondary/0/default/338a6b3128.jpg",
-          "png": "https://flex-dev.example.com/skn/v1/secondary/0/default/338a6b3128.png",
-          "webp": "https://flex-dev.example.com/skn/v1/secondary/0/default/338a6b3128.webp"
-        }
-      }
-    ],
-    "social": {
-      "default": {
-        "image": {
-          "jpeg": "https://flex-dev.example.com/skn/v1/primary/og/338a6b3128.jpg",
-          "png": "https://flex-dev.example.com/skn/v1/primary/og/338a6b3128.png",
-          "webp": "https://flex-dev.example.com/skn/v1/primary/og/338a6b3128.webp"
-        }
-      },
-      "snapchat": {
-        "image": {
-          "jpeg": "https://flex-dev.example.com/skn/v1/primary/snapsticker/338a6b3128.jpg",
-          "png": "https://flex-dev.example.com/skn/v1/primary/snapsticker/338a6b3128.png",
-          "webp": "https://flex-dev.example.com/skn/v1/primary/snapsticker/338a6b3128.webp"
-        }
-      }
-    },
-    "model": {
-      "glb": "https://assets-dev.example.com/sku.v1.3DView.TEST-OCTAHEDRON-COMMON.glb",
-      "config": "https://assets-dev.example.com/sku.v1.3DConfig.TEST-OCTAHEDRON-COMMON.json"
-    }
-  }
-};
-
-const GIVEAWAY_DTO: LegacyRetailerItemDto = {
-  "thumbprint": "07e6554733",
-  "token": "07e6554733",
-  "version": "1",
-  "flexHost": "https://flex-dev.example.com",
-  "sknappHost": "https://app-dev.example.com",
-  "certVersion": "v1",
-  "saleQty": 8,
-  "issue": 8,
-  "maxQty": 100,
-  "maximum": 100,
-  "source": ItemSource.GIVEAWAY,
-  "nftState": ItemNftState.UNMINTED,
-  "platform": "TEST",
-  "platformCode": "TEST",
-  "claimCode": "claim-123",
-  "giveaway": "claim-123",
-  "name": "Rare Cube",
-  "description": "The only regular solid which tessellates Euclidean space: the hexahedron.  The ancients believed this caused the solidity of the Earth.",
-  "brandCode": "TEST",
-  "brand": "TEST",
-  "stockKeepingUnitCode": "TEST-CUBE-RARE",
-  "sku": "TEST-CUBE-RARE",
-  "tier": "GREEN",
-  "recommendedRetailPrice": 1000,
-  "rrp": 1000,
-  "created": "2022-05-31T16:14:32.253Z",
-  "rarity": null,
-  "media": {
-    "primary": {
-      "type": ItemMediaTypeDto.VIDEO,
-      "image": {
-        "jpeg": "https://assets-dev.example.com/sku.TEST-CUBE-RARE.primary.jpg",
-        "png": "https://assets-dev.example.com/sku.TEST-CUBE-RARE.primary.png",
-        "webp": "https://assets-dev.example.com/sku.TEST-CUBE-RARE.primary.webp"
-      },
-      "video": {
-        "mp4": "https://assets-dev.example.com/sku.TEST-CUBE-RARE.primary.mp4"
-      }
-    },
-    "secondary": [
-      {
-        "type": ItemMediaTypeDto.IMAGE,
-        "image": {
-          "jpeg": "https://flex-dev.example.com/skn/v1/secondary/0/default/07e6554733.jpg",
-          "png": "https://flex-dev.example.com/skn/v1/secondary/0/default/07e6554733.png",
-          "webp": "https://flex-dev.example.com/skn/v1/secondary/0/default/07e6554733.webp"
-        }
-      }
-    ],
-    "social": {
-      "default": {
-        "image": {
-          "jpeg": "https://flex-dev.example.com/skn/v1/primary/og/07e6554733.jpg",
-          "png": "https://flex-dev.example.com/skn/v1/primary/og/07e6554733.png",
-          "webp": "https://flex-dev.example.com/skn/v1/primary/og/07e6554733.webp"
-        }
-      },
-      "snapchat": {
-        "image": {
-          "jpeg": "https://flex-dev.example.com/skn/v1/primary/snapsticker/07e6554733.jpg",
-          "png": "https://flex-dev.example.com/skn/v1/primary/snapsticker/07e6554733.png",
-          "webp": "https://flex-dev.example.com/skn/v1/primary/snapsticker/07e6554733.webp"
-        }
-      }
-    },
-    "model": {
-      "glb": "https://assets-dev.example.com/sku.v1.3DView.TEST-CUBE-RARE.glb",
-      "config": "https://assets-dev.example.com/sku.v1.3DConfig.TEST-CUBE-RARE.json"
-    }
-  }
-};
+const SALE_ENTITY = TEST_ENTITIES.v2.sale.projected;
+const GIVEAWAY_ENTITY = TEST_ENTITIES.v2.giveaway.projected;
+const SALE_DTO = TEST_DTOS.v2.sale.retailer;
+const GIVEAWAY_DTO = TEST_DTOS.v2.giveaway.retailer;
 
 const instance = getItems;
 
@@ -204,7 +64,7 @@ describe('function - get-items', () => {
       }
     } as Request;
 
-    byEmailHashSpy.mockReturnValueOnce(Promise.resolve([SALE_ENTITY, { ...GIVEAWAY_ENTITY, skn: 'VIDEO' }]));
+    byEmailHashSpy.mockReturnValueOnce(Promise.resolve([SALE_ENTITY, GIVEAWAY_ENTITY]));
 
     await instance(req, res);
 
@@ -227,7 +87,7 @@ describe('function - get-items', () => {
       }
     } as Request;
 
-    byWalletAddressSpy.mockReturnValueOnce(Promise.resolve([SALE_ENTITY, { ...GIVEAWAY_ENTITY, skn: 'VIDEO' }]));
+    byWalletAddressSpy.mockReturnValueOnce(Promise.resolve([SALE_ENTITY, GIVEAWAY_ENTITY]));
 
     await instance(req, res);
 
@@ -252,7 +112,7 @@ describe('function - get-items', () => {
       }
     } as Request;
 
-    byUserSpy.mockReturnValueOnce(Promise.resolve([SALE_ENTITY, { ...GIVEAWAY_ENTITY, skn: 'VIDEO' }]));
+    byUserSpy.mockReturnValueOnce(Promise.resolve([SALE_ENTITY, GIVEAWAY_ENTITY]));
 
     await instance(req, res);
 
@@ -281,15 +141,15 @@ describe('function - get-items', () => {
 
     byEmailHashSpy.mockReturnValueOnce(Promise.resolve([
       SALE_ENTITY,
-      { ...GIVEAWAY_ENTITY, skn: 'VIDEO' },
+      GIVEAWAY_ENTITY,
     ]));
     byUserSpy.mockReturnValueOnce(Promise.resolve([
       SALE_ENTITY, // duplicate
-      { ...GIVEAWAY_ENTITY, key: '111', skn: 'VIDEO' },
+      { ...GIVEAWAY_ENTITY, key: '111' },
     ]));
     byWalletAddressSpy.mockReturnValueOnce(Promise.resolve([
       { ...SALE_ENTITY, key: '222' },
-      { ...GIVEAWAY_ENTITY, key: '333', skn: 'VIDEO' },
+      { ...GIVEAWAY_ENTITY, key: '333' },
     ]));
 
     await instance(req, res);
@@ -308,8 +168,8 @@ describe('function - get-items', () => {
     for (const dto of [dto111, dto222, dto333]) {
       const oldMediaJson = JSON.stringify(dto.media);
       let newMediaJson = oldMediaJson;
-      while (newMediaJson.includes('338a6b3128') || newMediaJson.includes('07e6554733')) {
-        newMediaJson = newMediaJson.replace(/338a6b3128|07e6554733/, dto.token);
+      while (newMediaJson.includes('f8d4de3db6') || newMediaJson.includes('fc07c88901')) {
+        newMediaJson = newMediaJson.replace(/f8d4de3db6|fc07c88901/, dto.token);
       }
       dto.media = JSON.parse(newMediaJson);
     }

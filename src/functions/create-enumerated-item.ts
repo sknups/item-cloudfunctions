@@ -6,7 +6,7 @@ import logger from '../helpers/logger';
 import { parseAndValidateRequestData } from '../helpers/validation';
 import { itemEntityToItemEvent, skuToItemEntity } from '../helpers/item-mapper';
 import { ItemEventType } from '../eventstreaming/item-event';
-import { ItemDTOMapper } from '../mapper/item-mapper';
+import { RetailerItemMapper } from '../mapper/retailer/item-mapper-retailer';
 import { Sku } from '../client/catalog/catalog.client';
 import { publisher } from '../helpers/util';
 import { CreateEnumeratedItemRequestDTO } from '../dto/create-enumerated-item-request.dto';
@@ -62,7 +62,7 @@ export class CreateEnumeratedItem {
     const event = itemEntityToItemEvent(item, audit, audit.key.toString(), ItemEventType.CREATE);
     await publisher(cfg).publishEvent(event);
 
-    const response = new ItemDTOMapper(cfg.assetsUrl, cfg.flexUrl, cfg.sknAppUrl).toRetailerDto(item);
+    const response = new RetailerItemMapper(cfg.assetsUrl, cfg.flexUrl, cfg.sknAppUrl).toDto(item);
     res.status(StatusCodes.OK).json(response);
   }
 }

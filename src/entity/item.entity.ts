@@ -40,7 +40,7 @@ export type ProjectedItemEntity = NamedKeyEntity & {
   platformCode: string;
   recommendedRetailPrice: number | null;
   saleQty: number | null;
-  skn: string;
+  skn: string | null;
   source: string;
   state: string;
   stockKeepingUnitCode: string;

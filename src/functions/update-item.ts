@@ -12,7 +12,7 @@ import { itemEntityToItemEvent } from '../helpers/item-mapper';
 import logger from '../helpers/logger';
 import { parsePath, publisher, repository } from '../helpers/util';
 import { parseAndValidateRequestData } from '../helpers/validation';
-import { ItemDTOMapper } from '../mapper/item-mapper';
+import { RetailerItemMapper } from '../mapper/retailer/item-mapper-retailer';
 import { ItemRepository } from '../persistence/item-repository';
 import { MutationResult } from '../helpers/persistence/mutation-result';
 import { Sku } from '../client/catalog/catalog.client';
@@ -141,7 +141,7 @@ export async function updateItemHandler(req: Request, res: Response, config: All
     await publisher(config).publishEvent(event);
   }
 
-  const response = new ItemDTOMapper(config.assetsUrl, config.flexUrl, config.sknAppUrl).toRetailerDto(newItemEntity || itemEntity);
+  const response = new RetailerItemMapper(config.assetsUrl, config.flexUrl, config.sknAppUrl).toDto(newItemEntity || itemEntity);
   res.status(StatusCodes.OK).json(response);
 
 }

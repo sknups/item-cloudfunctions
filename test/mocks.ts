@@ -82,7 +82,7 @@ const catalog = {
       switch (skuCode) {
         case 'skuCode':
           return mockGiveawaySku(skuCode);
-        case 'TEST-OCTAHEDRON-COMMON':
+        case 'TEST-ICOSAHEDRON-GREEN':
           return mockGiveawaySku(skuCode);
         case 'skuv1': {
           const sku = mockGiveawaySku(skuCode);
