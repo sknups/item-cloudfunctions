@@ -1,85 +1,29 @@
 import { Datastore } from '@google-cloud/datastore';
 import { ITEM_PROJECTION } from '../../src/entity/item.entity';
 import { ItemRepository } from '../../src/persistence/item-repository';
-import { SALE_ENTITY, GIVEAWAY_ENTITY, SALE_ENTITY_MINTED } from '../mocks-item';
+import { NamedKeyEntity } from '../../src/helpers/persistence/base.entity';
+import { TEST_ENTITIES } from '../test-data-entities';
 
-const PLATFORM = 'TEST';
-const EMAIL = '495a8c7b1ab6fd611377ba81fe75cdead63f0ebe88a9260806a3fba790400805';
+const PLATFORM = 'SKN';
+const EMAIL = '8b246c38d16a2432ef1b9e3b79279b65d0ba514ad648e99d741d695c66c02fab';
 const WALLET = 'SOL.devnet.9H5c7kkULEmT7MvrJp1MEavN1tu7MN5uG5Yigb54D7Vx';
-const USER = 'abc123';
+const USER = 'cyP1XYi0y6NadKRXqMbmF9R1vz53';
 
-const SALE_QUERY_DATA = {
-  [Datastore.KEY]: { name: '338a6b3128' },
-  saleQty: 14,
-  maxQty: 10000,
-  source: "SALE",
-  nftState: "UNMINTED",
-  claimCode: null,
-  stockKeepingUnitName: "Common Octahedron",
-  description: "The air element. Octahedra are sparkling crystals of diamond, and magnetite.",
-  brandCode: "TEST",
-  stockKeepingUnitCode: "TEST-OCTAHEDRON-COMMON",
-  tier: "GREEN",
-  recommendedRetailPrice: 100,
-  user: 'abc123',
-  created: 1657622239335000,
-  card: '{\"front\":[{\"text\":\"${issue} of ${maximum}\",\"color\":\"#FFFFFFFF\",\"size\":\"30pt\",\"font\":\"Share Tech Mono\",\"weight\":\"Regular\",\"align\":\"center\",\"x\":450,\"y\":1310}],\"back\":[{\"text\":\"OWNERSHIP TOKEN:\",\"color\":\"#FFFFFFFF\",\"size\":\"25pt\",\"font\":\"Share Tech Mono\",\"weight\":\"Regular\",\"align\":\"center\",\"x\":450,\"y\":1260},{\"text\":\"${token}\",\"color\":\"#FFFFFFFF\",\"size\":\"30pt\",\"font\":\"Share Tech Mono\",\"weight\":\"Regular\",\"align\":\"center\",\"x\":450,\"y\":1310}]}',
-  stockKeepingUnitRarity: null,
-  version: "1",
-  skn: "DYNAMIC",
-  emailHash: '495a8c7b1ab6fd611377ba81fe75cdead63f0ebe88a9260806a3fba790400805',
-  platformCode: 'TEST',
-  ownerAddress: null,
-  state: 'UNBOXED',
-  media: null,
-};
-
-const SALE_QUERY_DATA_FULL = {
-  ...SALE_QUERY_DATA,
-  updated: SALE_QUERY_DATA.created,
-  brandName: 'TEST',
-  brandWholesalePrice: 80,
-  brandWholesalerShare: 50,
-  nftAddress: null,
+function _toDatastoreEntity(mappedEntity: NamedKeyEntity): any {
+  const result: any = { ...mappedEntity };
+  result[Datastore.KEY] = { name: mappedEntity.key };
+  delete result.key;
+  return result;
 }
 
-const SALE_QUERY_DATA_MINTED = {
-  ...SALE_QUERY_DATA_FULL,
-  nftState: 'MINTED',
-  nftAddress: SALE_ENTITY_MINTED.nftAddress,
-  ownerAddress: SALE_ENTITY_MINTED.ownerAddress,
-}
-
-const GIVEAWAY_QUERY_DATA = {
-  [Datastore.KEY]: { name: '07e6554733' },
-  saleQty: 8,
-  maxQty: 100,
-  source: "GIVEAWAY",
-  nftState: "UNMINTED",
-  claimCode: "claim-123",
-  stockKeepingUnitName: "Rare Cube",
-  description: "The only regular solid which tessellates Euclidean space: the hexahedron.  The ancients believed this caused the solidity of the Earth.",
-  brandCode: "TEST",
-  stockKeepingUnitCode: "TEST-CUBE-RARE",
-  tier: "GREEN",
-  recommendedRetailPrice: 1000,
-  user: 'abc123',
-  created: 1654013672253000,
-  card: null,
-  stockKeepingUnitRarity: null,
-  version: "1",
-  skn: "DYNAMIC",
-  emailHash: '495a8c7b1ab6fd611377ba81fe75cdead63f0ebe88a9260806a3fba790400805',
-  platformCode: 'TEST',
-  ownerAddress: null,
-  state: 'UNBOXED',
-  media: null,
-};
+const SALE_QUERY_DATA_PROJECTED = _toDatastoreEntity(TEST_ENTITIES.v2.sale.projected);
+const SALE_QUERY_DATA_MINTED_FULL = _toDatastoreEntity(TEST_ENTITIES.v2.minted.full);
+const GIVEAWAY_QUERY_DATA_PROJECTED = _toDatastoreEntity(TEST_ENTITIES.v2.giveaway.projected);
 
 function _runQueryResponse(overrides: object, filterNames: string[]): any {
   const queryResponse = [
-    { ...SALE_QUERY_DATA, ...overrides },
-    { ...GIVEAWAY_QUERY_DATA, ...overrides },
+    { ...SALE_QUERY_DATA_PROJECTED, ...overrides },
+    { ...GIVEAWAY_QUERY_DATA_PROJECTED, ...overrides },
   ];
 
   queryResponse.forEach(entity => {
@@ -91,8 +35,8 @@ function _runQueryResponse(overrides: object, filterNames: string[]): any {
 
 function _transformedResponse(overrides: object): object[] {
   return [
-    { ...SALE_ENTITY, ...overrides, state: undefined },
-    { ...GIVEAWAY_ENTITY, ...overrides, state: undefined },
+    { ...TEST_ENTITIES.v2.sale.projected, ...overrides, state: undefined },
+    { ...TEST_ENTITIES.v2.giveaway.projected, ...overrides, state: undefined },
   ];
 }
 
@@ -167,8 +111,8 @@ describe('persistence', () => {
 
     beforeEach(function () {
       const queryResponse = [
-        { ...SALE_QUERY_DATA, ...overrides },
-        { ...GIVEAWAY_QUERY_DATA, ...overrides },
+        { ...SALE_QUERY_DATA_PROJECTED, ...overrides },
+        { ...GIVEAWAY_QUERY_DATA_PROJECTED, ...overrides },
       ];
 
       queryResponse.forEach(entity => {
@@ -216,8 +160,8 @@ describe('persistence', () => {
 
     beforeEach(function () {
       const queryResponse = [
-        { ...SALE_QUERY_DATA, ...overrides },
-        { ...GIVEAWAY_QUERY_DATA, ...overrides },
+        { ...SALE_QUERY_DATA_PROJECTED, ...overrides },
+        { ...GIVEAWAY_QUERY_DATA_PROJECTED, ...overrides },
       ];
 
       queryResponse.forEach(entity => {
@@ -254,16 +198,16 @@ describe('persistence', () => {
   describe('byThumbprint', () => {
 
     beforeEach(function () {
-      getSpy.mockReturnValueOnce([SALE_QUERY_DATA] as any);
+      getSpy.mockReturnValueOnce([SALE_QUERY_DATA_PROJECTED] as any);
     });
 
     it('uses correct query', async () => {
-      await instance.byThumbprint(PLATFORM, SALE_ENTITY.key);
+      await instance.byThumbprint(PLATFORM, TEST_ENTITIES.v2.sale.projected.key);
 
       const expectedQuery = {
         namespace: 'drm',
         kind: 'item',
-        name: SALE_ENTITY.key,
+        name: TEST_ENTITIES.v2.sale.projected.key,
       };
 
       expect(getSpy).toHaveBeenCalledTimes(1);
@@ -271,22 +215,22 @@ describe('persistence', () => {
     });
 
     it('transforms results', async () => {
-      const result = await instance.byThumbprint(PLATFORM, SALE_ENTITY.key);
+      const result = await instance.byThumbprint(PLATFORM, TEST_ENTITIES.v2.sale.projected.key);
 
-      expect(result).toEqual(SALE_ENTITY);
+      expect(result).toEqual(TEST_ENTITIES.v2.sale.projected);
     });
 
     it('returns null for platform mismatch', async () => {
-      const result = await instance.byThumbprint('INVALID', SALE_ENTITY.key);
+      const result = await instance.byThumbprint('INVALID', TEST_ENTITIES.v2.sale.projected.key);
 
       expect(result).toEqual(null);
     });
 
     it('returns null for DELETED state', async () => {
       getSpy.mockReset();
-      getSpy.mockReturnValueOnce([{ ...SALE_QUERY_DATA, state: 'DELETED' }] as any);
+      getSpy.mockReturnValueOnce([{ ...SALE_QUERY_DATA_PROJECTED, state: 'DELETED' }] as any);
 
-      const result = await instance.byThumbprint(PLATFORM, SALE_ENTITY.key);
+      const result = await instance.byThumbprint(PLATFORM, TEST_ENTITIES.v2.sale.projected.key);
 
       expect(result).toEqual(null);
     });
@@ -296,16 +240,16 @@ describe('persistence', () => {
   describe('byNftAddress', () => {
 
     beforeEach(function () {
-      runQuerySpy.mockReturnValueOnce([[SALE_QUERY_DATA_MINTED]] as any);
+      runQuerySpy.mockReturnValueOnce([[SALE_QUERY_DATA_MINTED_FULL]] as any);
     });
 
     it('uses correct query', async () => {
-      await instance.byNftAddress(SALE_ENTITY_MINTED.nftAddress as string);
+      await instance.byNftAddress(TEST_ENTITIES.v2.minted.full.nftAddress as string);
 
       const expectedQuery = {
         namespace: 'drm',
         kinds: ['item'],
-        filters: [{ name: 'nftAddress', op: '=', val: SALE_ENTITY_MINTED.nftAddress }],
+        filters: [{ name: 'nftAddress', op: '=', val: TEST_ENTITIES.v2.minted.full.nftAddress }],
       };
 
       expect(runQuerySpy).toHaveBeenCalledTimes(1);
@@ -313,16 +257,16 @@ describe('persistence', () => {
     });
 
     it('transforms results', async () => {
-      const result = await instance.byNftAddress(SALE_ENTITY_MINTED.nftAddress as string);
+      const result = await instance.byNftAddress(TEST_ENTITIES.v2.minted.full.nftAddress as string);
 
-      expect(result).toEqual(SALE_ENTITY_MINTED);
+      expect(result).toEqual(TEST_ENTITIES.v2.minted.full);
     });
 
     it('returns null for DELETED state', async () => {
       runQuerySpy.mockReset();
-      runQuerySpy.mockReturnValueOnce([[{ ...SALE_QUERY_DATA_MINTED, state: 'DELETED' }]] as any);
+      runQuerySpy.mockReturnValueOnce([[{ ...SALE_QUERY_DATA_MINTED_FULL, state: 'DELETED' }]] as any);
 
-      const result = await instance.byNftAddress(SALE_ENTITY_MINTED.nftAddress as string);
+      const result = await instance.byNftAddress(TEST_ENTITIES.v2.minted.full.nftAddress as string);
 
       expect(result).toEqual(null);
     });

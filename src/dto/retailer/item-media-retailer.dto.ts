@@ -1,13 +1,23 @@
-import { PrimaryMediaDto } from '../item-media-primary.dto';
-import { SecondaryMediaDto } from '../item-media-secondary.dto';
-import { ImageMediaUrlsDto } from '../item-media-type.dto';
+import { PrimaryMediaDto } from './item-media-retailer-primary.dto';
+import { SecondaryMediaDto } from './item-media-retailer-secondary.dto';
+
+/**
+ * Supported set of media types.
+ */
+export enum RetailerItemMediaTypeDto {
+
+  IMAGE = 'IMAGE',
+
+  VIDEO = 'VIDEO',
+
+}
 
 /**
  * The item media exposed to retailers.
  * 
  * This is transformed from the 'media' property stored in datastore into a series of image/video links.
  */
-export class ItemMediaDto {
+export class RetailerItemMediaDto {
 
   /**
    * Primary media links for skn.
@@ -30,7 +40,7 @@ export class ItemMediaDto {
 
   /**
    * Links to social media, used in metadata tags for unfurling.
-   * 
+   *
    * Supports images.
    */
   social: SocialMediaDto;
@@ -39,6 +49,56 @@ export class ItemMediaDto {
    * Links to the 3d model and configuration.
    */
   model: ModelMediaDto;
+
+}
+
+/**
+ * Links to image media for different image/ mime types.
+ *
+ * It is assumed that we always publish the same set of file types.
+ */
+export class ImageMediaUrlsDto {
+
+  jpeg: string;
+
+  png: string;
+
+  webp: string;
+
+}
+
+/**
+ * Defines the available properties for IMAGE media.
+ */
+export class ImageMediaDto {
+
+  type: RetailerItemMediaTypeDto.IMAGE;
+
+  image: ImageMediaUrlsDto;
+
+}
+
+/**
+ * Links to video media for different video/ mime types.
+ *
+ * It is assumed that we always publish the same set of file types.
+ */
+export class VideoMediaUrlsDto {
+
+  mp4: string;
+
+}
+
+/**
+ * Defines the available properties for VIDEO media.
+ */
+export class VideoMediaDto {
+
+  type: RetailerItemMediaTypeDto.VIDEO;
+
+  image: ImageMediaUrlsDto;
+
+  video: VideoMediaUrlsDto;
 
 }
 

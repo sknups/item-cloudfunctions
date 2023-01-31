@@ -1,4 +1,4 @@
-import { ImageMediaDto, VideoMediaDto } from './item-media-type.dto';
+import { ImageMediaDto, VideoMediaDto } from './item-media-retailer.dto';
 
 /**
  * Extension for secondary media to provide an optional link

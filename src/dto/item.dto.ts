@@ -7,13 +7,17 @@ export class ItemDto {
 
   /**
    * item issue 
+   * 
+   * is null for non-enumerated items
    */
-  issue: number;
+  issue: number | null;
 
   /**
    * Maximum quantity available
+   * 
+   * is null for non-enumerated items
    */
-  maximum: number;
+  maximum: number | null;
 
   /**
    * Item source 
@@ -68,7 +72,7 @@ export class ItemDto {
   /**
    * The price for which this item was sold to the consumer.
    */
-  rrp: number;
+  rrp: number | null;
 
   /**
    * Date time item was created in ISO-8601
