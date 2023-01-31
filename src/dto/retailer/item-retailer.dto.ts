@@ -48,7 +48,7 @@ export class LegacyRetailerItemDto extends RetailerItemDto {
    * sale quantity 
    * @deprecated use issue
    */
-  saleQty: number;
+  saleQty: number | null;
 
   /**
    * claim code this item relates to, when created in a giveaway
@@ -60,7 +60,7 @@ export class LegacyRetailerItemDto extends RetailerItemDto {
    * Maximum quantity available
    * @deprecated use maximum
    */
-  maxQty: number;
+  maxQty: number | null;
 
   /**
    * Code representing the brand
@@ -84,6 +84,6 @@ export class LegacyRetailerItemDto extends RetailerItemDto {
    * The price for which this item was sold to the consumer.
    * @deprecated use rrp
    */
-  recommendedRetailPrice: number;
+  recommendedRetailPrice: number | null;
 
 }

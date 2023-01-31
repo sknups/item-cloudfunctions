@@ -5,114 +5,8 @@ import * as MockExpressResponse from 'mock-express-response';
 import { getItem } from '../../src';
 import { StatusCodes } from 'http-status-codes';
 import { ItemRepository } from '../../src/persistence/item-repository';
-import { SALE_ENTITY_FULL, SALE_ENTITY_MINTED } from '../mocks-item';
-import { ItemNftState, ItemSource } from '../../src/dto/item.dto';
-import { LegacyRetailerItemDto } from '../../src/dto/retailer/item-retailer.dto';
-import { InternalItemDto } from '../../src/dto/internal/item-internal.dto';
-import { RetailerItemMediaTypeDto } from '../../src/dto/retailer/item-media-retailer.dto';
-import { InternalItemMediaTypeDto } from '../../src/dto/internal/item-media-internal.dto';
-
-const SALE_DTO_RETAIL: LegacyRetailerItemDto = {
-  "token": "338a6b3128",
-  "thumbprint": "338a6b3128",
-  "flexHost": "https://flex-dev.example.com",
-  "sknappHost": "https://app-dev.example.com",
-  "issue": 14,
-  "saleQty": 14,
-  "maximum": 10000,
-  "maxQty": 10000,
-  "giveaway": "test123",
-  "description": "The air element. Octahedra are sparkling crystals of diamond, and magnetite.",
-  "brand": "TEST",
-  "brandCode": "TEST",
-  "sku": "TEST-OCTAHEDRON-COMMON",
-  "stockKeepingUnitCode": "TEST-OCTAHEDRON-COMMON",
-  "name": "Common Octahedron",
-  "rarity": 1,
-  "version": "1",
-  "claimCode": "test123",
-  "created": "2022-07-12T10:37:19.335Z",
-  "platform": "TEST",
-  "platformCode": "TEST",
-  "certVersion": "v1",
-  "nftState": ItemNftState.UNMINTED,
-  "recommendedRetailPrice": 100,
-  "rrp": 100,
-  "source": ItemSource.SALE,
-  "tier": "GREEN",
-  "media": {
-    "primary": {
-      "type": RetailerItemMediaTypeDto.IMAGE,
-      "image": {
-        "jpeg": "https://flex-dev.example.com/skn/v1/primary/default/338a6b3128.jpg",
-        "png": "https://flex-dev.example.com/skn/v1/primary/default/338a6b3128.png",
-        "webp": "https://flex-dev.example.com/skn/v1/primary/default/338a6b3128.webp"
-      }
-    },
-    "secondary": [
-      {
-        "type": RetailerItemMediaTypeDto.IMAGE,
-        "image": {
-          "jpeg": "https://flex-dev.example.com/skn/v1/secondary/0/default/338a6b3128.jpg",
-          "png": "https://flex-dev.example.com/skn/v1/secondary/0/default/338a6b3128.png",
-          "webp": "https://flex-dev.example.com/skn/v1/secondary/0/default/338a6b3128.webp"
-        }
-      }
-    ],
-    "social": {
-      "default": {
-        "image": {
-          "jpeg": "https://flex-dev.example.com/skn/v1/primary/og/338a6b3128.jpg",
-          "png": "https://flex-dev.example.com/skn/v1/primary/og/338a6b3128.png",
-          "webp": "https://flex-dev.example.com/skn/v1/primary/og/338a6b3128.webp"
-        }
-      },
-      "snapchat": {
-        "image": {
-          "jpeg": "https://flex-dev.example.com/skn/v1/primary/snapsticker/338a6b3128.jpg",
-          "png": "https://flex-dev.example.com/skn/v1/primary/snapsticker/338a6b3128.png",
-          "webp": "https://flex-dev.example.com/skn/v1/primary/snapsticker/338a6b3128.webp"
-        }
-      }
-    },
-    "model": {
-      "glb": "https://assets-dev.example.com/sku.v1.3DView.TEST-OCTAHEDRON-COMMON.glb",
-      "config": "https://assets-dev.example.com/sku.v1.3DConfig.TEST-OCTAHEDRON-COMMON.json"
-    }
-  }
-};
-
-const SALE_DTO_INTERNAL: InternalItemDto = {
-  "token": "338a6b3128",
-  "issue": 14,
-  "maximum": 10000,
-  "giveaway": "test123",
-  "description": "The air element. Octahedra are sparkling crystals of diamond, and magnetite.",
-  "brand": "TEST",
-  "sku": "TEST-OCTAHEDRON-COMMON",
-  "name": "Common Octahedron",
-  "rarity": 1,
-  "version": "1",
-  "created": "2022-07-12T10:37:19.335Z",
-  "platform": "TEST",
-  "nftState": ItemNftState.UNMINTED,
-  "rrp": 100,
-  "source": ItemSource.SALE,
-  "tier": "GREEN",
-  "cardJson": "{\"front\":[{\"text\":\"${issue} of ${maximum}\",\"color\":\"#FFFFFFFF\",\"size\":\"30pt\",\"font\":\"Share Tech Mono\",\"weight\":\"Regular\",\"align\":\"center\",\"x\":450,\"y\":1310}],\"back\":[{\"text\":\"OWNERSHIP TOKEN:\",\"color\":\"#FFFFFFFF\",\"size\":\"25pt\",\"font\":\"Share Tech Mono\",\"weight\":\"Regular\",\"align\":\"center\",\"x\":450,\"y\":1260},{\"text\":\"${token}\",\"color\":\"#FFFFFFFF\",\"size\":\"30pt\",\"font\":\"Share Tech Mono\",\"weight\":\"Regular\",\"align\":\"center\",\"x\":450,\"y\":1310}]}",
-  "nftAddress": null,
-  "ownerAddress": null,
-  "media": {
-    "primary": {
-      "type": InternalItemMediaTypeDto.DYNAMIC,
-      "labels": [{ "text": "${issue} of ${maximum}", "color": "#FFFFFFFF", "size": "30pt", "font": "Share Tech Mono", "weight": "Regular", "align": "center", "x": 450, "y": 1310 }],
-    },
-    "secondary": [{
-      "type": InternalItemMediaTypeDto.DYNAMIC,
-      "labels": [{ "text": "OWNERSHIP TOKEN:", "color": "#FFFFFFFF", "size": "25pt", "font": "Share Tech Mono", "weight": "Regular", "align": "center", "x": 450, "y": 1260 }, { "text": "${token}", "color": "#FFFFFFFF", "size": "30pt", "font": "Share Tech Mono", "weight": "Regular", "align": "center", "x": 450, "y": 1310 }]
-    }]
-  },
-}
+import { TEST_ENTITIES } from '../test-data-entities';
+import { TEST_DTOS } from '../test-data-dtos';
 
 const instance = getItem;
 
@@ -121,7 +15,7 @@ describe('function - get-item - retailer', () => {
   const byThumbprintSpy = jest.spyOn(ItemRepository.prototype, 'byThumbprint');
 
   const platform = "SKN";
-  const token = "338a6b3128";
+  const token = "f8d4de3db6";
   const req = {
     method: 'GET',
     path: `/retailer/${platform}/${token}`,
@@ -131,7 +25,7 @@ describe('function - get-item - retailer', () => {
 
   beforeEach(() => {
     res = new MockExpressResponse();
-    byThumbprintSpy.mockReturnValueOnce(Promise.resolve({ ...SALE_ENTITY_FULL, claimCode: 'test123', stockKeepingUnitRarity: 1 }));
+    byThumbprintSpy.mockReturnValueOnce(Promise.resolve(TEST_ENTITIES.v2.sale.full));
   });
 
   afterEach(() => {
@@ -165,7 +59,7 @@ describe('function - get-item - retailer', () => {
     expect(res.statusCode).toEqual(StatusCodes.OK);
     expect(byThumbprintSpy).toHaveBeenCalledTimes(1);
     expect(byThumbprintSpy).toHaveBeenLastCalledWith(platform, token);
-    expect(res._getJSON()).toEqual(SALE_DTO_RETAIL);
+    expect(res._getJSON()).toEqual(TEST_DTOS.v2.sale.retailer);
   });
 
   it('returns 404 if item not found', async () => {
@@ -185,19 +79,19 @@ describe('function - get-item - internal', () => {
   const byThumbprintSpy = jest.spyOn(ItemRepository.prototype, 'byThumbprint');
   const byNftAddressSpy = jest.spyOn(ItemRepository.prototype, 'byNftAddress');
 
-  const platform = "SKN";
-  const token = "338a6b3128";
-  const req = {
-    method: 'GET',
-    path: `/${platform}/${token}`,
-  } as Request;
+  function req(token: string = 'f8d4de3db6', platform: string = 'SKN') {
+    return {
+      method: 'GET',
+      path: `/${platform}/${token}`,
+    } as Request;
+  };
 
   let res = new MockExpressResponse();
 
   beforeEach(() => {
     res = new MockExpressResponse();
-    byThumbprintSpy.mockReturnValueOnce(Promise.resolve({ ...SALE_ENTITY_FULL, claimCode: 'test123', stockKeepingUnitRarity: 1 }));
-    byNftAddressSpy.mockReturnValueOnce(Promise.resolve({ ...SALE_ENTITY_MINTED, claimCode: 'test123', stockKeepingUnitRarity: 1 }));
+    byThumbprintSpy.mockReturnValueOnce(Promise.resolve(TEST_ENTITIES.v2.sale.full));
+    byNftAddressSpy.mockReturnValueOnce(Promise.resolve(TEST_ENTITIES.v2.minted.full));
   });
 
   afterEach(() => {
@@ -206,35 +100,46 @@ describe('function - get-item - internal', () => {
 
   it('supports item with null card', async () => {
     byThumbprintSpy.mockReset();
-    byThumbprintSpy.mockReturnValueOnce(Promise.resolve({ ...SALE_ENTITY_FULL, claimCode: 'test123', stockKeepingUnitRarity: 1, card: null }));
+    byThumbprintSpy.mockReturnValueOnce(Promise.resolve({ ...TEST_ENTITIES.v2.sale.full, card: null }));
 
-    await instance(req, res);
+    await instance(req(), res);
 
     expect(res.statusCode).toEqual(StatusCodes.OK);
-    expect(res._getJSON()).toEqual({ ...SALE_DTO_INTERNAL, cardJson: null, media: null });
+    expect(res._getJSON()).toEqual({ ...TEST_DTOS.v2.sale.internal, cardJson: null, media: null });
   });
 
-  it('returns item', async () => {
-    await instance(req, res);
+  it('returns item - sale', async () => {
+    await instance(req(), res);
 
     expect(res.statusCode).toEqual(StatusCodes.OK);
     expect(byThumbprintSpy).toHaveBeenCalledTimes(1);
-    expect(byThumbprintSpy).toHaveBeenLastCalledWith(platform, token);
-    expect(res._getJSON()).toEqual(SALE_DTO_INTERNAL);
+    expect(byThumbprintSpy).toHaveBeenLastCalledWith('SKN', 'f8d4de3db6');
+    expect(res._getJSON()).toEqual(TEST_DTOS.v2.sale.internal);
+  });
+
+  it('returns item - giveaway', async () => {
+    byThumbprintSpy.mockReset();
+    byThumbprintSpy.mockReturnValueOnce(Promise.resolve(TEST_ENTITIES.v2.giveaway.full));
+
+    await instance(req('07e6554733'), res);
+
+    expect(res.statusCode).toEqual(StatusCodes.OK);
+    expect(byThumbprintSpy).toHaveBeenCalledTimes(1);
+    expect(byThumbprintSpy).toHaveBeenLastCalledWith('SKN', '07e6554733');
+    expect(res._getJSON()).toEqual(TEST_DTOS.v2.giveaway.internal);
   });
 
   it('returns item by nftAddress', async () => {
     const nftAddress = 'SOL.devnet.abc123';
-    req.path = `/_NFT_/${nftAddress}`;
 
-    await instance(req, res);
+    await instance(req(nftAddress, '_NFT_'), res);
 
     expect(res.statusCode).toEqual(StatusCodes.OK);
     expect(byThumbprintSpy).toHaveBeenCalledTimes(0);
     expect(byNftAddressSpy).toHaveBeenCalledTimes(1);
     expect(byNftAddressSpy).toHaveBeenLastCalledWith(nftAddress);
     expect(res._getJSON()).toEqual({
-      ...SALE_DTO_INTERNAL,
+      ...TEST_DTOS.v2.sale.internal,
       nftAddress: 'SOL.devnet.12345',
       nftState: 'MINTED',
       ownerAddress: 'SOL.devnet.67890',

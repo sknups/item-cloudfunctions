@@ -7,13 +7,14 @@ import { mocked } from 'jest-mock';
 import { updateItem } from '../../src';
 import { StatusCodes } from 'http-status-codes';
 import { ItemRepository } from '../../src/persistence/item-repository';
-import { SALE_ENTITY_FULL } from '../mocks-item';
+import { TEST_ENTITIES } from '../test-data-entities';
 import { ItemEntity } from '../../src/entity/item.entity';
-import { updateEntity } from '../../src/helpers/datastore/datastore.helper';
 
 const SALE_ENTITY_MINTING: ItemEntity = {
-  ...SALE_ENTITY_FULL,
+  ...TEST_ENTITIES.v2.sale.full,
   key: 'aaaaaaaaa1',
+  emailHash: null,
+  user: null,
   nftState: 'MINTING',
   nftAddress: 'SOL.devnet.nft1',
   ownerAddress: 'SOL.devnet.owner1',
@@ -29,7 +30,7 @@ describe('function - update-item', () => {
   const insertAudit = jest.spyOn(ItemRepository.prototype, 'insertAudit');
 
   const platform = "SKN";
-  const token = "338a6b3128";
+  const token = "f8d4de3db6";
   const req = {
     method: 'POST',
     path: `/${platform}/${token}`,
@@ -45,9 +46,9 @@ describe('function - update-item', () => {
   beforeEach(() => {
     mocks.mockClear();
     res = new MockExpressResponse();
-    byThumbprintSpy.mockReturnValueOnce(Promise.resolve(SALE_ENTITY_FULL));
+    byThumbprintSpy.mockReturnValueOnce(Promise.resolve(TEST_ENTITIES.v2.sale.full));
     byNftAddressSpy.mockReturnValueOnce(Promise.resolve({
-      ...SALE_ENTITY_FULL,
+      ...TEST_ENTITIES.v2.sale.full,
       key: '448a6b3129',
       emailHash: null,
       user: null,
@@ -76,6 +77,7 @@ describe('function - update-item', () => {
   it('ignores path additional element', async () => {
     await instance({ ...req, path: `/bla/${platform}/${token}` } as Request, res);
 
+    expect(res.statusCode).toEqual(StatusCodes.OK);
     expect(byThumbprintSpy).toHaveBeenCalledTimes(1);
     expect(byThumbprintSpy).toHaveBeenLastCalledWith(platform, token, undefined);
     expect(mocks.catalog.getSku).toHaveBeenCalledTimes(1);
@@ -130,7 +132,7 @@ describe('function - update-item', () => {
 
   it('rejects missing METAPLEX_MINT permission', async () => {
     byThumbprintSpy.mockReset();
-    byThumbprintSpy.mockReturnValueOnce(Promise.resolve({ ...SALE_ENTITY_FULL, stockKeepingUnitCode: 'skuWithoutMint' }));
+    byThumbprintSpy.mockReturnValueOnce(Promise.resolve({ ...TEST_ENTITIES.v2.sale.full, stockKeepingUnitCode: 'skuWithoutMint' }));
     await instance(req, res);
 
     expect(res.statusCode).toEqual(StatusCodes.FORBIDDEN);
