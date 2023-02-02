@@ -110,27 +110,13 @@ export async function updateEntity(context: DatastoreContext, kind: string, enti
   await ds.update(_mapToDatastoreEntity(context, kind, entity));
 }
 
-export async function findEntities<T extends BaseEntity>(context: DatastoreContext, kind: string, filters: Filter[], projection?: string[]): Promise<T[]> {
+export async function findEntities<T extends BaseEntity>(context: DatastoreContext, kind: string, filters: Filter[]): Promise<T[]> {
   const ds = context.tx ?? context.datastore;
 
   const query = ds.createQuery(kind);
   query.filters = filters;
 
-  if (projection) {
-    // It is not possible to project properties in the filter, so remove them
-    const filteredProjection = projection.filter(p => !filters.find(filter => p === filter.name));
-    query.select(filteredProjection);
-  }
-
   const [result] = await ds.runQuery(query);
-
-  if (projection) {
-    filters.filter(f => f.op === '=').forEach(f => {
-      // For all '=' filters we can populate the value in the returned entity
-      // For all other filters it is not possible to populate the value and therefore is left undefined
-      result.forEach(r => r[f.name] = f.val);
-    });
-  }
 
   return result.map(entity => _mapFromDatastoreEntity(entity));
 }

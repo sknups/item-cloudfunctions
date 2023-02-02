@@ -25,7 +25,7 @@ describe('function - get-item - retailer', () => {
 
   beforeEach(() => {
     res = new MockExpressResponse();
-    byThumbprintSpy.mockReturnValueOnce(Promise.resolve(TEST_ENTITIES.v2.sale.full));
+    byThumbprintSpy.mockReturnValueOnce(Promise.resolve(TEST_ENTITIES.v2.sale));
   });
 
   afterEach(() => {
@@ -90,8 +90,8 @@ describe('function - get-item - internal', () => {
 
   beforeEach(() => {
     res = new MockExpressResponse();
-    byThumbprintSpy.mockReturnValueOnce(Promise.resolve(TEST_ENTITIES.v2.sale.full));
-    byNftAddressSpy.mockReturnValueOnce(Promise.resolve(TEST_ENTITIES.v2.minted.full));
+    byThumbprintSpy.mockReturnValueOnce(Promise.resolve(TEST_ENTITIES.v2.sale));
+    byNftAddressSpy.mockReturnValueOnce(Promise.resolve(TEST_ENTITIES.v2.minted));
   });
 
   afterEach(() => {
@@ -100,7 +100,7 @@ describe('function - get-item - internal', () => {
 
   it('supports item with null card', async () => {
     byThumbprintSpy.mockReset();
-    byThumbprintSpy.mockReturnValueOnce(Promise.resolve({ ...TEST_ENTITIES.v2.sale.full, card: null }));
+    byThumbprintSpy.mockReturnValueOnce(Promise.resolve({ ...TEST_ENTITIES.v2.sale, card: null }));
 
     await instance(req(), res);
 
@@ -119,7 +119,7 @@ describe('function - get-item - internal', () => {
 
   it('returns item - giveaway', async () => {
     byThumbprintSpy.mockReset();
-    byThumbprintSpy.mockReturnValueOnce(Promise.resolve(TEST_ENTITIES.v2.giveaway.full));
+    byThumbprintSpy.mockReturnValueOnce(Promise.resolve(TEST_ENTITIES.v2.giveaway));
 
     await instance(req('07e6554733'), res);
 
@@ -140,6 +140,7 @@ describe('function - get-item - internal', () => {
     expect(byNftAddressSpy).toHaveBeenLastCalledWith(nftAddress);
     expect(res._getJSON()).toEqual({
       ...TEST_DTOS.v2.sale.internal,
+      token: '309a6b3543',
       nftAddress: 'SOL.devnet.12345',
       nftState: 'MINTED',
       ownerAddress: 'SOL.devnet.67890',

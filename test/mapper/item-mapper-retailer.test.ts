@@ -12,15 +12,11 @@ describe('mapper - item - retailer', () => {
   );
 
   it('creates item dto structure - v2', () => {
-    expect(instance.toDto(TEST_ENTITIES.v2.sale.projected)).toEqual(TEST_DTOS.v2.sale.retailer)
+    expect(instance.toDto(TEST_ENTITIES.v2.sale)).toEqual(TEST_DTOS.v2.sale.retailer)
   });
 
   it('creates item dto structure - v3', () => {
-    expect(instance.toDto(TEST_ENTITIES.v3.sale.projected)).toEqual(TEST_DTOS.v3.sale.retailer)
-  });
-
-  it('can handle numeric timestamp', () => {
-    expect(instance.toDto({ ...TEST_ENTITIES.v2.sale.projected, created: new Date(TEST_ENTITIES.v2.sale.projected.created.getTime()) })).toEqual(TEST_DTOS.v2.sale.retailer);
+    expect(instance.toDto(TEST_ENTITIES.v3.sale)).toEqual(TEST_DTOS.v3.sale.retailer)
   });
 
   it('generates \'VIDEO\' media structure', () => {
@@ -43,12 +39,12 @@ describe('mapper - item - retailer', () => {
         },
       }
     }
-    expect(instance.toDto({ ...TEST_ENTITIES.v2.sale.projected, skn: 'VIDEO' })).toEqual(expectedDto);
+    expect(instance.toDto({ ...TEST_ENTITIES.v2.sale, skn: 'VIDEO' })).toEqual(expectedDto);
   });
 
   it('throws error if skn is not \'DYNAMIC\' or \'VIDEO\'', () => {
     expect(() => {
-      instance.toDto({ ...TEST_ENTITIES.v2.sale.projected, skn: 'STATIC' })
+      instance.toDto({ ...TEST_ENTITIES.v2.sale, skn: 'STATIC' })
     }).toThrow("Unsupported legacy skn value 'STATIC'");
   });
 

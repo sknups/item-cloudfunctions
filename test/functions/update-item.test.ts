@@ -11,7 +11,7 @@ import { TEST_ENTITIES } from '../test-data-entities';
 import { ItemEntity } from '../../src/entity/item.entity';
 
 const SALE_ENTITY_MINTING: ItemEntity = {
-  ...TEST_ENTITIES.v2.sale.full,
+  ...TEST_ENTITIES.v2.sale,
   key: 'aaaaaaaaa1',
   emailHash: null,
   user: null,
@@ -46,9 +46,9 @@ describe('function - update-item', () => {
   beforeEach(() => {
     mocks.mockClear();
     res = new MockExpressResponse();
-    byThumbprintSpy.mockReturnValueOnce(Promise.resolve(TEST_ENTITIES.v2.sale.full));
+    byThumbprintSpy.mockReturnValueOnce(Promise.resolve(TEST_ENTITIES.v2.sale));
     byNftAddressSpy.mockReturnValueOnce(Promise.resolve({
-      ...TEST_ENTITIES.v2.sale.full,
+      ...TEST_ENTITIES.v2.sale,
       key: '448a6b3129',
       emailHash: null,
       user: null,
@@ -132,7 +132,7 @@ describe('function - update-item', () => {
 
   it('rejects missing METAPLEX_MINT permission', async () => {
     byThumbprintSpy.mockReset();
-    byThumbprintSpy.mockReturnValueOnce(Promise.resolve({ ...TEST_ENTITIES.v2.sale.full, stockKeepingUnitCode: 'skuWithoutMint' }));
+    byThumbprintSpy.mockReturnValueOnce(Promise.resolve({ ...TEST_ENTITIES.v2.sale, stockKeepingUnitCode: 'skuWithoutMint' }));
     await instance(req, res);
 
     expect(res.statusCode).toEqual(StatusCodes.FORBIDDEN);
