@@ -10,20 +10,11 @@ common_args="${common_args} --set-secrets EMAIL_HASHING_SECRET=EMAIL_SALT_SEED:l
 
 npm run build
 
-name=item-create-non-enumerated-tmp
+name=item-create-tmp
 if [[ -z "$1" || "$1" == "$name" ]]; then
   gcloud functions deploy $name \
     $common_args \
-    --entry-point=createNonEnumeratedItem \
-    --memory=512MB \
-    --service-account=item-cf-write@drm-apps-01-43b0.iam.gserviceaccount.com
-fi
-
-name=item-create-enumerated-tmp
-if [[ -z "$1" || "$1" == "$name" ]]; then
-  gcloud functions deploy $name \
-    $common_args \
-    --entry-point=createEnumeratedItem \
+    --entry-point=createItem \
     --memory=512MB \
     --service-account=item-cf-write@drm-apps-01-43b0.iam.gserviceaccount.com
 fi
@@ -42,6 +33,15 @@ if [[ -z "$1" || "$1" == "$name" ]]; then
   gcloud functions deploy $name \
     $common_args \
     --entry-point=getItem \
+    --memory=128MB \
+    --service-account=item-cf-read@drm-apps-01-43b0.iam.gserviceaccount.com
+fi
+
+name=item-update-tmp
+if [[ -z "$1" || "$1" == "$name" ]]; then
+  gcloud functions deploy $name \
+    $common_args \
+    --entry-point=updateItem \
     --memory=128MB \
     --service-account=item-cf-read@drm-apps-01-43b0.iam.gserviceaccount.com
 fi
