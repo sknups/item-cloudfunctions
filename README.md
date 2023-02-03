@@ -86,7 +86,7 @@ curl $BASE_URL/item-find -H 'content-type: application/json' \
   -d '{"platformCode":"SKN","blockchainAddress":"'$BLOCKCHAIN_ADDRESS'","user":"'$USER'"}'
 ```
 
-### item-create-non-enumerated
+### item-create (non-enumerated)
 
 ```bash
 BASE_URL=http://localhost:8080
@@ -97,11 +97,11 @@ USER=devtesting
 
 curl \
   -H 'Content-Type: application/json' \
-  $BASE_URL/item-create-non-enumerated \
+  $BASE_URL/item-create \
   -d '{"skuCode":"'$SKU_CODE'","claimCode":"'$CLAIM_CODE'","email":"'$EMAIL'","user":"'$USER'"}'
 ```
 
-### item-create-enumerated
+### item-create (enumerated)
 
 ```bash
 BASE_URL=http://localhost:8080
@@ -111,7 +111,7 @@ USER=devtesting
 
 curl \
   -H 'Content-Type: application/json' \
-  $BASE_URL/item-create-enumerated \
+  $BASE_URL/item-create \
   -d '{"skuCode":"'$SKU_CODE'","email":"'$EMAIL'","user":"'$USER'"}'
 ```
 

@@ -2,50 +2,8 @@
 import { mocked } from 'jest-mock';
 import { EventPublisher } from '../src/eventstreaming/event-publisher';
 import { MutationResult } from '../src/helpers/persistence/mutation-result';
-import { Sku } from '../src/client/catalog/catalog.client';
 import { AllConfig } from '../src/config/all-config';
-
-export function mockGiveawaySku(code: string): Sku {
-  return {
-    code,
-    brandCode: 'brandCode',
-    brandName: 'brandName',
-    brandWholesalePrice: null,
-    brandWholesalerShare: 0.3,
-    card: 'card',
-    description: 'description',
-    maxQty: null,
-    name: 'name',
-    platformCode: 'platformCode',
-    rarity: null,
-    recommendedRetailPrice: null,
-    tier: 'GIVEAWAY',
-    skn: 'DYNAMIC',
-    version: '2',
-    permissions: ['METAPLEX_MINT'],
-  };
-}
-
-export function mockPurchaseSku(code: string): Sku {
-  return {
-    code,
-    brandCode: 'brandCode',
-    brandName: 'brandName',
-    brandWholesalePrice: 100,
-    brandWholesalerShare: 0.3,
-    card: 'card',
-    description: 'description',
-    maxQty: 99,
-    name: 'name',
-    platformCode: 'platformCode',
-    rarity: null,
-    recommendedRetailPrice: null,
-    tier: 'PREMIUM',
-    skn: 'DYNAMIC',
-    version: '2',
-    permissions: ['SELL'],
-  };
-}
+import { TEST_SKUS } from './test-data-skus';
 
 /**
  * Creates a mock reply for Transaction.commit()
@@ -77,70 +35,29 @@ export function mockCommitTransactionResponse(kind: string, key: number): Mutati
 }
 
 const catalog = {
-  getSku: jest.fn()
-    .mockImplementation((_cfg: AllConfig, skuCode: string) => {
-      switch (skuCode) {
-        case 'skuCode':
-          return mockGiveawaySku(skuCode);
-        case 'TEST-ICOSAHEDRON-GREEN':
-          return mockGiveawaySku(skuCode);
-        case 'skuv1': {
-          const sku = mockGiveawaySku(skuCode);
-          sku.version = '1';
-          return sku;
-        }
-        case 'skuWithMaxQty': {
-          const sku = mockGiveawaySku(skuCode);
-          sku.maxQty = 500;
-          return sku;
-        }
-        case 'skuWithoutMint': {
-          const sku = mockGiveawaySku(skuCode);
-          sku.permissions = [];
-          return sku;
-        }
-
-        case 'premiumSku': {
-          return mockPurchaseSku(skuCode);
-        }
-
-        case 'premiumSkuNoStock': {
-          return mockPurchaseSku(skuCode);
-        }
-
-        case 'premiumSkuWithoutMaxQty': {
-          const sku = mockPurchaseSku(skuCode);
-          sku.maxQty = null
-          return sku;
-        }
-
-        case 'premiumSkuWithoutSellPermission': {
-          const sku = mockPurchaseSku(skuCode);
-          sku.permissions = ['METAPLEX_MINT']
-          return sku;
-        }
-
-        default:
-          return null;
-      }
-    }),
+  getSku: jest.fn().mockImplementation((_cfg, skuCode) => TEST_SKUS[skuCode])
 }
 
 const stock = {
   updateStock: jest.fn()
-    .mockImplementation((_cfg: AllConfig, skuCode: string) => {
-      switch (skuCode) {
-        case 'premiumSku': {
-          return  {
-            sku: skuCode,
-            stock: 42, 
-          }
-        }
+    .mockImplementation((_cfg: AllConfig, sku: string) => {
+      switch (sku) {
+        case 'GIVEAWAY-V1':
+          return { sku, stock: 50123 };
 
-        case 'premiumSkuNoStock': {
-          return null
-        }
-        
+        case 'PREMIUM-V1':
+          return { sku, stock: 371 };
+
+        case 'PREMIUM-V2':
+        case 'TEST-ICOSAHEDRON-GREEN':
+          return { sku, stock: 4301 };
+
+        case 'PREMIUM-V3':
+        case 'TEST-TETRAHEDRON-PURPLE':
+        case 'PREMIUM-V3-WITHOUT-SELL':
+        case 'PREMIUM-V3-WITHOUT-MINT':
+          return { sku, stock: 7944 };
+
         default:
           return null;
       }

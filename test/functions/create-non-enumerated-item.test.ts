@@ -1,3 +1,4 @@
+// TODO (PLATFORM-3285) delete this test file
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import './test-env';
 
@@ -5,12 +6,12 @@ import * as MockExpressResponse from 'mock-express-response';
 import { mocked } from 'jest-mock';
 import { getMockReq } from '@jest-mock/express';
 import { StatusCodes } from 'http-status-codes';
-import { CreateNonEnumeratedItemRequestDTO } from '../../src/dto/create-non-enumerated-item-request.dto';
+import { CreateItemRequestDto } from '../../src/dto/create-item-request.dto';
 import { mockCommitTransactionResponse, mocks } from '../mocks';
 import { createNonEnumeratedItem } from '../../src';
 import { ALREADY_EXISTS } from '../../src/persistence/datastore-constants';
 
-let body: CreateNonEnumeratedItemRequestDTO = {} as CreateNonEnumeratedItemRequestDTO;
+let body: CreateItemRequestDto = {} as CreateItemRequestDto;
 let res = new MockExpressResponse();
 
 describe('function - create-non-enumerated-item', () => {
@@ -20,7 +21,7 @@ describe('function - create-non-enumerated-item', () => {
     body = {
       claimCode: 'claimCode',
       email: 'email@example.com',
-      skuCode: 'skuCode',
+      skuCode: 'GIVEAWAY-V2',
     };
     res = new MockExpressResponse();
   });
@@ -89,24 +90,24 @@ describe('function - create-non-enumerated-item', () => {
   });
 
   it('v1 sku returns 403', async () => {
-    (body as any).skuCode = 'skuv1';
+    (body as any).skuCode = 'GIVEAWAY-V1';
     const req = getMockReq({ method: 'POST', body });
 
     await createNonEnumeratedItem(req, res);
 
     expect(res.statusCode).toEqual(StatusCodes.FORBIDDEN);
-    expect(res._getJSON().code).toEqual('ITEM_00002');
+    expect(res._getJSON().code).toEqual('ITEM_00007'); // SKU_NOT_NON_ENUMERATED
     expect(mocks.catalog.getSku).toHaveBeenCalledTimes(1);
   });
 
   it('premium sku returns 403', async () => {
-    (body as any).skuCode = 'skuWithMaxQty';
+    (body as any).skuCode = 'PREMIUM-V2';
     const req = getMockReq({ method: 'POST', body });
 
     await createNonEnumeratedItem(req, res);
 
     expect(res.statusCode).toEqual(StatusCodes.FORBIDDEN);
-    expect(res._getJSON().code).toEqual('ITEM_00002');
+    expect(res._getJSON().code).toEqual('ITEM_00007'); // SKU_NOT_NON_ENUMERATED
     expect(mocks.catalog.getSku).toHaveBeenCalledTimes(1);
   });
 
