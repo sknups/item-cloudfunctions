@@ -11,56 +11,57 @@ import { repository } from './util';
 
 const MAX_OWNERSHIP_TOKEN_RETRIES = 3;
 
-export function _generateOwnershipToken(): string {
+export function generateOwnershipToken(): string {
   return randomBytes(5).toString("hex");
 }
 
+export async function createItemAndAuditWithRetries(item: ItemEntity): Promise<AuditEntity> {
+  const audit: AuditEntity = {
+    key: null,
+    date: item.created,
+    details: null,
+    entityId: item.key,
+    fromState: null,
+    toState: 'UNBOXED / UNMINTED',
+  };
 
-export async function _createItemAndAuditWithRetries(item: ItemEntity): Promise<AuditEntity> {
-    const audit: AuditEntity = {
-      key: null,
-      date: item.created,
-      details: null,
-      entityId: item.key,
-      fromState: null,
-      toState: 'UNBOXED / UNMINTED',
-    };
-  
-    let remainingAttempts = MAX_OWNERSHIP_TOKEN_RETRIES;
-    let success = false;
-    let commitResponse: MutationResult[];
-    let lastError: any; // eslint-disable-line @typescript-eslint/no-explicit-any
-  
-    while (!success && remainingAttempts > 0) {
-      remainingAttempts--;
-  
-      const context: DatastoreContext = await startTransaction(ItemRepository.context);
-  
-      try {
-        await repository().insertItem(item, context);
-  
-        await repository().insertAudit(audit, context);
-  
-        commitResponse = await commitTransaction(context);
-        success = true;
-      } catch (e) {
-        await rollbackTransaction(context);
-        if (e.code == ALREADY_EXISTS) {
-          logger.warn(`Ownership token ${item.key} in use, retry attempts remaining: ${remainingAttempts}`);
-          item.key = _generateOwnershipToken();
-          lastError = new AppError(OWNERSHIP_TOKEN_RETRIES_EXCEEDED(MAX_OWNERSHIP_TOKEN_RETRIES), e);
-        } else {
-          throw e;
-        }
+  let remainingAttempts = MAX_OWNERSHIP_TOKEN_RETRIES;
+  let success = false;
+  let commitResponse: MutationResult[];
+  let lastError: any; // eslint-disable-line @typescript-eslint/no-explicit-any
+
+  while (!success && remainingAttempts > 0) {
+    remainingAttempts--;
+
+    const context: DatastoreContext = await startTransaction(ItemRepository.context);
+
+    try {
+      await repository().insertItem(item, context);
+
+      await repository().insertAudit(audit, context);
+
+      commitResponse = await commitTransaction(context);
+      success = true;
+    } catch (e) {
+      await rollbackTransaction(context);
+      if (e.code == ALREADY_EXISTS) {
+        logger.warn(`Ownership token ${item.key} in use, retry attempts remaining: ${remainingAttempts}`);
+        item.key = generateOwnershipToken();
+        lastError = new AppError(OWNERSHIP_TOKEN_RETRIES_EXCEEDED(MAX_OWNERSHIP_TOKEN_RETRIES), e);
+      } else {
+        throw e;
       }
     }
-  
-    if (!success) {
-      throw lastError;
-    }
-  
-    audit.key = commitResponse.filter(m => m?.kind === 'audit')[0].key as number;
-  
-    return audit;
   }
-  
+
+  if (!success) {
+    throw lastError;
+  }
+
+  const key = commitResponse.filter(m => m?.kind === 'audit')[0].key as number;
+
+  return {
+    ...audit,
+    key,
+  };
+}

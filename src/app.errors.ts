@@ -34,14 +34,6 @@ export function SKU_NOT_FOUND(sku: string): ErrorReason {
   }
 }
 
-export function SKU_NOT_SUPPORTED_GIVEAWAY(sku: string): ErrorReason {
-  return {
-    code: 'ITEM_00002',
-    message: `Giveaway not supported for sku ${sku}, it must be a v2 giveaway sku`,
-    statusCode: StatusCodes.FORBIDDEN,
-  }
-}
-
 export function SKU_PERMISSION_MISSING(sku: string, permission: string): ErrorReason {
   return {
     code: 'ITEM_00003',
@@ -50,18 +42,26 @@ export function SKU_PERMISSION_MISSING(sku: string, permission: string): ErrorRe
   }
 }
 
-export function SKU_NOT_SUPPORTED_PURCHASE(sku: string): ErrorReason {
-  return {
-    code: 'ITEM_00004',
-    message: `Purchase not supported for sku ${sku}, it must have the 'SELL' permission and a quantity`,
-    statusCode: StatusCodes.FORBIDDEN,
-  }
-}
-
 export function UPDATE_SKU_STOCK_FAILED(sku: string): ErrorReason {
   return {
     code: 'ITEM_00005',
     message: `Failed to update stock for sku ${sku}`,
+    statusCode: StatusCodes.FORBIDDEN,
+  }
+}
+
+export function SKU_NOT_ENUMERATED(sku: string): ErrorReason {
+  return {
+    code: 'ITEM_00006',
+    message: `Received a create-enumerated item request for a non-enumerated sku ${sku}`,
+    statusCode: StatusCodes.FORBIDDEN,
+  }
+}
+
+export function SKU_NOT_NON_ENUMERATED(sku: string): ErrorReason {
+  return {
+    code: 'ITEM_00007',
+    message: `Received a create-non-enumerated item request for an enumerated sku ${sku}`,
     statusCode: StatusCodes.FORBIDDEN,
   }
 }
@@ -100,6 +100,12 @@ export function ITEM_NOT_FOUND(platform: string, token: string): ErrorReason {
     message: `Item with platform ${platform} and code ${token} not found`,
     statusCode: StatusCodes.NOT_FOUND,
   }
+}
+
+export const GIVEAWAY_CODE_NOT_PROVIDED: ErrorReason = {
+  code: 'ITEM_00200',
+  message: 'A claimCode is required when manufacturing a giveaway SKU',
+  statusCode: StatusCodes.BAD_REQUEST,
 }
 
 export const UNCATEGORIZED_ERROR: ErrorReason = {

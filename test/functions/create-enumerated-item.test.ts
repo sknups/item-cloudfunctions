@@ -1,3 +1,4 @@
+// TODO (PLATFORM-3285) delete this test file
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import './test-env';
 
@@ -8,9 +9,10 @@ import { StatusCodes } from 'http-status-codes';
 import { mockCommitTransactionResponse, mocks } from '../mocks';
 import { createEnumeratedItem } from '../../src';
 import { ALREADY_EXISTS } from '../../src/persistence/datastore-constants';
-import { CreateEnumeratedItemRequestDTO } from '../../src/dto/create-enumerated-item-request.dto';
+import { CreateItemRequestDto } from '../../src/dto/create-item-request.dto';
+import { ItemEntity } from '../../src/entity/item.entity';
 
-let body: CreateEnumeratedItemRequestDTO = {} as CreateEnumeratedItemRequestDTO;
+let body: CreateItemRequestDto = {} as CreateItemRequestDto;
 let res = new MockExpressResponse();
 
 describe('function - create-enumerated-item', () => {
@@ -19,7 +21,7 @@ describe('function - create-enumerated-item', () => {
     mocks.mockClear();
     body = {
       email: 'email@example.com',
-      skuCode: 'premiumSku',
+      skuCode: 'PREMIUM-V2',
     };
     res = new MockExpressResponse();
   });
@@ -79,29 +81,40 @@ describe('function - create-enumerated-item', () => {
   });
 
   it('skus with null maxQty returns 403', async () => {
-    (body as any).skuCode = 'premiumSkuWithoutMaxQty';
+    (body as any).skuCode = 'GIVEAWAY-V2';
     const req = getMockReq({ method: 'POST', body });
 
     await createEnumeratedItem(req, res);
 
     expect(res.statusCode).toEqual(StatusCodes.FORBIDDEN);
-    expect(res._getJSON().code).toEqual('ITEM_00004');
+    expect(res._getJSON().code).toEqual('ITEM_00006'); // SKU_NOT_ENUMERATED
     expect(mocks.catalog.getSku).toHaveBeenCalledTimes(1);
   });
 
   it('sku without SELL permission returns 403', async () => {
-    (body as any).skuCode = 'premiumSkuWithoutSellPermission';
+    (body as any).skuCode = 'PREMIUM-V3-WITHOUT-SELL';
     const req = getMockReq({ method: 'POST', body });
 
     await createEnumeratedItem(req, res);
 
     expect(res.statusCode).toEqual(StatusCodes.FORBIDDEN);
-    expect(res._getJSON().code).toEqual('ITEM_00004');
+    expect(res._getJSON().code).toEqual('ITEM_00003');
+    expect(mocks.catalog.getSku).toHaveBeenCalledTimes(1);
+  });
+
+  it('giveaway v1 sku without claimCode returns 400', async () => {
+    (body as any).skuCode = 'GIVEAWAY-V1';
+    const req = getMockReq({ method: 'POST', body });
+
+    await createEnumeratedItem(req, res);
+
+    expect(res.statusCode).toEqual(StatusCodes.BAD_REQUEST);
+    expect(res._getJSON().code).toEqual('ITEM_00200');
     expect(mocks.catalog.getSku).toHaveBeenCalledTimes(1);
   });
 
   it('sku without stock returns 403', async () => {
-    (body as any).skuCode = 'premiumSkuNoStock';
+    (body as any).skuCode = 'PREMIUM-V3-WITHOUT-STOCK';
     const req = getMockReq({ method: 'POST', body });
 
     await createEnumeratedItem(req, res);
@@ -178,6 +191,40 @@ describe('function - create-enumerated-item', () => {
     expect(mocks.datastoreHelper.rollbackTransaction).toHaveBeenCalledTimes(0);
     expect(mocks.datastoreHelper.insertEntity).toHaveBeenCalledTimes(2); // item, audit
 
+    const item: ItemEntity = mocks.datastoreHelper.insertEntity.mock.calls[0][2];
+    expect(item.claimCode).toBeNull();
+    expect(item.source).toEqual('SALE');
+
+    const mockPublisher = mocks.eventPublisher.mock.instances[0];
+    expect(mockPublisher.publishEvent).toHaveBeenCalledTimes(1); // item event published
+    const eventMessage: any = mocked(mockPublisher.publishEvent).mock.calls[0][0];
+    expect(eventMessage.eventId).toEqual(`${auditId}`);
+    expect(eventMessage.skuCode).toEqual(body.skuCode);
+  });
+
+  it('valid giveaway v1 request returns 200', async () => {
+    const auditId: number = Math.floor(Math.random() * 10000000000);
+    mocks.datastoreHelper.commitTransaction.mockReturnValueOnce(mockCommitTransactionResponse('audit', auditId));
+
+    (body as any).skuCode = 'GIVEAWAY-V1';
+    (body as any).claimCode = 'test-claim';
+    const req = getMockReq({ method: 'POST', body });
+
+    await createEnumeratedItem(req, res);
+
+    expect(res.statusCode).toEqual(StatusCodes.OK);
+    expect(res._getJSON().issue).toEqual(949877);
+    expect(mocks.catalog.getSku).toHaveBeenCalledTimes(1);
+    expect(mocks.stock.updateStock).toHaveBeenCalledTimes(1);
+    expect(mocks.datastoreHelper.startTransaction).toHaveBeenCalledTimes(1);
+    expect(mocks.datastoreHelper.commitTransaction).toHaveBeenCalledTimes(1);
+    expect(mocks.datastoreHelper.rollbackTransaction).toHaveBeenCalledTimes(0);
+    expect(mocks.datastoreHelper.insertEntity).toHaveBeenCalledTimes(2); // item, audit
+
+    const item: ItemEntity = mocks.datastoreHelper.insertEntity.mock.calls[0][2];
+    expect(item.claimCode).toEqual('test-claim');
+    expect(item.source).toEqual('GIVEAWAY');
+
     const mockPublisher = mocks.eventPublisher.mock.instances[0];
     expect(mockPublisher.publishEvent).toHaveBeenCalledTimes(1); // item event published
     const eventMessage: any = mocked(mockPublisher.publishEvent).mock.calls[0][0];
@@ -196,7 +243,7 @@ describe('function - create-enumerated-item', () => {
 
     expect(mocks.stock.updateStock).toHaveBeenCalledTimes(1);
     expect(res.statusCode).toEqual(StatusCodes.OK);
-    expect(res._getJSON().saleQty).toEqual(57);
+    expect(res._getJSON().saleQty).toEqual(5699);
   });
 
 });
