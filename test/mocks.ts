@@ -4,6 +4,9 @@ import { EventPublisher } from '../src/eventstreaming/event-publisher';
 import { MutationResult } from '../src/helpers/persistence/mutation-result';
 import { AllConfig } from '../src/config/all-config';
 import { TEST_SKUS } from './test-data-skus';
+import { AppError, SKU_OUT_OF_STOCK, SKU_STOCK_NOT_INITIALISED } from '../src/app.errors';
+import { GaxiosError } from 'gaxios';
+import { StatusCodes } from 'http-status-codes';
 
 /**
  * Creates a mock reply for Transaction.commit()
@@ -58,8 +61,28 @@ const stock = {
         case 'PREMIUM-V3-WITHOUT-MINT':
           return { sku, stock: 7944 };
 
+        case 'PREMIUM-V3-WITH-ZERO-STOCK':
+          throw new GaxiosError('Simulated out of stock error', {}, {
+            status: StatusCodes.FORBIDDEN,
+            statusText: 'FORBIDDEN',
+            config: {},
+            data: { code: 'STOCK_00500', message: 'Simulated out of stock error' },
+            headers: {},
+            request: { responseURL: '' },
+          });
+
+        case 'PREMIUM-V3-WITH-STOCK-ERROR':
+          throw new Error('Unexpected error retrieving stock PREMIUM-V3-WITH-STOCK-ERROR');
+
         default:
-          return null;
+          throw new GaxiosError('Simulated stock not found error', {}, {
+            status: StatusCodes.NOT_FOUND,
+            statusText: 'NOT_FOUND',
+            config: {},
+            data: { code: 'STOCK_00400', message: 'Simulated stock not found error' },
+            headers: {},
+            request: { responseURL: '' },
+          });
       }
     }),
 }

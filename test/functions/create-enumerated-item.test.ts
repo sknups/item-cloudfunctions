@@ -120,7 +120,7 @@ describe('function - create-enumerated-item', () => {
     await createEnumeratedItem(req, res);
 
     expect(res.statusCode).toEqual(StatusCodes.FORBIDDEN);
-    expect(res._getJSON().code).toEqual('ITEM_00005');
+    expect(res._getJSON().code).toEqual('ITEM_00009');
 
     expect(mocks.catalog.getSku).toHaveBeenCalledTimes(1);
     expect(mocks.stock.updateStock).toHaveBeenCalledTimes(1);

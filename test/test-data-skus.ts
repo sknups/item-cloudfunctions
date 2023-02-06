@@ -148,9 +148,19 @@ export const TEST_SKUS = {
     code: 'TEST-TETRAHEDRON-PURPLE',
   },
 
-  'PREMIUM-V3-WITHOUT-STOCK': {
+  'PREMIUM-V3-WITHOUT-STOCK': { // stock not initialised
     ...PREMIUM_SKU_V3,
     code: 'PREMIUM-V3-WITHOUT-STOCK',
+  },
+
+  'PREMIUM-V3-WITH-ZERO-STOCK': { // stock initialised, but set to zero
+    ...PREMIUM_SKU_V3,
+    code: 'PREMIUM-V3-WITH-ZERO-STOCK',
+  },
+
+  'PREMIUM-V3-WITH-STOCK-ERROR': { // throws generic Error when retrieving stock
+    ...PREMIUM_SKU_V3,
+    code: 'PREMIUM-V3-WITH-STOCK-ERROR',
   },
 
   'PREMIUM-V3-WITHOUT-SELL': {
