@@ -46,7 +46,7 @@ export function UPDATE_SKU_STOCK_FAILED(sku: string): ErrorReason {
   return {
     code: 'ITEM_00005',
     message: `Failed to update stock for sku ${sku}`,
-    statusCode: StatusCodes.FORBIDDEN,
+    statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
   }
 }
 
@@ -66,6 +66,21 @@ export function SKU_NOT_NON_ENUMERATED(sku: string): ErrorReason {
   }
 }
 
+export function SKU_OUT_OF_STOCK(sku: string): ErrorReason {
+  return {
+    code: 'ITEM_00008',
+    message: `SKU ${sku} is out of stock`,
+    statusCode: StatusCodes.FORBIDDEN,
+  }
+}
+
+export function SKU_STOCK_NOT_INITIALISED(sku: string): ErrorReason {
+  return {
+    code: 'ITEM_00009',
+    message: `SKU ${sku} stock is not initialised`,
+    statusCode: StatusCodes.FORBIDDEN,
+  }
+}
 
 /**
  * This error may occur if there is a collision when generating an ownership token.

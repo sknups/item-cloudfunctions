@@ -266,7 +266,29 @@ describe('function - create-item', () => {
       const res = await _sendRequest({ ...BODY_PURCHASE, skuCode: 'PREMIUM-V3-WITHOUT-STOCK' });
 
       expect(res.statusCode).toEqual(StatusCodes.FORBIDDEN);
+      expect(res.dto.code).toEqual('ITEM_00009'); // SKU_STOCK_NOT_INITIALISED
+
+      expect(mocks.catalog.getSku).toHaveBeenCalledTimes(1);
+      expect(mocks.stock.updateStock).toHaveBeenCalledTimes(1);
+      expect(mocks.datastoreHelper.insertEntity).toHaveBeenCalledTimes(0);
+    });
+
+    it('sku with zero stock returns 403 FORBIDDEN', async () => {
+      const res = await _sendRequest({ ...BODY_PURCHASE, skuCode: 'PREMIUM-V3-WITH-ZERO-STOCK' });
+
+      expect(res.statusCode).toEqual(StatusCodes.FORBIDDEN);
+      expect(res.dto.code).toEqual('ITEM_00008'); // SKU_OUT_OF_STOCK
+
+      expect(mocks.catalog.getSku).toHaveBeenCalledTimes(1);
+      expect(mocks.stock.updateStock).toHaveBeenCalledTimes(1);
+      expect(mocks.datastoreHelper.insertEntity).toHaveBeenCalledTimes(0);
+    });
+
+    it('sku with unexpected error retrieving stock returns 500 INTERNAL_SERVER_ERROR', async () => {
+      const res = await _sendRequest({ ...BODY_PURCHASE, skuCode: 'PREMIUM-V3-WITH-STOCK-ERROR' });
+
       expect(res.dto.code).toEqual('ITEM_00005'); // UPDATE_SKU_STOCK_FAILED
+      expect(res.statusCode).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
 
       expect(mocks.catalog.getSku).toHaveBeenCalledTimes(1);
       expect(mocks.stock.updateStock).toHaveBeenCalledTimes(1);

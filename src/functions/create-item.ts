@@ -6,7 +6,7 @@ import { CreateItemRequestDto } from '../dto/create-item-request.dto';
 import { parseAndValidateRequestData } from '../helpers/validation';
 import logger from '../helpers/logger';
 import { Sku } from '../client/catalog/catalog.client';
-import { AppError, GIVEAWAY_CODE_NOT_PROVIDED, SKU_PERMISSION_MISSING, UPDATE_SKU_STOCK_FAILED } from '../app.errors';
+import { AppError, GIVEAWAY_CODE_NOT_PROVIDED, SKU_OUT_OF_STOCK, SKU_PERMISSION_MISSING, SKU_STOCK_NOT_INITIALISED, UPDATE_SKU_STOCK_FAILED } from '../app.errors';
 import { Stock, updateStock } from '../client/catalog/stock.client';
 import { itemEntityToItemEvent, skuToItemEntity } from '../helpers/item-mapper';
 import { ItemEntity } from '../entity/item.entity';
@@ -18,11 +18,18 @@ import { RetailerItemMapper } from '../mapper/retailer/item-mapper-retailer';
 import { getSkuOrThrow } from '../helpers/sku';
 
 async function _updateStockOrThrow(cfg: AllConfig, skuCode: string): Promise<Stock> {
-  const stock: Stock | null = await updateStock(cfg, skuCode);
-  if (!stock) {
-    throw new AppError(UPDATE_SKU_STOCK_FAILED(skuCode));
+  try {
+    return await updateStock(cfg, skuCode);
+  } catch (e) {
+    switch (e.response?.data?.code) {
+      case 'STOCK_00400':
+        throw new AppError(SKU_STOCK_NOT_INITIALISED(skuCode), e);
+      case 'STOCK_00500':
+        throw new AppError(SKU_OUT_OF_STOCK(skuCode), e);
+      default:
+        throw new AppError(UPDATE_SKU_STOCK_FAILED(skuCode), e);
+    }
   }
-  return stock;
 }
 
 export async function createItemHandler(
