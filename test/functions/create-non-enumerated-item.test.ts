@@ -20,7 +20,7 @@ describe('function - create-non-enumerated-item', () => {
     mocks.mockClear();
     body = {
       claimCode: 'claimCode',
-      email: 'email@example.com',
+      user: 'example',
       skuCode: 'GIVEAWAY-V2',
     };
     res = new MockExpressResponse();
@@ -51,17 +51,8 @@ describe('function - create-non-enumerated-item', () => {
     expect(res.statusCode).toEqual(StatusCodes.BAD_REQUEST);
   });
 
-  it('missing email returns 400', async () => {
-    delete (body as any).email;
-    const req = getMockReq({ method: 'POST', body });
-
-    await createNonEnumeratedItem(req, res);
-
-    expect(res.statusCode).toEqual(StatusCodes.BAD_REQUEST);
-  });
-
-  it('invalid email returns 400', async () => {
-    (body as any).email = 'invalid-email';
+  it('missing user returns 400', async () => {
+    delete (body as any).user;
     const req = getMockReq({ method: 'POST', body });
 
     await createNonEnumeratedItem(req, res);

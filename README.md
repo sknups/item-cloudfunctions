@@ -26,7 +26,6 @@ Create a `.env` file for dev, eg:
 cat <<EOF > .env
 GCLOUD_PROJECT=drm-apps-01-43b0
 CF_BASE_URL=https://europe-west2-drm-apps-01-43b0.cloudfunctions.net
-EMAIL_HASHING_SECRET='#oBbMZrt56ti'
 FLEX_URL=https://flex-dev.sknups.com
 LOG_FORMAT=simple
 SKNAPP_URL=https://app-dev.sknups.com
@@ -92,13 +91,12 @@ curl $BASE_URL/item-find -H 'content-type: application/json' \
 BASE_URL=http://localhost:8080
 SKU_CODE=TEST-DODECAHEDRON-GIVEAWAY
 CLAIM_CODE=test
-EMAIL=devtesting@sknups.com
 USER=devtesting
 
 curl \
   -H 'Content-Type: application/json' \
   $BASE_URL/item-create \
-  -d '{"skuCode":"'$SKU_CODE'","claimCode":"'$CLAIM_CODE'","email":"'$EMAIL'","user":"'$USER'"}'
+  -d '{"skuCode":"'$SKU_CODE'","claimCode":"'$CLAIM_CODE'","user":"'$USER'"}'
 ```
 
 ### item-create (enumerated)
@@ -106,13 +104,12 @@ curl \
 ```bash
 BASE_URL=http://localhost:8080
 SKU_CODE=TEST-DODECAHEDRON-BLUE
-EMAIL=devtesting@sknups.com
 USER=devtesting
 
 curl \
   -H 'Content-Type: application/json' \
   $BASE_URL/item-create \
-  -d '{"skuCode":"'$SKU_CODE'","email":"'$EMAIL'","user":"'$USER'"}'
+  -d '{"skuCode":"'$SKU_CODE'","user":"'$USER'"}'
 ```
 
 ### item-update

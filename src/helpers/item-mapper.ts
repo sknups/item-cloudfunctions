@@ -2,7 +2,6 @@ import { AllConfig } from '../config/all-config';
 import { ItemEvent, ItemEventType } from '../eventstreaming/item-event';
 import { ItemEntity } from '../entity/item.entity';
 import { AuditEntity } from '../entity/audit.entity';
-import { hashEmail } from '../hashing/index';
 import { Sku } from '../client/catalog/catalog.client';
 
 export function skuToItemEntity(
@@ -11,7 +10,6 @@ export function skuToItemEntity(
   ownershipToken: string,
   claimCode: string | null,
   saleQty: number | null,
-  email: string,
   user: string,
   cfg: AllConfig,
 ): ItemEntity {
@@ -26,7 +24,6 @@ export function skuToItemEntity(
     claimCode: claimCode,
     created,
     description: sku.description,
-    emailHash: hashEmail(email, cfg.emailHashingSecret),
     user: user || null,
     maxQty: sku.maxQty,
     nftAddress: null,
@@ -64,8 +61,8 @@ export function itemEntityToItemEvent(item: ItemEntity, audit: AuditEntity, even
   event.nftState = item.nftState;
   event.ownerAddress = item.ownerAddress;
   event.platformCode = item.platformCode;
-  event.retailSource = item.user == null ? 'sknups.gg-emailhash' : 'FirebaseUID';
-  event.retailUserId = item.user == null ? item.emailHash : item.user;
+  event.retailSource = 'FirebaseUID';
+  event.retailUserId = item.user;
   event.rrp = item.recommendedRetailPrice;
   event.saleQty = item.saleQty;
   event.skuCode = item.stockKeepingUnitCode;

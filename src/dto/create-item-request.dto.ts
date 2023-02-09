@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class CreateItemRequestDto {
   /**
@@ -11,22 +11,11 @@ export class CreateItemRequestDto {
   public readonly skuCode: string;
 
   /**
-   * Email address of the item owner.
-   *
-   * @example 'bob@example.com'
-   */
-  @IsString()
-  @IsNotEmpty()
-  @IsEmail()
-  public readonly email: string;
-
-  /**
    * User of the item owner.
    */
-  @IsOptional()
   @IsString()
   @IsNotEmpty()
-  public readonly user?: string;
+  public readonly user: string;
 
   /**
    * The claim code used to redeem this giveaway item.
