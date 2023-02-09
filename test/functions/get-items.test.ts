@@ -127,9 +127,9 @@ describe('function - get-items', () => {
     expect(byWalletAddressSpy).toHaveBeenCalledTimes(1);
     expect(byWalletAddressSpy).toHaveBeenLastCalledWith(platform, blockchainAddress);
 
-    const dto111 = { ...GIVEAWAY_DTO, thumbprint: '111', token: '111' };
-    const dto222 = { ...SALE_DTO, thumbprint: '222', token: '222' };
-    const dto333 = { ...GIVEAWAY_DTO, thumbprint: '333', token: '333' };
+    const dto111 = { ...GIVEAWAY_DTO, token: '111' };
+    const dto222 = { ...SALE_DTO, token: '222' };
+    const dto333 = { ...GIVEAWAY_DTO, token: '333' };
 
     for (const dto of [dto111, dto222, dto333]) {
       const oldMediaJson = JSON.stringify(dto.media);

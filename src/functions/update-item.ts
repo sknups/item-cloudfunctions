@@ -140,7 +140,7 @@ export async function updateItemHandler(req: Request, res: Response, config: All
     await publisher(config).publishEvent(event);
   }
 
-  const response = new RetailerItemMapper(config.assetsUrl, config.flexUrl, config.sknAppUrl).toDto(newItemEntity || itemEntity);
+  const response = new RetailerItemMapper(config.assetsUrl, config.flexUrl).toDto(newItemEntity || itemEntity);
   res.status(StatusCodes.OK).json(response);
 
 }
