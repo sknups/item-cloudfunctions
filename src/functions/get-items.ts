@@ -7,7 +7,6 @@ import logger from '../helpers/logger';
 import { parseAndValidateRequestData } from '../helpers/validation';
 import { ItemRepository } from '../persistence/item-repository';
 import { AppError, UNCATEGORIZED_ERROR } from '../app.errors';
-import { hashEmail } from '../hashing';
 import { RetailerItemMapper } from '../mapper/retailer/item-mapper-retailer';
 
 export class GetItems {
@@ -27,17 +26,6 @@ export class GetItems {
 
       const entities = []
       const itemIds = new Set<string>();
-
-      if (getItemsReq.emailAddress) {
-        const emailHash = hashEmail(getItemsReq.emailAddress, config.emailHashingSecret);
-        const itemsFromEmail = await GetItems.repository.byEmailHash(getItemsReq.platformCode, emailHash);
-        for(const item of itemsFromEmail){ 
-          if (!itemIds.has(item.key)) {
-            entities.push(item)
-            itemIds.add(item.key)
-          }
-        }
-      }
 
       if (getItemsReq.user) {
         const itemsFromUser = await GetItems.repository.byUser(getItemsReq.platformCode, getItemsReq.user);

@@ -97,7 +97,6 @@ export async function updateItemHandler(req: Request, res: Response, config: All
       case UpdateItemOperation.MINTED: {
         [newItemEntity, auditEntity] = await _updateEntity(context, itemEntity, {
           nftState: operationData.toNftState,
-          emailHash: null,
           user: null,
         });
 

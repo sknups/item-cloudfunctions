@@ -4,7 +4,6 @@ import { NamedKeyEntity } from '../../src/helpers/persistence/base.entity';
 import { TEST_ENTITIES } from '../test-data-entities';
 
 const PLATFORM = 'SKN';
-const EMAIL = '8b246c38d16a2432ef1b9e3b79279b65d0ba514ad648e99d741d695c66c02fab';
 const WALLET = 'SOL.devnet.9H5c7kkULEmT7MvrJp1MEavN1tu7MN5uG5Yigb54D7Vx';
 const USER = 'cyP1XYi0y6NadKRXqMbmF9R1vz53';
 
@@ -50,53 +49,9 @@ describe('persistence', () => {
     jest.resetAllMocks();
   });
 
-  describe('byEmailHash', () => {
-
-    const overrides = {};
-
-    const filters = [
-      { name: 'platformCode', op: '=', val: PLATFORM },
-      { name: 'emailHash', op: '=', val: EMAIL },
-    ];
-
-    beforeEach(function () {
-      runQuerySpy.mockReturnValueOnce(_runQueryResponse(overrides));
-    });
-
-    it('uses correct query', async () => {
-
-      const expectedQuery = {
-        namespace: 'drm',
-        kinds: ['item'],
-        filters: filters,
-      }
-
-      await instance.byEmailHash(PLATFORM, EMAIL);
-      expect(runQuerySpy).toHaveBeenCalledTimes(1);
-      expect(runQuerySpy).toHaveBeenLastCalledWith(expect.objectContaining(expectedQuery));
-    });
-
-    it('transforms results', async () => {
-      const results = await instance.byEmailHash(PLATFORM, EMAIL);
-
-      expect(results).toEqual(_transformedResponse(overrides));
-    });
-
-    it('ignores deleted items', async () => {
-      runQuerySpy.mockReset();
-      runQuerySpy.mockReturnValueOnce(_runQueryResponse({ state: 'DELETED' }));
-
-      const results = await instance.byEmailHash(PLATFORM, EMAIL);
-
-      expect(results).toEqual([]);
-    });
-
-  });
-
-
   describe('byWalletAddress', () => {
 
-    const overrides = { nftState: 'MINTED', emailHash: null, ownerAddress: WALLET, user: 'abc432' };
+    const overrides = { nftState: 'MINTED', ownerAddress: WALLET, user: 'abc432' };
 
     const filters = [
       { name: 'platformCode', op: '=', val: PLATFORM },
@@ -163,7 +118,7 @@ describe('persistence', () => {
 
   describe('byUser', () => {
 
-    const overrides = { nftState: 'MINTED', emailHash: null, tier: 'GIVEAWAY' };
+    const overrides = { nftState: 'MINTED', tier: 'GIVEAWAY' };
 
     const filters = [
       { name: 'platformCode', op: '=', val: PLATFORM },

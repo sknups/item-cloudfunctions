@@ -10,7 +10,6 @@ export type ItemEntity = NamedKeyEntity & UpdateableEntity & {
   card: string | null;
   claimCode: string | null;
   description: string;
-  emailHash: string | null;
   maxQty: number | null;
   media: string | null;
   nftAddress: string | null;

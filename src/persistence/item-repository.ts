@@ -7,19 +7,6 @@ export class ItemRepository {
 
   public static context = createContext('drm');
 
-  public async byEmailHash(platformCode: string, emailHash: string): Promise<ItemEntity[]> {
-    logger.debug(`getItemsByEmailHash - platformCode = '${platformCode}' emailHash = '${emailHash}'`)
-
-    return await findEntities<ItemEntity>(
-      ItemRepository.context,
-      'item',
-      [
-        { name: 'platformCode', op: '=', val: platformCode },
-        { name: 'emailHash', op: '=', val: emailHash },
-      ],
-    ).then(items => items.filter(item => item.state !== 'DELETED'));
-  }
-
   public async byWalletAddress(platformCode: string, ownerAddress: string): Promise<ItemEntity[]> {
     logger.debug(`getItemsByWalletAddress - platformCode = '${platformCode}' ownerAddress = '${ownerAddress}'`)
 

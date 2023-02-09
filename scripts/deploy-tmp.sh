@@ -6,7 +6,6 @@ common_args="${common_args} --region=europe-west2"
 common_args="${common_args} --security-level=secure-always"
 common_args="${common_args} --runtime=nodejs16"
 common_args="${common_args} --set-env-vars CF_BASE_URL=https://europe-west2-drm-apps-01-43b0.cloudfunctions.net,ASSETS_URL=https://assets-dev.sknups.gg,FLEX_URL=https://flex-dev.sknups.com,SKNAPP_URL=https://app-dev.sknups.com"
-common_args="${common_args} --set-secrets EMAIL_HASHING_SECRET=EMAIL_SALT_SEED:latest"
 
 npm run build
 
