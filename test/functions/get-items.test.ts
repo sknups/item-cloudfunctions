@@ -1,5 +1,4 @@
 import './test-env';
-process.env.EMAIL_HASHING_SECRET = 'shhh this is a secret';
 
 import { getItems } from '../../src';
 import { Request } from '@google-cloud/functions-framework';
@@ -18,7 +17,6 @@ const instance = getItems;
 
 describe('function - get-items', () => {
 
-  const byEmailHashSpy = jest.spyOn(ItemRepository.prototype, 'byEmailHash');
   const byWalletAddressSpy = jest.spyOn(ItemRepository.prototype, 'byWalletAddress');
   const byUserSpy = jest.spyOn(ItemRepository.prototype, 'byUser');
 
@@ -41,7 +39,7 @@ describe('function - get-items', () => {
     expect(res._getString()).toContain('platformCode should not be empty');
   });
 
-  it('asserts \'emailAddress\', \'blockchainAddress\' or \'user\' required ', async () => {
+  it('asserts \'blockchainAddress\' or \'user\' required ', async () => {
     const req = {
       method: 'POST', body: {
         platformCode: 'TEST',
@@ -51,32 +49,8 @@ describe('function - get-items', () => {
     await instance(req, res);
 
     expect(res.statusCode).toEqual(StatusCodes.BAD_REQUEST);
-    expect(res._getString()).toContain('\'emailAddress\' missing. must supply at least emailAddress, user or blockchainAddress');
-    expect(res._getString()).toContain('\'user\' missing. must supply at least emailAddress, user or blockchainAddress');
-    expect(res._getString()).toContain('\'blockchainAddress\' missing. must supply at least emailAddress, user or blockchainAddress');
-  });
-
-  it('gets items from \'emailAddress\'', async () => {
-    const req = {
-      method: 'POST', body: {
-        platformCode: 'TEST',
-        emailAddress: 'user@example.com'
-      }
-    } as Request;
-
-    byEmailHashSpy.mockReturnValueOnce(Promise.resolve([SALE_ENTITY, GIVEAWAY_ENTITY]));
-
-    await instance(req, res);
-
-    const platform = 'TEST';
-    const emailHash = '495a8c7b1ab6fd611377ba81fe75cdead63f0ebe88a9260806a3fba790400805';
-
-    expect(byEmailHashSpy).toHaveBeenCalledTimes(1);
-    expect(byEmailHashSpy).toHaveBeenLastCalledWith(platform, emailHash);
-    expect(byWalletAddressSpy).toHaveBeenCalledTimes(0);
-    expect(byUserSpy).toHaveBeenCalledTimes(0);
-
-    expect(res._getJSON()).toEqual([SALE_DTO, GIVEAWAY_DTO]);
+    expect(res._getString()).toContain('\'user\' missing. must supply at least user or blockchainAddress');
+    expect(res._getString()).toContain('\'blockchainAddress\' missing. must supply at least user or blockchainAddress');
   });
 
   it('gets items from \'blockchainAddress\' ', async () => {
@@ -96,7 +70,6 @@ describe('function - get-items', () => {
     expect(byWalletAddressSpy).toHaveBeenCalledTimes(1);
     expect(byWalletAddressSpy).toHaveBeenLastCalledWith(platform, walletAddress);
     expect(byUserSpy).toHaveBeenCalledTimes(0);
-    expect(byEmailHashSpy).toHaveBeenCalledTimes(0);
 
     expect(res._getJSON()).toEqual([SALE_DTO, GIVEAWAY_DTO]);
   });
@@ -119,12 +92,11 @@ describe('function - get-items', () => {
     expect(byUserSpy).toHaveBeenCalledTimes(1);
     expect(byUserSpy).toHaveBeenLastCalledWith(platform, user);
     expect(byWalletAddressSpy).toHaveBeenCalledTimes(0);
-    expect(byEmailHashSpy).toHaveBeenCalledTimes(0);
 
     expect(res._getJSON()).toEqual([SALE_DTO, GIVEAWAY_DTO]);
   });
 
-  it('gets items from \'emailAddress\', \'user\' and  \'blockchainAddress\' ', async () => {
+  it('gets items from \'user\' and \'blockchainAddress\' ', async () => {
     const platform = 'TEST';
     const emailAddress = 'user@example.com';
     const user = 'abc123456';
@@ -139,10 +111,6 @@ describe('function - get-items', () => {
       }
     } as Request;
 
-    byEmailHashSpy.mockReturnValueOnce(Promise.resolve([
-      SALE_ENTITY,
-      GIVEAWAY_ENTITY,
-    ]));
     byUserSpy.mockReturnValueOnce(Promise.resolve([
       SALE_ENTITY, // duplicate
       { ...GIVEAWAY_ENTITY, key: '111' },
@@ -158,8 +126,6 @@ describe('function - get-items', () => {
     expect(byUserSpy).toHaveBeenLastCalledWith(platform, user);
     expect(byWalletAddressSpy).toHaveBeenCalledTimes(1);
     expect(byWalletAddressSpy).toHaveBeenLastCalledWith(platform, blockchainAddress);
-    expect(byEmailHashSpy).toHaveBeenCalledTimes(1);
-    expect(byEmailHashSpy).toHaveBeenLastCalledWith(platform, '495a8c7b1ab6fd611377ba81fe75cdead63f0ebe88a9260806a3fba790400805');
 
     const dto111 = { ...GIVEAWAY_DTO, thumbprint: '111', token: '111' };
     const dto222 = { ...SALE_DTO, thumbprint: '222', token: '222' };
@@ -176,7 +142,6 @@ describe('function - get-items', () => {
 
     expect(res._getJSON()).toEqual([
       SALE_DTO,
-      GIVEAWAY_DTO,
       dto111,
       dto222,
       dto333,

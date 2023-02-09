@@ -13,7 +13,6 @@ import { ItemEntity } from '../../src/entity/item.entity';
 const SALE_ENTITY_MINTING: ItemEntity = {
   ...TEST_ENTITIES.v3.sale,
   key: 'aaaaaaaaa1',
-  emailHash: null,
   user: null,
   nftState: 'MINTING',
   nftAddress: 'SOL.devnet.nft1',
@@ -50,7 +49,6 @@ describe('function - update-item', () => {
     byNftAddressSpy.mockReturnValueOnce(Promise.resolve({
       ...TEST_ENTITIES.v3.sale,
       key: '448a6b3129',
-      emailHash: null,
       user: null,
       nftState: 'MINTED',
       nftAddress: 'SOL.devnet.dummy1',

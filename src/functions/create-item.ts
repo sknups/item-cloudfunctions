@@ -84,7 +84,6 @@ export async function createItemHandler(
     generateOwnershipToken(),
     isPurchase ? null : requestDto.claimCode,
     saleQty,
-    requestDto.email,
     requestDto.user,
     config,
   );

@@ -15,18 +15,16 @@ export class CreateItemRequestDto {
    *
    * @example 'bob@example.com'
    */
+  @IsOptional()
   @IsString()
-  @IsNotEmpty()
-  @IsEmail()
-  public readonly email: string;
+  public readonly email?: string;
 
   /**
    * User of the item owner.
    */
-  @IsOptional()
   @IsString()
   @IsNotEmpty()
-  public readonly user?: string;
+  public readonly user: string;
 
   /**
    * The claim code used to redeem this giveaway item.

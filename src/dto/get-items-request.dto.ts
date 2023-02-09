@@ -1,4 +1,4 @@
-import { IsNotEmpty, isEmpty, IsString, ValidateIf } from 'class-validator';
+import { IsNotEmpty, isEmpty, IsString, ValidateIf, IsOptional } from 'class-validator';
 
 export class GetItemsRequestDTO {
 
@@ -12,24 +12,23 @@ export class GetItemsRequestDTO {
   /**
   * The Owner email address.
   */
+  @IsOptional()
   @IsString()
-  @ValidateIf(o => isEmpty(o.blockchainAddress) &&  isEmpty(o.user) )
-  @IsNotEmpty({message: '\'$property\' missing. must supply at least emailAddress, user or blockchainAddress'})
   emailAddress?: string;
 
   /**
   * The User that owns the items 
   */
   @IsString()
-  @ValidateIf(o => isEmpty(o.blockchainAddress) &&  isEmpty(o.emailAddress) )
-  @IsNotEmpty({message: '\'$property\' missing. must supply at least emailAddress, user or blockchainAddress'})
+  @ValidateIf(o => isEmpty(o.blockchainAddress) )
+  @IsNotEmpty({message: '\'$property\' missing. must supply at least user or blockchainAddress'})
   user?: string;
 
   /**
   * The Owner blockchain wallet address. 
   */
   @IsString()
-  @ValidateIf(o => isEmpty(o.emailAddress) &&  isEmpty(o.user) )
-  @IsNotEmpty({message: '\'$property\' missing. must supply at least emailAddress, user or blockchainAddress'})
+  @ValidateIf(o => isEmpty(o.user) )
+  @IsNotEmpty({message: '\'$property\' missing. must supply at least user or blockchainAddress'})
   blockchainAddress?: string;
 }
