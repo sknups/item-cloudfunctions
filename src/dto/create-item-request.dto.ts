@@ -11,15 +11,6 @@ export class CreateItemRequestDto {
   public readonly skuCode: string;
 
   /**
-   * Email address of the item owner.
-   *
-   * @example 'bob@example.com'
-   */
-  @IsOptional()
-  @IsString()
-  public readonly email?: string;
-
-  /**
    * User of the item owner.
    */
   @IsString()

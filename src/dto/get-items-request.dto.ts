@@ -10,13 +10,6 @@ export class GetItemsRequestDTO {
   platformCode: string;
 
   /**
-  * The Owner email address.
-  */
-  @IsOptional()
-  @IsString()
-  emailAddress?: string;
-
-  /**
   * The User that owns the items 
   */
   @IsString()

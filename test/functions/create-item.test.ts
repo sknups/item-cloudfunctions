@@ -16,7 +16,6 @@ import { ItemEvent } from '../../src/eventstreaming/item-event';
  */
 const BODY_GIVEAWAY: CreateItemRequestDto = {
   claimCode: 'claimCode',
-  email: 'email@example.com',
   skuCode: 'GIVEAWAY-V3',
   user: 'testUser',
 };
@@ -25,7 +24,6 @@ const BODY_GIVEAWAY: CreateItemRequestDto = {
  * Template request for sales.
  */
 const BODY_PURCHASE: CreateItemRequestDto = {
-  email: 'email@example.com',
   skuCode: 'PREMIUM-V3',
   user: 'testUser',
 }
