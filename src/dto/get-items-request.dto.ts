@@ -1,4 +1,4 @@
-import { IsNotEmpty, isEmpty, IsString, ValidateIf, IsOptional } from 'class-validator';
+import { IsNotEmpty, isEmpty, IsString, ValidateIf } from 'class-validator';
 
 export class GetItemsRequestDTO {
 
