@@ -29,7 +29,6 @@ CF_BASE_URL=https://europe-west2-drm-apps-01-43b0.cloudfunctions.net
 FLEX_URL=https://flex-dev.sknups.com
 LOG_FORMAT=simple
 SKNAPP_URL=https://app-dev.sknups.com
-ASSETS_URL=https://assets-dev.sknups.gg
 EOF
 ```
 

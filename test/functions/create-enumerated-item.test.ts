@@ -234,7 +234,7 @@ describe('function - create-enumerated-item', () => {
 
     expect(mocks.stock.updateStock).toHaveBeenCalledTimes(1);
     expect(res.statusCode).toEqual(StatusCodes.OK);
-    expect(res._getJSON().saleQty).toEqual(5699);
+    expect(res._getJSON().issue).toEqual(5699);
   });
 
 });

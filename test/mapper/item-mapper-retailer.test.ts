@@ -8,7 +8,6 @@ describe('mapper - item - retailer', () => {
   const instance = new RetailerItemMapper(
     "https://assets-dev.sknups.gg",
     "https://flex-dev.sknups.com",
-    "https://app-dev.sknups.com",
   );
 
   it('creates item dto structure - v2', () => {
