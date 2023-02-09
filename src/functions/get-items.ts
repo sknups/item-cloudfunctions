@@ -47,7 +47,7 @@ export class GetItems {
         }
       }
 
-      const mapper = new RetailerItemMapper(config.assetsUrl, config.flexUrl, config.sknAppUrl)
+      const mapper = new RetailerItemMapper(config.assetsUrl, config.flexUrl)
       const items = entities.map(entity => mapper.toDto(entity))
     
       res.status(StatusCodes.OK).json(items);

@@ -2,7 +2,7 @@ import { InternalItemDto } from '../src/dto/internal/item-internal.dto';
 import { InternalItemMediaTypeDto } from '../src/dto/internal/item-media-internal.dto';
 import { ItemNftState, ItemSource } from '../src/dto/item.dto';
 import { RetailerItemMediaTypeDto } from '../src/dto/retailer/item-media-retailer.dto';
-import { LegacyRetailerItemDto } from '../src/dto/retailer/item-retailer.dto';
+import { RetailerItemDto } from '../src/dto/retailer/item-retailer.dto';
 
 const SALE_DTO_V2_INTERNAL: InternalItemDto = {
   "brand": "TEST",
@@ -70,17 +70,12 @@ const SALE_DTO_V2_INTERNAL: InternalItemDto = {
   "version": "2"
 };
 
-const SALE_DTO_V2_RETAILER: LegacyRetailerItemDto = {
+const SALE_DTO_V2_RETAILER: RetailerItemDto = {
   "brand": "TEST",
-  "brandCode": "TEST",
-  "certVersion": "v1",
-  "claimCode": null,
   "created": "2023-01-31T10:35:34.796Z",
   "description": "The water element. Twenty triangles in a polyhedral soup. In nature, the icosahedron can be seen in the folded structures of bacteriophages and viruses.\n",
-  "flexHost": "https://flex-dev.sknups.com",
   "giveaway": null,
   "issue": 2,
-  "maxQty": 10000,
   "maximum": 10000,
   "media": {
     "model": {
@@ -125,16 +120,10 @@ const SALE_DTO_V2_RETAILER: LegacyRetailerItemDto = {
   "name": "Green Icosahedron",
   "nftState": ItemNftState.UNMINTED,
   "platform": "SKN",
-  "platformCode": "SKN",
   "rarity": null,
-  "recommendedRetailPrice": 1000,
   "rrp": 1000,
-  "saleQty": 2,
-  "sknappHost": "https://app-dev.sknups.com",
   "sku": "TEST-ICOSAHEDRON-GREEN",
   "source": ItemSource.SALE,
-  "stockKeepingUnitCode": "TEST-ICOSAHEDRON-GREEN",
-  "thumbprint": "f8d4de3db6",
   "tier": "GREEN",
   "token": "f8d4de3db6",
   "version": "2"
@@ -185,17 +174,12 @@ const GIVEAWAY_DTO_V2_INTERNAL: InternalItemDto = {
   "version": "2"
 };
 
-const GIVEAWAY_DTO_V2_RETAILER: LegacyRetailerItemDto = {
+const GIVEAWAY_DTO_V2_RETAILER: RetailerItemDto = {
   "brand": "TEST",
-  "brandCode": "TEST",
-  "certVersion": "v1",
-  "claimCode": "octahedron",
   "created": "2023-01-31T09:41:50.936Z",
   "description": "The air element. Octahedra are sparkling crystals of diamond, and magnetite.",
-  "flexHost": "https://flex-dev.sknups.com",
   "giveaway": "octahedron",
   "issue": null,
-  "maxQty": null,
   "maximum": null,
   "media": {
     "model": {
@@ -240,16 +224,10 @@ const GIVEAWAY_DTO_V2_RETAILER: LegacyRetailerItemDto = {
   "name": "Giveaway Octahedron",
   "nftState": ItemNftState.UNMINTED,
   "platform": "SKN",
-  "platformCode": "SKN",
   "rarity": null,
-  "recommendedRetailPrice": null,
   "rrp": null,
-  "saleQty": null,
-  "sknappHost": "https://app-dev.sknups.com",
   "sku": "TEST-OCTAHEDRON-GIVEAWAY",
   "source": ItemSource.GIVEAWAY,
-  "stockKeepingUnitCode": "TEST-OCTAHEDRON-GIVEAWAY",
-  "thumbprint": "fc07c88901",
   "tier": "GIVEAWAY",
   "token": "fc07c88901",
   "version": "2"
@@ -308,17 +286,12 @@ const SALE_DTO_V3_INTERNAL: InternalItemDto = {
   "version": "3"
 }
 
-const SALE_DTO_V3_RETAILER: LegacyRetailerItemDto = {
+const SALE_DTO_V3_RETAILER: RetailerItemDto = {
   "brand": "TEST",
-  "brandCode": "TEST",
-  "certVersion": "v1",
-  "claimCode": null,
   "created": "2023-01-31T11:42:40.057Z",
   "description": "The fire element. Simplest of all polyhedra, strongest of all pyramids, the tetrahedron has only four prickly vertices.",
-  "flexHost": "https://flex-dev.sknups.com",
   "giveaway": null,
   "issue": 2,
-  "maxQty": 2500,
   "maximum": 2500,
   "media": {
     "model": {
@@ -388,16 +361,10 @@ const SALE_DTO_V3_RETAILER: LegacyRetailerItemDto = {
   "name": "Purple Tetrahedron",
   "nftState": ItemNftState.UNMINTED,
   "platform": "SKN",
-  "platformCode": "SKN",
   "rarity": null,
-  "recommendedRetailPrice": 10000,
   "rrp": 10000,
-  "saleQty": 2,
-  "sknappHost": "https://app-dev.sknups.com",
   "sku": "TEST-TETRAHEDRON-PURPLE",
   "source": ItemSource.SALE,
-  "stockKeepingUnitCode": "TEST-TETRAHEDRON-PURPLE",
-  "thumbprint": "26459e2001",
   "tier": "PURPLE",
   "token": "26459e2001",
   "version": "3"

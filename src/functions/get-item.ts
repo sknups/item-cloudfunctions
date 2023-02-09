@@ -48,7 +48,7 @@ export class GetItem {
       throw new AppError(UNCATEGORIZED_ERROR, e);
     }
 
-    const mapper = pathParams.retailer ? new RetailerItemMapper(config.assetsUrl, config.flexUrl, config.sknAppUrl) : new InternalItemMapper();
+    const mapper = pathParams.retailer ? new RetailerItemMapper(config.assetsUrl, config.flexUrl) : new InternalItemMapper();
     const item: ItemDto = mapper.toDto(entity);
 
     res.status(StatusCodes.OK).json(item);

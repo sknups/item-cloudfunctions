@@ -98,7 +98,7 @@ export async function createItemHandler(
 
   // Return populated retailer DTO
 
-  const response = new RetailerItemMapper(config.assetsUrl, config.flexUrl, config.sknAppUrl).toDto(item);
+  const response = new RetailerItemMapper(config.assetsUrl, config.flexUrl).toDto(item);
   res.status(StatusCodes.OK).json(response);
 
 }
