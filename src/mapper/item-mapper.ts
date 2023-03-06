@@ -20,8 +20,8 @@ export abstract class AbstractItemMapper<T extends ItemDto> {
       created: entity.created instanceof Date ? entity.created.toISOString() : new Date(entity.created / 1000).toISOString(),
       description: entity.description,
       giveaway: entity.claimCode,
-      issue: entity.saleQty,
-      maximum: entity.maxQty,
+      issue: this.getIssueNumber(entity),
+      maximum: this.getMaximumNumber(entity),
       name: entity.stockKeepingUnitName,
       nftState: ItemNftState[entity.nftState],
       platform: entity.platformCode,
@@ -32,6 +32,28 @@ export abstract class AbstractItemMapper<T extends ItemDto> {
       version: entity.version,
     };
 
+  }
+
+  private getIssueNumber(entity: ItemEntity): number | null {
+    switch (entity.version) {
+      case "1":
+        return entity.stockKeepingUnitRarity === 0? null : entity.saleQty;
+      case "2":
+        return entity.card.includes("${issue}") ? entity.saleQty : null;
+      case "3":
+        return entity.media.includes("${issue}") ? entity.saleQty : null;
+    }
+  }
+
+  private getMaximumNumber(entity: ItemEntity): number | null {
+    switch (entity.version) {
+      case "1":
+        return entity.stockKeepingUnitRarity === 0 || entity.stockKeepingUnitRarity === 1? null : entity.maxQty;
+      case "2":
+        return entity.card.includes("${maximum}") ? entity.maxQty : null;
+      case "3":
+        return entity.media.includes("${maximum}") ? entity.maxQty : null;
+    }
   }
 
 }
