@@ -25,8 +25,6 @@ export abstract class AbstractItemMapper<T extends ItemDto> {
       name: entity.stockKeepingUnitName,
       nftState: ItemNftState[entity.nftState],
       platform: entity.platformCode,
-      rarity: entity.stockKeepingUnitRarity,
-      rrp: entity.recommendedRetailPrice,
       sku: entity.stockKeepingUnitCode,
       source: ItemSource[entity.source],
       tier: entity.tier,

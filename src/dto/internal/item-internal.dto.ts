@@ -40,4 +40,9 @@ export class InternalItemDto extends ItemDto {
     */
   media: InternalItemMediaDto | null;
 
+  /**
+   * rarity of item
+   */
+  rarity: number | null;
+
 }

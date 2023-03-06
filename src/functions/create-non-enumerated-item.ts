@@ -1,9 +1,6 @@
 import { Request } from '@google-cloud/functions-framework';
 import { Response } from 'express';
 import { AllConfig } from '../config/all-config';
-import { StatusCodes } from 'http-status-codes';
-import logger from '../helpers/logger';
-import { parseAndValidateRequestData } from '../helpers/validation';
 import { CreateItemRequestDto } from '../dto/create-item-request.dto';
 import { AppError, SKU_NOT_NON_ENUMERATED } from '../app.errors';
 import { createItemHandler } from './create-item';
