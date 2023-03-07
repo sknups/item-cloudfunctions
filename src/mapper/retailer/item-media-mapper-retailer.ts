@@ -26,7 +26,7 @@ function _legacySknToMedia(entity: ItemEntity): InternalItemMediaDto {
   ];
 
   if (!supportedSkn.includes(entity.skn)) {
-    throw new Error(`Unsupported legacy skn value '${entity.skn}' supported vaues: ${supportedSkn}`);
+    throw new Error(`Unsupported legacy skn value '${entity.skn}' supported values: ${supportedSkn}`);
   }
 
   return {
