@@ -120,7 +120,6 @@ const SALE_DTO_V2_RETAILER: RetailerItemDto = {
   "name": "Green Icosahedron",
   "nftState": ItemNftState.UNMINTED,
   "platform": "SKN",
-  "rarity": null,
   "rrp": 1000,
   "sku": "TEST-ICOSAHEDRON-GREEN",
   "source": ItemSource.SALE,
@@ -224,7 +223,6 @@ const GIVEAWAY_DTO_V2_RETAILER: RetailerItemDto = {
   "name": "Giveaway Octahedron",
   "nftState": ItemNftState.UNMINTED,
   "platform": "SKN",
-  "rarity": null,
   "rrp": null,
   "sku": "TEST-OCTAHEDRON-GIVEAWAY",
   "source": ItemSource.GIVEAWAY,
@@ -239,8 +237,8 @@ const SALE_DTO_V3_INTERNAL: InternalItemDto = {
   "created": "2023-01-31T11:42:40.057Z",
   "description": "The fire element. Simplest of all polyhedra, strongest of all pyramids, the tetrahedron has only four prickly vertices.",
   "giveaway": null,
-  "issue": 2,
-  "maximum": 2500,
+  "issue": null,
+  "maximum": null,
   "media": {
     "primary": {
       "type": InternalItemMediaTypeDto.VIDEO
@@ -291,8 +289,8 @@ const SALE_DTO_V3_RETAILER: RetailerItemDto = {
   "created": "2023-01-31T11:42:40.057Z",
   "description": "The fire element. Simplest of all polyhedra, strongest of all pyramids, the tetrahedron has only four prickly vertices.",
   "giveaway": null,
-  "issue": 2,
-  "maximum": 2500,
+  "issue": null,
+  "maximum": null,
   "media": {
     "model": {
       "config": "https://assets-dev.sknups.gg/sku.v1.3DConfig.TEST-TETRAHEDRON-PURPLE.json",
@@ -361,7 +359,6 @@ const SALE_DTO_V3_RETAILER: RetailerItemDto = {
   "name": "Purple Tetrahedron",
   "nftState": ItemNftState.UNMINTED,
   "platform": "SKN",
-  "rarity": null,
   "rrp": 10000,
   "sku": "TEST-TETRAHEDRON-PURPLE",
   "source": ItemSource.SALE,

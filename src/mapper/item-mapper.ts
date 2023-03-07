@@ -25,6 +25,7 @@ export abstract class AbstractItemMapper<T extends ItemDto> {
       name: entity.stockKeepingUnitName,
       nftState: ItemNftState[entity.nftState],
       platform: entity.platformCode,
+      rrp: entity.recommendedRetailPrice,
       sku: entity.stockKeepingUnitCode,
       source: ItemSource[entity.source],
       tier: entity.tier,
@@ -39,9 +40,9 @@ export abstract class AbstractItemMapper<T extends ItemDto> {
       case "1":
         return entity.stockKeepingUnitRarity === 0? null : entity.saleQty;
       case "2":
-        return entity.card.includes("${issue}") ? entity.saleQty : null;
+        return entity.card && entity.card.includes("${issue}") ? entity.saleQty : null;
       case "3":
-        return entity.media.includes("${issue}") ? entity.saleQty : null;
+        return entity.media && entity.media.includes("${issue}") ? entity.saleQty : null;
     }
   }
 
@@ -50,9 +51,9 @@ export abstract class AbstractItemMapper<T extends ItemDto> {
       case "1":
         return entity.stockKeepingUnitRarity === 0 || entity.stockKeepingUnitRarity === 1? null : entity.maxQty;
       case "2":
-        return entity.card.includes("${maximum}") ? entity.maxQty : null;
+        return entity.card && entity.card.includes("${maximum}") ? entity.maxQty : null;
       case "3":
-        return entity.media.includes("${maximum}") ? entity.maxQty : null;
+        return entity.media && entity.media.includes("${maximum}") ? entity.maxQty : null;
     }
   }
 

@@ -65,12 +65,26 @@ async function _sendRequest(body: CreateItemRequestDto) {
 type ResponseData = Awaited<ReturnType<typeof _sendRequest>>;
 
 type ResponseExpectations = {
-  auditId: number,
+  /* The data we expect to receive in the response */
+  dto: ResponseDtoExpectations;
+
+  /* The data we expect to be in the entity */
+  entity: EntityExpectations;
+}
+
+type ResponseDtoExpectations = {
   claimCode: string | null,
   issue: number | null,
-  rrp: number | null,
   source: string,
-  user: string,
+  user: string
+}
+
+type EntityExpectations = {
+  auditId: number,
+  claimCode: string | null,
+  saleQty: number | null,
+  source: string,
+  user: string
 }
 
 /**
@@ -86,16 +100,14 @@ function _validateResponse(
   expect(res.statusCode).toEqual(StatusCodes.OK);
 
   expect(res.dto).toEqual(expect.objectContaining({
-    issue: expectations.issue,
-    rrp: expectations.rrp,
+    issue: expectations.dto.issue
   }));
 
   expect(res.itemEntities).toHaveLength(1);
   expect(res.itemEntities[0]).toEqual(expect.objectContaining({
-    recommendedRetailPrice: expectations.rrp,
-    saleQty: expectations.issue,
-    source: expectations.source,
-    user: expectations.user,
+    saleQty: expectations.entity.saleQty,
+    source: expectations.entity.source,
+    user: expectations.entity.user,
   }));
 
   expect(res.auditEntities).toHaveLength(1);
@@ -104,10 +116,10 @@ function _validateResponse(
 
   expect(res.events).toHaveLength(1);
   expect(res.events[0]).toEqual(expect.objectContaining({
-    claimCode: expectations.claimCode,
+    claimCode: expectations.entity.claimCode,
     dataEvent: 'CREATE',
-    eventId: expectations.auditId.toString(),
-    retailUserId: expectations.user,
+    eventId: expectations.entity.auditId.toString(),
+    retailUserId: expectations.entity.user,
   }));
 }
 
@@ -341,12 +353,19 @@ describe('function - create-item', () => {
       const res = await _sendRequest({ ...BODY_GIVEAWAY, skuCode: 'GIVEAWAY-V1' });
 
       _validateResponse(res, {
-        auditId,
-        claimCode: 'claimCode',
-        issue: 1000000 - 50123,
-        rrp: null,
-        source: 'GIVEAWAY',
-        user: 'testUser',
+        dto : {
+          claimCode: 'claimCode',
+          issue: null,
+          source: 'GIVEAWAY',
+          user: 'testUser',
+        },
+        entity: {
+          auditId,
+          claimCode: 'claimCode',
+          saleQty: 1000000 - 50123,
+          source: 'GIVEAWAY',
+          user: 'testUser',
+        }
       });
     });
 
@@ -354,12 +373,19 @@ describe('function - create-item', () => {
       const res = await _sendRequest({ ...BODY_GIVEAWAY, skuCode: 'GIVEAWAY-V2', claimCode: 'claimCode2' });
 
       _validateResponse(res, {
-        auditId,
-        claimCode: 'claimCode2',
-        issue: null,
-        rrp: null,
-        source: 'GIVEAWAY',
-        user: 'testUser',
+        dto: {
+          claimCode: 'claimCode2',
+          issue: null,
+          source: 'GIVEAWAY',
+          user: 'testUser'
+        },
+        entity: {
+          auditId,
+          claimCode: 'claimCode2',
+          saleQty: null,
+          source: 'GIVEAWAY',
+          user: 'testUser'
+        }
       });
     });
 
@@ -367,12 +393,19 @@ describe('function - create-item', () => {
       const res = await _sendRequest({ ...BODY_GIVEAWAY, skuCode: 'GIVEAWAY-V3' });
 
       _validateResponse(res, {
-        auditId,
-        claimCode: 'claimCode',
-        issue: null,
-        rrp: null,
-        source: 'GIVEAWAY',
-        user: 'testUser',
+        dto: {
+          claimCode: 'claimCode',
+          issue: null,
+          source: 'GIVEAWAY',
+          user: 'testUser'
+        },
+        entity: {
+          auditId,
+          claimCode: 'claimCode',
+          saleQty: null,
+          source: 'GIVEAWAY',
+          user: 'testUser',
+        }
       });
     });
 
@@ -380,12 +413,19 @@ describe('function - create-item', () => {
       const res = await _sendRequest({ ...BODY_GIVEAWAY, skuCode: 'PREMIUM-V1' });
 
       _validateResponse(res, {
-        auditId,
-        claimCode: 'claimCode',
-        issue: 1000 - 371,
-        rrp: 1000,
-        source: 'GIVEAWAY',
-        user: 'testUser',
+        dto: {
+          claimCode: 'claimCode',
+          issue: 1000 - 371,
+          source: 'GIVEAWAY',
+          user: 'testUser',
+        },
+        entity: {
+          auditId,
+          claimCode: 'claimCode',
+          saleQty: 1000 - 371,
+          source: 'GIVEAWAY',
+          user: 'testUser',
+        }
       });
     });
 
@@ -393,12 +433,19 @@ describe('function - create-item', () => {
       const res = await _sendRequest({ ...BODY_GIVEAWAY, skuCode: 'PREMIUM-V2' });
 
       _validateResponse(res, {
-        auditId,
-        claimCode: 'claimCode',
-        issue: 10000 - 4301,
-        rrp: 1000,
-        source: 'GIVEAWAY',
-        user: 'testUser',
+        dto: {
+          claimCode: 'claimCode',
+          issue: 10000 - 4301,
+          source: 'GIVEAWAY',
+          user: 'testUser'
+        },
+        entity: {
+          auditId,
+          claimCode: 'claimCode',
+          saleQty: 10000 - 4301,
+          source: 'GIVEAWAY',
+          user: 'testUser'
+        }
       });
     });
 
@@ -406,54 +453,82 @@ describe('function - create-item', () => {
       const res = await _sendRequest({ ...BODY_GIVEAWAY, skuCode: 'PREMIUM-V3' });
 
       _validateResponse(res, {
-        auditId,
-        claimCode: 'claimCode',
-        issue: 10000 - 7944,
-        rrp: 2000,
-        source: 'GIVEAWAY',
-        user: 'testUser',
+        dto: {
+          claimCode: 'claimCode',
+          issue: 10000 - 7944,
+          source: 'GIVEAWAY',
+          user: 'testUser'
+        },
+        entity: {
+          auditId,
+          claimCode: 'claimCode',
+          saleQty: 10000 - 7944,
+          source: 'GIVEAWAY',
+          user: 'testUser',
+        }
       });
     });
   });
 
-  describe('create purchased item', () => {
-    it('create premium v1 returns 200 OK', async () => {
-      const res = await _sendRequest({ ...BODY_PURCHASE, skuCode: 'PREMIUM-V1' });
+ describe('create purchased item', () => {
+   it('create premium v1 returns 200 OK', async () => {
+     const res = await _sendRequest({ ...BODY_PURCHASE, skuCode: 'PREMIUM-V1' });
 
-      _validateResponse(res, {
-        auditId,
-        claimCode: null,
-        issue: 1000 - 371,
-        rrp: 1000,
-        source: 'SALE',
-        user: 'testUser',
-      });
-    });
+     _validateResponse(res, {
+       dto: {
+         claimCode: null,
+         issue: 1000 - 371,
+         source: 'SALE',
+         user: 'testUser'
+       },
+       entity: {
+         auditId,
+         claimCode: null,
+         saleQty: 1000 - 371,
+         source: 'SALE',
+         user: 'testUser'
+       }
+     });
+   });
 
-    it('create premium v2 returns 200 OK', async () => {
-      const res = await _sendRequest({ ...BODY_PURCHASE, skuCode: 'PREMIUM-V2' });
+   it('create premium v2 returns 200 OK', async () => {
+     const res = await _sendRequest({ ...BODY_PURCHASE, skuCode: 'PREMIUM-V2' });
 
-      _validateResponse(res, {
-        auditId,
-        claimCode: null,
-        issue: 10000 - 4301,
-        rrp: 1000,
-        source: 'SALE',
-        user: 'testUser',
-      });
-    });
+     _validateResponse(res, {
+       dto: {
+         claimCode: null,
+         issue: 10000 - 4301,
+         source: 'SALE',
+         user: 'testUser'
+       },
+       entity: {
+         auditId,
+         claimCode: null,
+         saleQty: 10000 - 4301,
+         source: 'SALE',
+         user: 'testUser'
+       }
+     });
+   });
 
-    it('create premium v3 returns 200 OK', async () => {
-      const res = await _sendRequest({ ...BODY_PURCHASE, skuCode: 'PREMIUM-V3', user: 'testUser2' });
+   it('create premium v3 returns 200 OK', async () => {
+     const res = await _sendRequest({ ...BODY_PURCHASE, skuCode: 'PREMIUM-V3', user: 'testUser2' });
 
-      _validateResponse(res, {
-        auditId,
-        claimCode: null,
-        issue: 10000 - 7944,
-        rrp: 2000,
-        source: 'SALE',
-        user: 'testUser2',
-      });
-    });
+     _validateResponse(res, {
+       dto: {
+         claimCode: null,
+         issue: 10000 - 7944,
+         source: 'SALE',
+         user: 'testUser2'
+       },
+       entity: {
+         auditId,
+         claimCode: null,
+         saleQty: 10000 - 7944,
+         source: 'SALE',
+         user: 'testUser2'
+       }
+     });
+   });
   });
 });

@@ -70,6 +70,11 @@ export class ItemDto {
   tier: string | null;
 
   /**
+   * The price for which this item was sold to the consumer.
+   */
+  rrp: number | null;
+
+  /**
    * Date time item was created in ISO-8601
    */
   created: string;
