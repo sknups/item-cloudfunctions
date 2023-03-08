@@ -36,6 +36,7 @@ export class InternalItemMapper extends AbstractItemMapper<InternalItemDto> {
       cardJson: entity.card,
       nftAddress: entity.nftAddress,
       ownerAddress: entity.ownerAddress,
+      rrp: entity.recommendedRetailPrice,
       media,
     }
 

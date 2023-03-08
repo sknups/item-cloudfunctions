@@ -45,4 +45,9 @@ export class InternalItemDto extends ItemDto {
    */
   rarity: number | null;
 
+  /**
+   * The price for which this item was sold to the consumer.
+   */
+  rrp: number | null;
+
 }

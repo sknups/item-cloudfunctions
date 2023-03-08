@@ -27,6 +27,63 @@ const SALE_DTO_V1_INTERNAL: InternalItemDto = {
   "version": "1"
 };
 
+const SALE_DTO_V1_RETAILER: RetailerItemDto = {
+  "brand": "TEST",
+  "created": "2023-01-31T10:35:34.796Z",
+  "description": "The only regular solid which tessellates Euclidean space: the hexahedron.  The ancients believed this caused the solidity of the Earth.",
+  "giveaway": null,
+  "issue": null,
+  "maximum": null,
+  "name": "Epic Cube",
+  "nftState": ItemNftState.UNMINTED,
+  "platform": "SKN",
+  "sku": "TEST-ICOSAHEDRON-GREEN",
+  "source": ItemSource.SALE,
+  "tier": null,
+  "token": "f8d4de3db6",
+  "version": "1",
+  "media": {
+    "model": {
+      "config": "https://assets-dev.sknups.gg/sku.v1.3DConfig.TEST-ICOSAHEDRON-GREEN.json",
+      "glb": "https://assets-dev.sknups.gg/sku.v1.3DView.TEST-ICOSAHEDRON-GREEN.glb"
+    },
+    "primary": {
+      "image": {
+        "jpeg": "https://flex-dev.sknups.com/skn/v1/primary/default/f8d4de3db6.jpg",
+        "png": "https://flex-dev.sknups.com/skn/v1/primary/default/f8d4de3db6.png",
+        "webp": "https://flex-dev.sknups.com/skn/v1/primary/default/f8d4de3db6.webp"
+      },
+      "type": RetailerItemMediaTypeDto.IMAGE
+    },
+    "secondary": [
+      {
+        "image": {
+          "jpeg": "https://flex-dev.sknups.com/skn/v1/secondary/0/default/f8d4de3db6.jpg",
+          "png": "https://flex-dev.sknups.com/skn/v1/secondary/0/default/f8d4de3db6.png",
+          "webp": "https://flex-dev.sknups.com/skn/v1/secondary/0/default/f8d4de3db6.webp"
+        },
+        "type": RetailerItemMediaTypeDto.IMAGE
+      }
+    ],
+    "social": {
+      "default": {
+        "image": {
+          "jpeg": "https://flex-dev.sknups.com/skn/v1/primary/og/f8d4de3db6.jpg",
+          "png": "https://flex-dev.sknups.com/skn/v1/primary/og/f8d4de3db6.png",
+          "webp": "https://flex-dev.sknups.com/skn/v1/primary/og/f8d4de3db6.webp"
+        }
+      },
+      "snapchat": {
+        "image": {
+          "jpeg": "https://flex-dev.sknups.com/skn/v1/primary/snapsticker/f8d4de3db6.jpg",
+          "png": "https://flex-dev.sknups.com/skn/v1/primary/snapsticker/f8d4de3db6.png",
+          "webp": "https://flex-dev.sknups.com/skn/v1/primary/snapsticker/f8d4de3db6.webp"
+        }
+      }
+    }
+  },
+};
+
 const SALE_DTO_V2_INTERNAL: InternalItemDto = {
   "brand": "TEST",
   "cardJson": "{\"front\":[{\"text\":\"${issue}/${maximum}\",\"color\":\"#FFFFFFFF\",\"size\":\"36pt\",\"font\":\"Share Tech Mono\",\"weight\":\"Regular\",\"align\":\"center\",\"x\":450,\"y\":1220}],\"back\":[{\"text\":\"${issue}/${maximum}\",\"color\":\"#FFFFFFFF\",\"size\":\"36pt\",\"font\":\"Share Tech Mono\",\"weight\":\"Regular\",\"align\":\"center\",\"x\":450,\"y\":1205},{\"text\":\"${token}\",\"color\":\"#FFFFFFAA\",\"size\":\"30pt\",\"font\":\"Share Tech Mono\",\"weight\":\"Regular\",\"align\":\"center\",\"x\":450,\"y\":1260}]}",
@@ -93,64 +150,6 @@ const SALE_DTO_V2_INTERNAL: InternalItemDto = {
   "version": "2"
 };
 
-const SALE_DTO_V1_RETAILER: RetailerItemDto = {
-  "brand": "TEST",
-  "created": "2023-01-31T10:35:34.796Z",
-  "description": "The only regular solid which tessellates Euclidean space: the hexahedron.  The ancients believed this caused the solidity of the Earth.",
-  "giveaway": null,
-  "issue": null,
-  "maximum": null,
-  "name": "Epic Cube",
-  "nftState": ItemNftState.UNMINTED,
-  "platform": "SKN",
-  "rrp": 1000,
-  "sku": "TEST-ICOSAHEDRON-GREEN",
-  "source": ItemSource.SALE,
-  "tier": null,
-  "token": "f8d4de3db6",
-  "version": "1",
-  "media": {
-    "model": {
-      "config": "https://assets-dev.sknups.gg/sku.v1.3DConfig.TEST-ICOSAHEDRON-GREEN.json",
-      "glb": "https://assets-dev.sknups.gg/sku.v1.3DView.TEST-ICOSAHEDRON-GREEN.glb"
-    },
-    "primary": {
-      "image": {
-        "jpeg": "https://flex-dev.sknups.com/skn/v1/primary/default/f8d4de3db6.jpg",
-        "png": "https://flex-dev.sknups.com/skn/v1/primary/default/f8d4de3db6.png",
-        "webp": "https://flex-dev.sknups.com/skn/v1/primary/default/f8d4de3db6.webp"
-      },
-      "type": RetailerItemMediaTypeDto.IMAGE
-    },
-    "secondary": [
-      {
-        "image": {
-          "jpeg": "https://flex-dev.sknups.com/skn/v1/secondary/0/default/f8d4de3db6.jpg",
-          "png": "https://flex-dev.sknups.com/skn/v1/secondary/0/default/f8d4de3db6.png",
-          "webp": "https://flex-dev.sknups.com/skn/v1/secondary/0/default/f8d4de3db6.webp"
-        },
-        "type": RetailerItemMediaTypeDto.IMAGE
-      }
-    ],
-    "social": {
-      "default": {
-        "image": {
-          "jpeg": "https://flex-dev.sknups.com/skn/v1/primary/og/f8d4de3db6.jpg",
-          "png": "https://flex-dev.sknups.com/skn/v1/primary/og/f8d4de3db6.png",
-          "webp": "https://flex-dev.sknups.com/skn/v1/primary/og/f8d4de3db6.webp"
-        }
-      },
-      "snapchat": {
-        "image": {
-          "jpeg": "https://flex-dev.sknups.com/skn/v1/primary/snapsticker/f8d4de3db6.jpg",
-          "png": "https://flex-dev.sknups.com/skn/v1/primary/snapsticker/f8d4de3db6.png",
-          "webp": "https://flex-dev.sknups.com/skn/v1/primary/snapsticker/f8d4de3db6.webp"
-        }
-      }
-    }
-  },
-};
-
 const SALE_DTO_V2_RETAILER: RetailerItemDto = {
   "brand": "TEST",
   "created": "2023-01-31T10:35:34.796Z",
@@ -201,7 +200,6 @@ const SALE_DTO_V2_RETAILER: RetailerItemDto = {
   "name": "Green Icosahedron",
   "nftState": ItemNftState.UNMINTED,
   "platform": "SKN",
-  "rrp": 1000,
   "sku": "TEST-ICOSAHEDRON-GREEN",
   "source": ItemSource.SALE,
   "tier": "GREEN",
@@ -304,7 +302,6 @@ const GIVEAWAY_DTO_V2_RETAILER: RetailerItemDto = {
   "name": "Giveaway Octahedron",
   "nftState": ItemNftState.UNMINTED,
   "platform": "SKN",
-  "rrp": null,
   "sku": "TEST-OCTAHEDRON-GIVEAWAY",
   "source": ItemSource.GIVEAWAY,
   "tier": "GIVEAWAY",
@@ -440,7 +437,6 @@ const SALE_DTO_V3_RETAILER: RetailerItemDto = {
   "name": "Purple Tetrahedron",
   "nftState": ItemNftState.UNMINTED,
   "platform": "SKN",
-  "rrp": 10000,
   "sku": "TEST-TETRAHEDRON-PURPLE",
   "source": ItemSource.SALE,
   "tier": "PURPLE",
