@@ -13,5 +13,19 @@ export class RetailerItemDto extends ItemDto {
    */
   media: RetailerItemMediaDto;
 
+  /**
+   * item issue
+   *
+   * is null for non-enumerated items
+   */
+  issue: number | null;
+
+  /**
+   * Maximum quantity available
+   *
+   * is null for non-enumerated items or depending on item's version
+   */
+  maximum: number | null;
+
 }
 

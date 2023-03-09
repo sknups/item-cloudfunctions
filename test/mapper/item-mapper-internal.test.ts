@@ -7,6 +7,10 @@ describe('mapper - item - internal', () => {
 
   const instance = new InternalItemMapper();
 
+  it('creates item dto structure - v1', () => {
+    expect(instance.toDto(TEST_ENTITIES.v1.sale)).toEqual(TEST_DTOS.v1.sale.internal)
+  });
+
   it('creates item dto structure - v2', () => {
     expect(instance.toDto(TEST_ENTITIES.v2.sale)).toEqual(TEST_DTOS.v2.sale.internal)
   });

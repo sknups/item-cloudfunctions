@@ -2,6 +2,8 @@ import "reflect-metadata";
 import { RetailerItemMapper } from "../../src/mapper/retailer/item-mapper-retailer";
 import { TEST_ENTITIES } from '../test-data-entities';
 import { TEST_DTOS } from '../test-data-dtos';
+import {ItemEntity} from "../../src/entity/item.entity";
+import {RetailerItemDto} from "../../src/dto/retailer/item-retailer.dto";
 
 describe('mapper - item - retailer', () => {
 
@@ -45,6 +47,96 @@ describe('mapper - item - retailer', () => {
     expect(() => {
       instance.toDto({ ...TEST_ENTITIES.v2.sale, skn: 'STATIC' })
     }).toThrow("Unsupported legacy skn value 'STATIC'");
+  });
+
+  it('sets issue number to null if it is a v1 SKU with rarity 0', () => {
+    const entity: ItemEntity = TEST_ENTITIES.v1.sale;
+    entity.stockKeepingUnitRarity = 0;
+    const expectedDto: RetailerItemDto = TEST_DTOS.v1.sale.retailer;
+    expectedDto.issue = null;
+    expect(instance.toDto(entity)).toEqual(expectedDto)
+  });
+
+  it('sets issue number if it is a v1 SKU with rarity higher than 0', () => {
+    const entity: ItemEntity = TEST_ENTITIES.v1.sale;
+    entity.stockKeepingUnitRarity = 1;
+    const expectedDto: RetailerItemDto = TEST_DTOS.v1.sale.retailer;
+    expectedDto.issue = 2;
+    expect(instance.toDto(entity)).toEqual(expectedDto);
+  });
+
+  it('sets maximum number to null if it is a v1 SKU with rarity 0', () => {
+    const entity: ItemEntity = TEST_ENTITIES.v1.sale;
+    entity.stockKeepingUnitRarity = 0;
+    const expectedDto: RetailerItemDto = TEST_DTOS.v1.sale.retailer;
+    expectedDto.issue = null;
+    expectedDto.maximum = null;
+    expect(instance.toDto(entity)).toEqual(expectedDto);
+  });
+
+  it('sets maximum number to null if it is a v1 SKU with rarity 1', () => {
+    const entity: ItemEntity = TEST_ENTITIES.v1.sale;
+    entity.stockKeepingUnitRarity = 1;
+    const expectedDto: RetailerItemDto = TEST_DTOS.v1.sale.retailer;
+    expectedDto.issue = 2;
+    expectedDto.maximum = null;
+    expect(instance.toDto(entity)).toEqual(expectedDto);
+  });
+
+  it('sets maximum number if it is a v1 SKU with rarity higher than 1', () => {
+    const entity: ItemEntity = TEST_ENTITIES.v1.sale;
+    entity.stockKeepingUnitRarity = 2;
+    const expectedDto: RetailerItemDto = TEST_DTOS.v1.sale.retailer;
+    expectedDto.issue = 2;
+    expectedDto.maximum = 10000;
+    expect(instance.toDto(entity)).toEqual(expectedDto);
+  });
+
+  it('sets issue number to null if it is a v2 SKU and card json does not include \'${issue}\'', () => {
+    const entity: ItemEntity = TEST_ENTITIES.v2.sale;
+    entity.card = null;
+    const expectedDto: RetailerItemDto = TEST_DTOS.v2.sale.retailer;
+    expectedDto.issue = null;
+    expectedDto.maximum = null;
+    expect(instance.toDto(entity)).toEqual(expectedDto);
+  });
+
+  it('sets maximum number to null if it is a v2 SKU and card json does not include \'${maximum}\'', () => {
+    const entity: ItemEntity = TEST_ENTITIES.v2.sale;
+    entity.card = null;
+    const expectedDto: RetailerItemDto = TEST_DTOS.v2.sale.retailer;
+    expectedDto.issue = null;
+    expectedDto.maximum = null;
+    expect(instance.toDto(entity)).toEqual(expectedDto);
+  });
+
+  it('sets issue and maximum number if it is a v2 SKU and card json includes \'${issue}\' and \'${maximum}\'', () => {
+    expect(instance.toDto(TEST_ENTITIES.v2.sale)).toEqual(TEST_DTOS.v2.sale.retailer)
+  });
+
+  it('sets issue number to null if it is a v3 SKU and media json doesn\'t include \'${issue}\'', () => {
+    const entity: ItemEntity = TEST_ENTITIES.v3.sale;
+    const expectedDto: RetailerItemDto = TEST_DTOS.v3.sale.retailer;
+    expectedDto.issue = null;
+    expectedDto.maximum = null;
+    expect(instance.toDto(entity)).toEqual(expectedDto);
+  });
+
+  it('sets maximum number to null if it is a v3 SKU and media json does not include \'${maximum}\'', () => {
+    const entity: ItemEntity = TEST_ENTITIES.v3.sale;
+    const expectedDto: RetailerItemDto = TEST_DTOS.v3.sale.retailer;
+    expectedDto.issue = null;
+    expectedDto.maximum = null;
+    expect(instance.toDto(entity)).toEqual(expectedDto);
+  });
+
+  it('sets issue and maximum number if it is a v3 SKU and media json includes \'${issue}\' and \'${maximum}\'', () => {
+    const entity: ItemEntity = TEST_ENTITIES.v3.sale;
+    entity.media = "{\"primary\":{\"type\":\"VIDEO\"},\"secondary\":[{\"type\":\"VIDEO\",\"link\":\"https://sknups.com\"},{\"type\":\"STATIC\",\"link\":\"https://sknups.com\"},{\"type\":\"DYNAMIC\",\"labels\":[{\"text\":\"${issue}/${maximum}\",\"color\":\"#FFFFFFAA\",\"size\":\"30pt\",\"font\":\"Share Tech Mono\",\"weight\":\"Regular\",\"align\":\"center\",\"x\":450,\"y\":1220}],\"link\":\"https://sknups.com\"}]}";
+    const expectedDto: RetailerItemDto = TEST_DTOS.v3.sale.retailer;
+    expectedDto.issue = 2;
+    expectedDto.maximum = 2500;
+    expect(instance.toDto(entity)).toEqual(expectedDto);
   });
 
 });

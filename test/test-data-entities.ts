@@ -1,5 +1,35 @@
 import { ItemEntity } from '../src/entity/item.entity';
 
+const SALE_ENTITY_V1: ItemEntity = {
+  "stockKeepingUnitCode": "TEST-ICOSAHEDRON-GREEN",
+  "brandCode": "TEST",
+  "brandName": "TEST",
+  "brandWholesalePrice": 1000,
+  "brandWholesalerShare": 0.5,
+  "card": null,
+  "description": "The only regular solid which tessellates Euclidean space: the hexahedron.  The ancients believed this caused the solidity of the Earth.",
+  "maxQty": 10000,
+  "media": null,
+  "stockKeepingUnitName": "Epic Cube",
+  "platformCode": "SKN",
+  "stockKeepingUnitRarity": 0,
+  "recommendedRetailPrice": 1000,
+  "skn": "DYNAMIC",
+  "created": new Date("2023-01-31T10:35:34.796Z"),
+  "tier": null,
+  "user": "cyP1XYi0y6NadKRXqMbmF9R1vz53",
+  "updated": new Date("2023-01-31T10:35:34.796Z"),
+  "state": "UNBOXED",
+  "ownerAddress": null,
+  "claimCode": null,
+  "key": "f8d4de3db6",
+  "nftAddress": null,
+  "nftState": "UNMINTED",
+  "source": "SALE",
+  "saleQty": 2,
+  "version": "1"
+};
+
 const SALE_ENTITY_V2: ItemEntity = {
   "key": "f8d4de3db6",
   "brandCode": "TEST",
@@ -128,6 +158,9 @@ export const GIVEAWAY_ENTITY_V3: ItemEntity = {
 };
 
 export const TEST_ENTITIES = {
+  v1: {
+    sale: SALE_ENTITY_V1
+  },
   v2: {
     sale: SALE_ENTITY_V2,
     minted: MINTED_ENTITY_V2,

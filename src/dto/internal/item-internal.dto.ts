@@ -40,4 +40,28 @@ export class InternalItemDto extends ItemDto {
     */
   media: InternalItemMediaDto | null;
 
+  /**
+   * rarity of item
+   */
+  rarity: number | null;
+
+  /**
+   * The price for which this item was sold to the consumer.
+   */
+  rrp: number | null;
+
+  /**
+   * item issue
+   *
+   * is null for non-enumerated items
+   */
+  issue: number | null;
+
+  /**
+   * Maximum quantity available
+   *
+   * is null for non-enumerated items
+   */
+  maximum: number | null;
+
 }
