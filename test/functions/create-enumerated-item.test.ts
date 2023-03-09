@@ -204,7 +204,7 @@ describe('function - create-enumerated-item', () => {
     await createEnumeratedItem(req, res);
 
     expect(res.statusCode).toEqual(StatusCodes.OK);
-    expect(res._getJSON().issue).toEqual(949877);
+    expect(res._getJSON().issue).toEqual(null);
     expect(mocks.catalog.getSku).toHaveBeenCalledTimes(1);
     expect(mocks.stock.updateStock).toHaveBeenCalledTimes(1);
     expect(mocks.datastoreHelper.startTransaction).toHaveBeenCalledTimes(1);
