@@ -33,6 +33,8 @@ export class InternalItemMapper extends AbstractItemMapper<InternalItemDto> {
     return {
       ...baseDto,
       rarity: entity.stockKeepingUnitRarity,
+      issue: entity.saleQty,
+      maximum: entity.maxQty,
       cardJson: entity.card,
       nftAddress: entity.nftAddress,
       ownerAddress: entity.ownerAddress,

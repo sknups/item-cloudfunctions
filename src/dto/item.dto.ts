@@ -6,20 +6,6 @@ export class ItemDto {
   token: string;
 
   /**
-   * item issue 
-   * 
-   * is null for non-enumerated items
-   */
-  issue: number | null;
-
-  /**
-   * Maximum quantity available
-   * 
-   * is null for non-enumerated items
-   */
-  maximum: number | null;
-
-  /**
    * Item source 
    * - GIVEAWAY
    * - SALE

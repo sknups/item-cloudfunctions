@@ -50,4 +50,18 @@ export class InternalItemDto extends ItemDto {
    */
   rrp: number | null;
 
+  /**
+   * item issue
+   *
+   * is null for non-enumerated items
+   */
+  issue: number | null;
+
+  /**
+   * Maximum quantity available
+   *
+   * is null for non-enumerated items
+   */
+  maximum: number | null;
+
 }
