@@ -105,7 +105,7 @@ describe('function - get-item - internal', () => {
     await instance(req(), res);
 
     expect(res.statusCode).toEqual(StatusCodes.OK);
-    expect(res._getJSON()).toEqual({ ...TEST_DTOS.v2.sale.internal, cardJson: null, media: null, maximum: null, issue: null });
+    expect(res._getJSON()).toEqual({ ...TEST_DTOS.v2.sale.internal, cardJson: null, media: null});
   });
 
   it('returns item - sale', async () => {

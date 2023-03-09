@@ -10,8 +10,8 @@ const SALE_DTO_V1_INTERNAL: InternalItemDto = {
   "created": "2023-01-31T10:35:34.796Z",
   "description": "The only regular solid which tessellates Euclidean space: the hexahedron.  The ancients believed this caused the solidity of the Earth.",
   "giveaway": null,
-  "issue": null,
-  "maximum": null,
+  "issue": 2,
+  "maximum": 10000,
   "media": null,
   "name": "Epic Cube",
   "nftAddress": null,
@@ -315,8 +315,8 @@ const SALE_DTO_V3_INTERNAL: InternalItemDto = {
   "created": "2023-01-31T11:42:40.057Z",
   "description": "The fire element. Simplest of all polyhedra, strongest of all pyramids, the tetrahedron has only four prickly vertices.",
   "giveaway": null,
-  "issue": null,
-  "maximum": null,
+  "issue": 2,
+  "maximum": 2500,
   "media": {
     "primary": {
       "type": InternalItemMediaTypeDto.VIDEO
