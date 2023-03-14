@@ -36,8 +36,6 @@ export async function createItemHandler(
   req: Request,
   res: Response,
   config: AllConfig,
-  // TODO (PLATFORM-3285) delete argument
-  isEnumeratedCallback = (dto: CreateItemRequestDto, isEnumerated: boolean) => { },
 ): Promise<void> {
 
   if (req.method != 'POST') {
@@ -57,9 +55,7 @@ export async function createItemHandler(
   const sku: Sku = await getSkuOrThrow(config, requestDto.skuCode);
 
   const isEnumerated: boolean = !!sku.maxQty;
-  // TODO (PLATFORM-3285) delete
-  isEnumeratedCallback(requestDto, isEnumerated); // allows legacy create functions to validate the correct function is called
-
+  
   const claimCodeRequired = !isEnumerated || !sku.recommendedRetailPrice
   if (claimCodeRequired && !requestDto.claimCode) {
     // If non-enumerated or no rrp this is assumed a giveaway, therefore claimCode is required
