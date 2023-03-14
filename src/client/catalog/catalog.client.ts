@@ -4,7 +4,7 @@ import { httpClient } from '../../helpers/http/http.helper';
 import { StatusCodes } from 'http-status-codes';
 import logger from '../../helpers/logger';
 
-type SkuPermission = 'GIVEAWAY' | 'SELL' | 'DISCOVER' | 'METAPLEX_MINT';
+type SkuPermission = 'METAPLEX_MINT';
 
 export type Sku = {
   code: string,

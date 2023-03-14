@@ -223,40 +223,6 @@ describe('function - create-item', () => {
     });
   });
 
-  describe('validation - giveaway', () => {
-    let body: any;
-
-    beforeEach(function () {
-      body = { ...BODY_GIVEAWAY };
-    });
-
-    it('giveaway v1 without claimCode returns 400 BAD_REQUEST', async () => {
-      delete body.claimCode
-      const res = await _sendRequest(body);
-
-      expect(res.statusCode).toEqual(StatusCodes.BAD_REQUEST);
-      expect(res.dto.message).toContain('claimCode is required');
-    });
-
-    it('giveaway v2 without claimCode returns 400 BAD_REQUEST', async () => {
-      delete body.claimCode
-      const res = await _sendRequest(body);
-
-      expect(res.statusCode).toEqual(StatusCodes.BAD_REQUEST);
-      expect(res.dto.message).toContain('claimCode is required');
-      expect(res.dto.code).toEqual('ITEM_00200');
-    });
-
-    it('giveaway v3 without claimCode returns 400 BAD_REQUEST', async () => {
-      delete body.claimCode
-      const res = await _sendRequest(body);
-
-      expect(res.statusCode).toEqual(StatusCodes.BAD_REQUEST);
-      expect(res.dto.message).toContain('claimCode is required');
-      expect(res.dto.code).toEqual('ITEM_00200');
-    });
-  });
-
   describe('validation - sale', () => {
     let body: any;
 
@@ -264,12 +230,12 @@ describe('function - create-item', () => {
       body = { ...BODY_GIVEAWAY };
     });
 
-    it('premium v3 without SELL permission returns 403 FORBIDDEN', async () => {
-      const res = await _sendRequest({ ...BODY_PURCHASE, skuCode: 'PREMIUM-V3-WITHOUT-SELL' });
+    it('premium v3 without rrp returns 403 FORBIDDEN', async () => {
+      const res = await _sendRequest({ ...BODY_PURCHASE, skuCode: 'PREMIUM-V3-WITHOUT-PRICE' });
 
       expect(res.statusCode).toEqual(StatusCodes.FORBIDDEN);
-      expect(res.dto.message).toContain('permission SELL does not exist');
-      expect(res.dto.code).toEqual('ITEM_00003'); // SKU_PERMISSION_MISSING
+      expect(res.dto.message).toContain('SKU PREMIUM-V3-WITHOUT-PRICE can not be purchased, missing price');
+      expect(res.dto.code).toEqual('ITEM_00003'); 
     });
 
     it('sku without stock returns 403 FORBIDDEN', async () => {

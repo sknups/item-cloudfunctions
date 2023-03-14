@@ -34,10 +34,10 @@ export function SKU_NOT_FOUND(sku: string): ErrorReason {
   }
 }
 
-export function SKU_PERMISSION_MISSING(sku: string, permission: string): ErrorReason {
+export function SKU_ACTION_NOT_PERMITTED(sku: string, action: string, reason: string): ErrorReason {
   return {
     code: 'ITEM_00003',
-    message: `Required permission ${permission} does not exist on sku ${sku}`,
+    message: `SKU ${sku} can not be ${action}, ${reason}`,
     statusCode: StatusCodes.FORBIDDEN,
   }
 }
@@ -115,12 +115,6 @@ export function ITEM_NOT_FOUND(platform: string, token: string): ErrorReason {
     message: `Item with platform ${platform} and code ${token} not found`,
     statusCode: StatusCodes.NOT_FOUND,
   }
-}
-
-export const GIVEAWAY_CODE_NOT_PROVIDED: ErrorReason = {
-  code: 'ITEM_00200',
-  message: 'A claimCode is required when manufacturing a giveaway SKU',
-  statusCode: StatusCodes.BAD_REQUEST,
 }
 
 export const UNCATEGORIZED_ERROR: ErrorReason = {

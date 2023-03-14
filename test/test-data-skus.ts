@@ -31,7 +31,7 @@ const PREMIUM_SKU_V1: Sku = {
   "maxQty": 1000,
   "media": null,
   "name": "Epic Cube",
-  "permissions": ["SELL"],
+  "permissions": [],
   "platformCode": "SKN",
   "rarity": 2,
   "recommendedRetailPrice": 1000,
@@ -71,7 +71,7 @@ const PREMIUM_SKU_V2: Sku = {
   "maxQty": 10000,
   "media": null,
   "name": "Green Icosahedron",
-  "permissions": ["SELL"],
+  "permissions": [],
   "platformCode": "SKN",
   "rarity": null,
   "recommendedRetailPrice": 1000,
@@ -111,7 +111,7 @@ const PREMIUM_SKU_V3: Sku = {
   "maxQty": 10000,
   "media": "{\"primary\":{\"type\":\"DYNAMIC\",\"labels\":[{\"text\":\"${issue}/${maximum}\",\"color\":\"#FFFFFFFF\",\"size\":\"36pt\",\"font\":\"Share Tech Mono\",\"weight\":\"Regular\",\"align\":\"center\",\"x\":450,\"y\":1220}]},\"secondary\":[]}",
   "name": "Green Tetrahedron",
-  "permissions": ["SELL", "METAPLEX_MINT"],
+  "permissions": ["METAPLEX_MINT"],
   "platformCode": "SKN",
   "rarity": null,
   "recommendedRetailPrice": 2000,
@@ -163,15 +163,16 @@ export const TEST_SKUS = {
     code: 'PREMIUM-V3-WITH-STOCK-ERROR',
   },
 
-  'PREMIUM-V3-WITHOUT-SELL': {
+  'PREMIUM-V3-WITHOUT-PRICE': {
     ...PREMIUM_SKU_V3,
-    code: 'PREMIUM-V3-WITHOUT-SELL',
+    code: 'PREMIUM-V3-WITHOUT-PRICE',
+    recommendedRetailPrice: null,
     permissions: ['METAPLEX_MINT'],
   },
 
   'PREMIUM-V3-WITHOUT-MINT': {
     ...PREMIUM_SKU_V3,
     code: 'PREMIUM-V3-WITHOUT-MINT',
-    permissions: ['SELL'],
+    permissions: [],
   },
 };

@@ -57,9 +57,10 @@ const stock = {
 
         case 'PREMIUM-V3':
         case 'TEST-TETRAHEDRON-PURPLE':
-        case 'PREMIUM-V3-WITHOUT-SELL':
         case 'PREMIUM-V3-WITHOUT-MINT':
           return { sku, stock: 7944 };
+        case 'PREMIUM-V3-WITHOUT-PRICE':
+          return { sku, recommendedRetailPrice: null };
 
         case 'PREMIUM-V3-WITH-ZERO-STOCK':
           throw new GaxiosError('Simulated out of stock error', {}, {
