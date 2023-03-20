@@ -1,7 +1,7 @@
 import { Request } from '@google-cloud/functions-framework';
 import { Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
-import { AppError, ITEM_NOT_FOUND, SKU_PERMISSION_MISSING, UNEXPECTED_NFT_STATE } from '../app.errors';
+import { AppError, ITEM_NOT_FOUND, SKU_ACTION_NOT_PERMITTED, UNEXPECTED_NFT_STATE } from '../app.errors';
 import { AllConfig } from '../config/all-config';
 import { UpdateItemRequestDto, UpdateItemOperation } from '../dto/update-item-request.dto';
 import { AuditEntity } from '../entity/audit.entity';
@@ -82,7 +82,7 @@ export async function updateItemHandler(req: Request, res: Response, config: All
 
       case UpdateItemOperation.MINTING: {
         if (!sku.permissions.includes('METAPLEX_MINT')) {
-          throw new AppError(SKU_PERMISSION_MISSING(sku.code, 'METAPLEX_MINT'));
+          throw new AppError(SKU_ACTION_NOT_PERMITTED(sku.code,'minting','missing METAPLEX_MINT permission'));
         }
 
         [newItemEntity, auditEntity] = await _updateEntity(context, itemEntity, {

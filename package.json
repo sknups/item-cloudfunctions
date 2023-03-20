@@ -5,7 +5,7 @@
     "prebuild": "rimraf ./dist",
     "build": "tsc",
     "start": "tsc -p tsconfig.dev.json && concurrently \"tsc -p tsconfig.dev.json -w\" \"nodemon --watch ./dist --exec GOOGLE_AUTH_TOKEN=$(gcloud auth print-identity-token) NODE_ENV=development functions-framework --target=devRouter\"",
-    "test": "NODE_ENV=development LOG_LEVEL=error LOG_FORMAT=simple jest --config test/jest-config.json",
+    "test": "NODE_ENV=test LOG_LEVEL=error LOG_FORMAT=simple jest --config test/jest-config.json",
     "lint": "eslint --ext .js,.ts .",
     "deploy": "scripts/deploy-tmp.sh",
     "delete": "scripts/delete-tmp.sh"

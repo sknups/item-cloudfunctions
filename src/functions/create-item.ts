@@ -6,7 +6,7 @@ import { CreateItemRequestDto } from '../dto/create-item-request.dto';
 import { parseAndValidateRequestData } from '../helpers/validation';
 import logger from '../helpers/logger';
 import { Sku } from '../client/catalog/catalog.client';
-import { AppError, GIVEAWAY_CODE_NOT_PROVIDED, SKU_OUT_OF_STOCK, SKU_PERMISSION_MISSING, SKU_STOCK_NOT_INITIALISED, UPDATE_SKU_STOCK_FAILED } from '../app.errors';
+import { AppError, SKU_ACTION_NOT_PERMITTED, SKU_OUT_OF_STOCK, SKU_STOCK_NOT_INITIALISED, UPDATE_SKU_STOCK_FAILED } from '../app.errors';
 import { Stock, updateStock } from '../client/catalog/stock.client';
 import { itemEntityToItemEvent, skuToItemEntity } from '../helpers/item-mapper';
 import { ItemEntity } from '../entity/item.entity';
@@ -44,32 +44,23 @@ export async function createItemHandler(
   }
 
   // Parse request
-
   const requestDto: CreateItemRequestDto = await parseAndValidateRequestData(CreateItemRequestDto, req);
-  const isPurchase: boolean = !requestDto.claimCode;
-  const giveawayCodeLogMsg = isPurchase ? '' : ` with giveaway code ${requestDto.claimCode}`;
+  const isPurchaseRequest = !requestDto.claimCode;
+  const giveawayCodeLogMsg = isPurchaseRequest ? '' : ` with giveaway code ${requestDto.claimCode}`;
   logger.debug(`Received item-create request for SKU ${requestDto.skuCode}${giveawayCodeLogMsg}`);
 
   // Retrieve SKU and perform further validations
-
   const sku: Sku = await getSkuOrThrow(config, requestDto.skuCode);
+  const isEnumeratedSku: boolean = !!sku.maxQty;
 
-  const isEnumerated: boolean = !!sku.maxQty;
-  
-  const claimCodeRequired = !isEnumerated || !sku.recommendedRetailPrice
-  if (claimCodeRequired && !requestDto.claimCode) {
-    // If non-enumerated or no rrp this is assumed a giveaway, therefore claimCode is required
-    throw new AppError(GIVEAWAY_CODE_NOT_PROVIDED);
-  }
-
-  if (isPurchase && !sku.permissions.includes('SELL')) {
-    throw new AppError(SKU_PERMISSION_MISSING(sku.code, 'SELL'));
+  if (isPurchaseRequest && !sku.recommendedRetailPrice) {
+    throw new AppError(SKU_ACTION_NOT_PERMITTED(sku.code,'purchased','missing price'));
   }
 
   // Manufacture the item
 
   let saleQty: number = null;
-  if (isEnumerated) {
+  if (isEnumeratedSku) {
     const skuStock = await _updateStockOrThrow(config, sku.code);
     saleQty = sku.maxQty - skuStock.stock;
   }
@@ -78,7 +69,7 @@ export async function createItemHandler(
     sku,
     requestDto.skuCode,
     generateOwnershipToken(),
-    isPurchase ? null : requestDto.claimCode,
+    isPurchaseRequest ? null : requestDto.claimCode,
     saleQty,
     requestDto.user,
     config,
