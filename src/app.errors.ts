@@ -42,10 +42,10 @@ export function SKU_ACTION_NOT_PERMITTED(sku: string, action: string, reason: st
   }
 }
 
-export function UPDATE_SKU_STOCK_FAILED(sku: string): ErrorReason {
+export function CREATE_STOCK_ITEM_FAILED(platform: string, sku: string): ErrorReason {
   return {
     code: 'ITEM_00005',
-    message: `Failed to update stock for sku ${sku}`,
+    message: `Failed to create stock item for platform ${platform}, sku ${sku}`,
     statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
   }
 }
@@ -66,18 +66,18 @@ export function SKU_NOT_NON_ENUMERATED(sku: string): ErrorReason {
   }
 }
 
-export function SKU_OUT_OF_STOCK(sku: string): ErrorReason {
+export function OUT_OF_STOCK(platform: string, sku: string): ErrorReason {
   return {
     code: 'ITEM_00008',
-    message: `SKU ${sku} is out of stock`,
+    message: `Platform ${platform}, SKU ${sku} is out of stock`,
     statusCode: StatusCodes.FORBIDDEN,
   }
 }
 
-export function SKU_STOCK_NOT_INITIALISED(sku: string): ErrorReason {
+export function STOCK_NOT_FOUND(platform: string, sku: string): ErrorReason {
   return {
     code: 'ITEM_00009',
-    message: `SKU ${sku} stock is not initialised`,
+    message: `Platform ${platform}, SKU ${sku} stock is not found`,
     statusCode: StatusCodes.FORBIDDEN,
   }
 }

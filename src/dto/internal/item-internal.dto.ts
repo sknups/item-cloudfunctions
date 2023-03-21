@@ -51,11 +51,18 @@ export class InternalItemDto extends ItemDto {
   rrp: number | null;
 
   /**
-   * item issue
+   * item issue, could be sequential or pseudorandom
    *
    * is null for non-enumerated items
    */
   issue: number | null;
+
+  /**
+   * the sequential issued number for the item
+   *
+   * is null for non-enumerated items
+   */
+  issued: number | null;
 
   /**
    * Maximum quantity available
