@@ -102,6 +102,20 @@ describe('mapper - item media json parser', () => {
       .toThrow('secondary/0/labels must be an array');
   });
 
+  it('missing three type returns error', () => {
+    const media = _media({ three: {} })
+
+    expect(() => parseMedia(JSON.stringify(media)))
+      .toThrow('three/type must be one of the following values');
+  });
+
+  it('invalid three type returns error', () => {
+    const media = _media({ three: { type: 'INVALID' } })
+
+    expect(() => parseMedia(JSON.stringify(media)))
+      .toThrow('three/type must be one of the following values');
+  });
+
   it('extra property is allowed', () => {
     const media = _media({
       primary: {
@@ -131,6 +145,13 @@ describe('mapper - item media json parser', () => {
     expect(result?.secondary[0].link).toEqual('test');
     expect(result?.secondary[1].type).toEqual('VIDEO');
     expect(result?.secondary[1].link).toEqual(undefined);
+  });
+
+  it('valid JSON with media.three returns object', () => {
+    const media = _media({ three: { type: 'NONE' } });
+
+    const result = parseMedia(JSON.stringify(media));
+    expect(result?.three?.type).toEqual('NONE');
   });
 
 });
