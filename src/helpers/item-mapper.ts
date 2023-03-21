@@ -9,7 +9,8 @@ export function skuToItemEntity(
   skuCode: string,
   ownershipToken: string,
   claimCode: string | null,
-  saleQty: number | null,
+  issued: number | null,
+  issue: number | null,
   user: string,
   cfg: AllConfig,
 ): ItemEntity {
@@ -31,7 +32,9 @@ export function skuToItemEntity(
     ownerAddress: null,
     platformCode: sku.platformCode,
     recommendedRetailPrice: sku.recommendedRetailPrice,
-    saleQty: saleQty,
+    saleQty: issued,
+    issued: issued,
+    issue: issue,
     source:  claimCode === null ? 'SALE' : 'GIVEAWAY',
     state: 'UNBOXED',
     stockKeepingUnitCode: skuCode,
@@ -64,7 +67,7 @@ export function itemEntityToItemEvent(item: ItemEntity, audit: AuditEntity, even
   event.retailSource = 'FirebaseUID';
   event.retailUserId = item.user;
   event.rrp = item.recommendedRetailPrice;
-  event.saleQty = item.saleQty;
+  event.saleQty = item.issued;
   event.skuCode = item.stockKeepingUnitCode;
   event.skuName = item.stockKeepingUnitName;
   event.skuRarity = item.stockKeepingUnitRarity;

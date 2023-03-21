@@ -43,17 +43,17 @@ export class RetailerItemMapper extends AbstractItemMapper<RetailerItemDto> {
 
     if (item.stockKeepingUnitRarity) {
       // If rarity exists, we are in v1 item
-      issue = item.stockKeepingUnitRarity === 0 ? null : item.saleQty;
+      issue = item.stockKeepingUnitRarity === 0 ? null : item.issue;
       maximum = item.stockKeepingUnitRarity === 0 || item.stockKeepingUnitRarity === 1? null : item.maxQty;
 
     } else if (item.card) {
       // If card exists, we are in a v2 item
-      issue = item.card && item.card.includes("${issue}") ? item.saleQty : null;
+      issue = item.card && item.card.includes("${issue}") ? item.issue : null;
       maximum = item.card && item.card.includes("${maximum}") ? item.maxQty : null;
 
     } else {
       // If the above aren't true, we are in a v3+ item
-      issue = item.media && item.media.includes("${issue}") ? item.saleQty : null;
+      issue = item.media && item.media.includes("${issue}") ? item.issue : null;
       maximum = item.media && item.media.includes("${maximum}") ? item.maxQty : null;
     }
 

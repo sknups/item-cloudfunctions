@@ -18,6 +18,8 @@ export type ItemEntity = NamedKeyEntity & UpdateableEntity & {
   platformCode: string;
   recommendedRetailPrice: number | null;
   saleQty: number | null;
+  issue: number | null;
+  issued: number | null;
   skn: string | null;
   source: string;
   state: string;
