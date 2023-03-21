@@ -2,8 +2,8 @@ import "reflect-metadata";
 import { RetailerItemMapper } from "../../src/mapper/retailer/item-mapper-retailer";
 import { TEST_ENTITIES } from '../test-data-entities';
 import { TEST_DTOS } from '../test-data-dtos';
-import {ItemEntity} from "../../src/entity/item.entity";
-import {RetailerItemDto} from "../../src/dto/retailer/item-retailer.dto";
+import { ItemEntity } from "../../src/entity/item.entity";
+import { RetailerItemDto } from "../../src/dto/retailer/item-retailer.dto";
 
 describe('mapper - item - retailer', () => {
 
@@ -18,6 +18,24 @@ describe('mapper - item - retailer', () => {
 
   it('creates item dto structure - v3', () => {
     expect(instance.toDto(TEST_ENTITIES.v3.sale)).toEqual(TEST_DTOS.v3.sale.retailer)
+  });
+
+  it('creates item dto structure - v3 - without 3d', () => {
+    const entity = {
+      ...TEST_ENTITIES.v3.sale,
+      // Inject three.type=NONE into the media JSON of the test entity
+      media: `{"three":{"type":"NONE"},${TEST_ENTITIES.v3.sale.media?.substring(1)}`,
+    };
+    const expectedDto = {
+      ...TEST_DTOS.v3.sale.retailer,
+      media: {
+        primary: TEST_DTOS.v3.sale.retailer.media.primary,
+        secondary: TEST_DTOS.v3.sale.retailer.media.secondary,
+        social: TEST_DTOS.v3.sale.retailer.media.social,
+        // model should be absent
+      }
+    };
+    expect(instance.toDto(entity)).toEqual(expectedDto);
   });
 
   it('generates \'VIDEO\' media structure', () => {

@@ -48,7 +48,7 @@ export class RetailerItemMediaDto {
   /**
    * Links to the 3d model and configuration.
    */
-  model: ModelMediaDto;
+  model?: ModelMediaDto;
 
 }
 
