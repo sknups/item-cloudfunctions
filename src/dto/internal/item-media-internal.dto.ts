@@ -26,6 +26,16 @@ export class InternalItemSecondaryMediaDto extends InternalItemPrimaryMediaDto {
   link?: string;
 }
 
+export enum InternalItemThreeMediaTypeDto {
+  SIMPLE = 'SIMPLE',
+  NONE = 'NONE',
+}
+
+export class InternalItemThreeMediaDto {
+  @IsEnum(InternalItemThreeMediaTypeDto)
+  type: InternalItemThreeMediaTypeDto;
+}
+
 /**
  * The item media exposed to internal clients.
  * 
@@ -44,4 +54,10 @@ export class InternalItemMediaDto {
   @ValidateNested({ each: true })
   @Type(() => InternalItemSecondaryMediaDto)
   secondary: InternalItemSecondaryMediaDto[];
+
+  @IsOptional()
+  @IsObject()
+  @ValidateNested()
+  @Type(() => InternalItemThreeMediaDto)
+  three?: InternalItemThreeMediaDto;
 }

@@ -3,7 +3,7 @@ import { SecondaryMediaDto } from '../../dto/retailer/item-media-retailer-second
 import { RetailerItemMediaDto, RetailerItemMediaTypeDto, ImageMediaUrlsDto, VideoMediaUrlsDto } from '../../dto/retailer/item-media-retailer.dto';
 import { ItemEntity } from '../../entity/item.entity';
 import { parseMedia } from '../item-media-json-parser';
-import { InternalItemMediaDto, InternalItemMediaTypeDto } from '../../dto/internal/item-media-internal.dto';
+import { InternalItemMediaDto, InternalItemMediaTypeDto, InternalItemThreeMediaTypeDto } from '../../dto/internal/item-media-internal.dto';
 
 function _getImageBlock(baseUrl: string): ImageMediaUrlsDto {
   return {
@@ -49,8 +49,9 @@ export class ItemMediaDTOMapper {
   toDTO(entity: ItemEntity): RetailerItemMediaDto {
     // Use entity.media if available (v3+) otherwise convert skn property to media (v1,v2)
     const media: InternalItemMediaDto = parseMedia(entity.media) || _legacySknToMedia(entity);
+    const threeType: InternalItemThreeMediaTypeDto = media.three?.type || InternalItemThreeMediaTypeDto.SIMPLE;
 
-    return {
+    const result: RetailerItemMediaDto = {
       primary: this.mapPrimaryMedia(media.primary.type, entity),
       secondary: media.secondary.map((s, i) => this.mapSecondaryMedia(s.type, entity, i, s.link)),
       social: {
@@ -61,11 +62,16 @@ export class ItemMediaDTOMapper {
           image: _getImageBlock(`${this.flexHost}/skn/v1/primary/snapsticker/${entity.key}`),
         },
       },
-      model: {
+    };
+
+    if (threeType == InternalItemThreeMediaTypeDto.SIMPLE) {
+      result.model = {
         config: `${this.assetsHost}/sku.v1.3DConfig.${entity.stockKeepingUnitCode}.json`,
         glb: `${this.assetsHost}/sku.v1.3DView.${entity.stockKeepingUnitCode}.glb`,
-      },
-    };
+      };
+    }
+
+    return result;
 
   }
 
