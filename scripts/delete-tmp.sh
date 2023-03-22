@@ -6,3 +6,4 @@ gcloud functions delete item-create-tmp $common_args
 gcloud functions delete item-find-tmp $common_args
 gcloud functions delete item-get-tmp $common_args
 gcloud functions delete item-update-tmp $common_args
+gcloud functions delete item-find-last-issued-tmp $common_args

@@ -10,6 +10,7 @@ import { AllConfig, loadConfig } from './config/all-config';
 import { functionWrapper } from './helpers/wrapper';
 import { GetItems } from './functions/get-items';
 import { GetItem } from './functions/get-item';
+import { FindLastIssued } from './functions/find-last-issued';
 import { updateItemHandler } from './functions/update-item';
 import { createItemHandler } from './functions/create-item';
 
@@ -20,6 +21,8 @@ export const getItems: HttpFunction = async (req, res) => functionWrapper(GetIte
 export const getItem: HttpFunction = async (req, res) => functionWrapper(GetItem.handler, req, res, CONFIG);
 export const createItem: HttpFunction = async (req, res) => functionWrapper(createItemHandler, req, res, CONFIG);
 export const updateItem: HttpFunction = async (req, res) => functionWrapper(updateItemHandler, req, res, CONFIG);
+export const findLastIssued: HttpFunction = async (req, res) => functionWrapper(FindLastIssued.handler, req, res, CONFIG);
+
 
 /**
  * For dev testing only
@@ -38,6 +41,9 @@ export const devRouter: HttpFunction = async (req, res) => {
   switch (req.path) {
     case '/item-find':
       await getItems(req, res);
+      break;
+    case '/item-find-last-issued':
+      await findLastIssued(req, res);
       break;
     case '/item-create':
       await createItem(req, res);

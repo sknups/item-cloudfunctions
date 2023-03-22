@@ -10,13 +10,14 @@ import { ItemEventType } from '../eventstreaming/item-event';
 import { commitTransaction, DatastoreContext, rollbackTransaction, startTransaction } from '../helpers/datastore/datastore.helper';
 import { itemEntityToItemEvent } from '../helpers/item-mapper';
 import logger from '../helpers/logger';
-import { parsePath, publisher, repository } from '../helpers/util';
+import { publisher, repository } from '../helpers/util';
 import { parseAndValidateRequestData } from '../helpers/validation';
 import { RetailerItemMapper } from '../mapper/retailer/item-mapper-retailer';
 import { ItemRepository } from '../persistence/item-repository';
 import { MutationResult } from '../helpers/persistence/mutation-result';
 import { Sku } from '../client/catalog/catalog.client';
 import { getSkuOrThrow } from '../helpers/sku';
+import { getPlatformAndKeyFromPath } from '../helpers/url';
 
 const _OPERATION_TO_NFT_STATE = {
   [UpdateItemOperation.MINTED]: {
@@ -43,11 +44,7 @@ export async function updateItemHandler(req: Request, res: Response, config: All
     return;
   }
 
-  // Parse request
-  const pathParams = parsePath(req, res);
-  if (!pathParams) {
-    return;
-  }
+  const {platform, key} = getPlatformAndKeyFromPath(req);
 
   const requestDto: UpdateItemRequestDto = await parseAndValidateRequestData(UpdateItemRequestDto, req);
   const operationData = _OPERATION_TO_NFT_STATE[requestDto.operation];
@@ -55,7 +52,7 @@ export async function updateItemHandler(req: Request, res: Response, config: All
     res.status(StatusCodes.BAD_REQUEST).send(`Operation ${requestDto.operation} not supported`);
     return;
   }
-  logger.debug(`Received request for update-item for ${pathParams.key} with operation ${requestDto.operation}`);
+  logger.debug(`Received request for update-item for ${key} with operation ${requestDto.operation}`);
 
   // Process request
   const context: DatastoreContext = await startTransaction(ItemRepository.context);
@@ -66,10 +63,10 @@ export async function updateItemHandler(req: Request, res: Response, config: All
   let auditEntity: AuditEntity = null;
 
   try {
-    itemEntity = await repository().byThumbprint(pathParams.platform, pathParams.key, context);
+    itemEntity = await repository().byThumbprint(platform, key, context);
 
     if (!itemEntity) {
-      throw new AppError(ITEM_NOT_FOUND(pathParams.platform, pathParams.key));
+      throw new AppError(ITEM_NOT_FOUND(platform, key));
     }
 
     if (itemEntity.nftState != operationData.fromNftState) {
