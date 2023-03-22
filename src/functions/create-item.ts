@@ -51,7 +51,7 @@ export async function createItemHandler(
 
   // Retrieve SKU and perform further validations
   const sku: Sku = await getSkuOrThrow(config, requestDto.skuCode);
-  const isEnumeratedSku: boolean = !!sku.maxQty;
+  const isEnumeratedSku = !!sku.maxQty;
 
   if (isPurchaseRequest && !sku.recommendedRetailPrice) {
     throw new AppError(SKU_ACTION_NOT_PERMITTED(sku.code,'purchased','missing price'));
@@ -75,7 +75,6 @@ export async function createItemHandler(
     issued,
     issue,
     requestDto.user,
-    config,
   );
 
   const audit: AuditEntity = await createItemAndAuditWithRetries(item);

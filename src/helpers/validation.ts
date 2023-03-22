@@ -37,7 +37,7 @@ export async function parseAndValidateRequestData<T extends object>(dtoType: Cla
  * @param messagePrefix a prefix used to identify the property being validated (only required for children)
  * @returns an array of error messages
  */
-function _recursiveMapValidationErrorMessages(validationErrs: ValidationErrorCv[], messagePrefix: string = ''): string[] {
+function _recursiveMapValidationErrorMessages(validationErrs: ValidationErrorCv[], messagePrefix = ''): string[] {
   const messages = validationErrs.filter(ve => ve.constraints)
     .map(ve => Object.values(ve.constraints))
     .flat()
