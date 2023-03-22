@@ -1,4 +1,3 @@
-import { AllConfig } from '../config/all-config';
 import { ItemEvent, ItemEventType } from '../eventstreaming/item-event';
 import { ItemEntity } from '../entity/item.entity';
 import { AuditEntity } from '../entity/audit.entity';
@@ -12,7 +11,6 @@ export function skuToItemEntity(
   issued: number | null,
   issue: number | null,
   user: string,
-  cfg: AllConfig,
 ): ItemEntity {
   const created = new Date();
   return {
