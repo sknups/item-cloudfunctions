@@ -1,5 +1,6 @@
 import { Datastore, Entity, PathType, Transaction } from '@google-cloud/datastore';
 import { CommitResponse } from '@google-cloud/datastore/build/src/request';
+import { Order } from '../persistence/order';
 import { BaseEntity, EntityKey } from '../persistence/base.entity';
 import { Filter } from '../persistence/filter';
 import { MutationResult } from '../persistence/mutation-result';
@@ -110,11 +111,12 @@ export async function updateEntity(context: DatastoreContext, kind: string, enti
   await ds.update(_mapToDatastoreEntity(context, kind, entity));
 }
 
-export async function findEntities<T extends BaseEntity>(context: DatastoreContext, kind: string, filters: Filter[]): Promise<T[]> {
+export async function findEntities<T extends BaseEntity>(context: DatastoreContext, kind: string, filters: Filter[], orders?: Order[]): Promise<T[]> {
   const ds = context.tx ?? context.datastore;
 
   const query = ds.createQuery(kind);
   query.filters = filters;
+  query.orders = orders;
 
   const [result] = await ds.runQuery(query);
 

@@ -18,15 +18,6 @@ const SALE_QUERY_DATA = _toDatastoreEntity(TEST_ENTITIES.v2.sale);
 const SALE_QUERY_DATA_MINTED = _toDatastoreEntity(TEST_ENTITIES.v2.minted);
 const GIVEAWAY_QUERY_DATA = _toDatastoreEntity(TEST_ENTITIES.v2.giveaway);
 
-function _runQueryResponse(overrides: object): any {
-  const queryResponse = [
-    { ...SALE_QUERY_DATA, ...overrides },
-    { ...GIVEAWAY_QUERY_DATA, ...overrides },
-  ];
-
-  return [queryResponse];
-}
-
 function _transformedResponse(overrides: object): object[] {
   return [
     { ...TEST_ENTITIES.v2.sale, ...overrides },
@@ -246,5 +237,51 @@ describe('persistence', () => {
     });
 
   });
+
+  describe('findLastIssued', () => {
+
+    beforeEach(function () {
+      runQuerySpy.mockReturnValueOnce([[SALE_QUERY_DATA]] as any);
+    });
+
+    it('uses correct query', async () => {
+      const {platformCode, stockKeepingUnitCode} = TEST_ENTITIES.v2.sale
+      await instance.findLastIssued(platformCode, stockKeepingUnitCode);
+
+      const expectedQuery = {
+        namespace: 'drm',
+        kinds: ['item'],
+        filters: [
+          { name: 'platformCode', op: '=', val: platformCode },
+          { name: 'stockKeepingUnitCode', op: '=', val: stockKeepingUnitCode },
+          { name: 'saleQty', op: '!=', val: null }
+        ],
+        orders: [{ name: 'saleQty', sign: '-'}]
+
+      };
+
+      expect(runQuerySpy).toHaveBeenCalledTimes(1);
+      expect(runQuerySpy).toHaveBeenLastCalledWith(expect.objectContaining(expectedQuery));
+    });
+
+    it('return null if no results', async () => {
+      runQuerySpy.mockReset();
+      runQuerySpy.mockReturnValueOnce([[]] as any);
+
+      const {platformCode, stockKeepingUnitCode} = TEST_ENTITIES.v2.sale
+      const result = await instance.findLastIssued(platformCode, stockKeepingUnitCode);
+
+      expect(result).toBeNull();
+     
+    });
+
+    it('transforms results', async () => {
+      const {platformCode, stockKeepingUnitCode} = TEST_ENTITIES.v2.sale
+      const result = await instance.findLastIssued(platformCode, stockKeepingUnitCode);
+
+      expect(result).toEqual(TEST_ENTITIES.v2.sale);
+    });
+
+  })
 
 });

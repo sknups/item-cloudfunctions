@@ -9,7 +9,8 @@ import { RetailerItemMapper } from '../mapper/retailer/item-mapper-retailer';
 import { AllConfig } from 'config/all-config';
 import { ItemDto } from '../dto/item.dto';
 import { ItemEntity } from '../entity/item.entity';
-import { parsePath } from '../helpers/util';
+import { getPlatformAndKeyFromPath, isRetailerRequest } from '../helpers/url';
+
 
 export class GetItem {
 
@@ -21,25 +22,23 @@ export class GetItem {
       return;
     }
 
-    const pathParams = parsePath(req, res);
-    if (!pathParams) {
-      return;
-    }
+    const {platform,key} = getPlatformAndKeyFromPath(req);
+    const isRetailer = isRetailerRequest(req);
 
     // If the platform matches the magic string _NFT_ then query by nftAddress instead of token
-    const keyType = (!pathParams.retailer && pathParams.platform == '_NFT_') ? 'nftAddress' : 'token';
+    const keyType = (!isRetailer && platform == '_NFT_') ? 'nftAddress' : 'token';
 
-    logger.debug(`Received request for drm-item - platform '${pathParams.platform}' ${keyType} '${pathParams.key}'`);
+    logger.debug(`Received request for drm-item - platform '${platform}' ${keyType} '${key}'`);
     let entity: ItemEntity;
     try {
       if (keyType === 'nftAddress') {
-        entity = await GetItem.repository.byNftAddress(pathParams.key);
+        entity = await GetItem.repository.byNftAddress(key);
       } else {
-        entity = await GetItem.repository.byThumbprint(pathParams.platform, pathParams.key);
+        entity = await GetItem.repository.byThumbprint(platform, key);
       }
 
       if (entity === null) {
-        logger.debug(`item not found platform '${pathParams.platform}' ${keyType} '${pathParams.key}'`);
+        logger.debug(`item not found platform '${platform}' ${keyType} '${key}'`);
         res.sendStatus(StatusCodes.NOT_FOUND);
         return;
       }
@@ -48,7 +47,7 @@ export class GetItem {
       throw new AppError(UNCATEGORIZED_ERROR, e);
     }
 
-    const mapper = pathParams.retailer ? new RetailerItemMapper(config.assetsUrl, config.flexUrl) : new InternalItemMapper();
+    const mapper = isRetailer ? new RetailerItemMapper(config.assetsUrl, config.flexUrl) : new InternalItemMapper();
     const item: ItemDto = mapper.toDto(entity);
 
     res.status(StatusCodes.OK).json(item);

@@ -69,7 +69,7 @@ describe('function - update-item', () => {
     await instance(req, res);
 
     expect(res.statusCode).toEqual(StatusCodes.BAD_REQUEST);
-    expect(res._getString()).toContain('platform code and ownership token (or nft.address) must be provided in path');
+    expect(res._getString()).toContain('ITEM_00011');
   });
 
   it('ignores path additional element', async () => {

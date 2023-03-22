@@ -66,6 +66,23 @@ export class ItemRepository {
     }
   }
 
+  public async findLastIssued(platform: string, sku: string, context?: DatastoreContext): Promise<ItemEntity | null> {
+    logger.debug(`findLastIssued - platform = '${platform} sku = '${sku}''`)
+
+    const items: ItemEntity[] = await findEntities(
+      context ?? ItemRepository.context,
+      'item',
+      [
+        { name: 'platformCode', op: '=', val: platform },
+        { name: 'stockKeepingUnitCode', op: '=', val: sku },
+        { name: 'saleQty', op: '!=', val: null }
+      ],
+      [{ name: 'saleQty', sign: '-'}]
+    );
+
+    return items.length > 0 ? this._dataMigration(items[0]) : null;
+  }
+
   public async insertItem(item: ItemEntity, context?: DatastoreContext): Promise<void> {
     logger.debug(`insertItem - ownershipToken = '${item.key}' platformCode = '${item.platformCode}'`);
 
@@ -91,11 +108,11 @@ export class ItemRepository {
    * TODO delete when data has been migrated in datastore
    */
   private _dataMigration(item :ItemEntity): ItemEntity {
-    if (item.issue == null) {
+    if (item.issue === undefined) {
       item.issue = item.saleQty
     }
 
-    if (item.issued == null) {
+    if (item.issued === undefined) {
       item.issued = item.saleQty
     }
 

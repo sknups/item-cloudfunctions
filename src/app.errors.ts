@@ -82,6 +82,20 @@ export function STOCK_NOT_FOUND(platform: string, sku: string): ErrorReason {
   }
 }
 
+export const NOT_AVAILABLE_TO_RETAILER: ErrorReason = {
+  code: 'ITEM_00010',
+  message: 'Not available to retailer',
+  statusCode: StatusCodes.FORBIDDEN,
+}
+
+export const INVALID_URL_PATH_ERROR =  (route: string) :ErrorReason =>  {
+  return {
+    code: 'ITEM_00011',
+    message: `Invalid request path, does not match ${route}`,
+    statusCode: StatusCodes.BAD_REQUEST,
+  }
+};
+
 /**
  * This error may occur if there is a collision when generating an ownership token.
  *
