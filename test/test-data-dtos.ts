@@ -11,6 +11,7 @@ const SALE_DTO_V1_INTERNAL: InternalItemDto = {
   "description": "The only regular solid which tessellates Euclidean space: the hexahedron.  The ancients believed this caused the solidity of the Earth.",
   "giveaway": null,
   "issue": 2,
+  "issued": 2,
   "maximum": 10000,
   "media": null,
   "name": "Epic Cube",
@@ -91,6 +92,7 @@ const SALE_DTO_V2_INTERNAL: InternalItemDto = {
   "description": "The water element. Twenty triangles in a polyhedral soup. In nature, the icosahedron can be seen in the folded structures of bacteriophages and viruses.\n",
   "giveaway": null,
   "issue": 2,
+  "issued": 2,
   "maximum": 10000,
   "media": {
     "primary": {
@@ -214,6 +216,7 @@ const GIVEAWAY_DTO_V2_INTERNAL: InternalItemDto = {
   "description": "The air element. Octahedra are sparkling crystals of diamond, and magnetite.",
   "giveaway": "octahedron",
   "issue": null,
+  "issued": null,
   "maximum": null,
   "media": {
     "primary": {
@@ -316,6 +319,7 @@ const SALE_DTO_V3_INTERNAL: InternalItemDto = {
   "description": "The fire element. Simplest of all polyhedra, strongest of all pyramids, the tetrahedron has only four prickly vertices.",
   "giveaway": null,
   "issue": 2,
+  "issued": 2,
   "maximum": 2500,
   "media": {
     "primary": {

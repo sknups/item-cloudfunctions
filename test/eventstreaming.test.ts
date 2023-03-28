@@ -23,7 +23,6 @@ describe('function - create-non-enumerated-item', () => {
     testEvent.claimCode = 'claimCode1';
     testEvent.dataEvent = 'CREATE';
     testEvent.dataTimestamp = new Date();
-    testEvent.dataVersion = 3;
     testEvent.eventId = 'eventId';
     testEvent.itemCode = 'ownershipToken1';
     testEvent.maxQty = 50;

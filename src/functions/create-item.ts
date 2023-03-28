@@ -6,8 +6,8 @@ import { CreateItemRequestDto } from '../dto/create-item-request.dto';
 import { parseAndValidateRequestData } from '../helpers/validation';
 import logger from '../helpers/logger';
 import { Sku } from '../client/catalog/catalog.client';
-import { AppError, SKU_ACTION_NOT_PERMITTED, SKU_OUT_OF_STOCK, SKU_STOCK_NOT_INITIALISED, UPDATE_SKU_STOCK_FAILED } from '../app.errors';
-import { Stock, updateStock } from '../client/catalog/stock.client';
+import { AppError, SKU_ACTION_NOT_PERMITTED, OUT_OF_STOCK, STOCK_NOT_FOUND, CREATE_STOCK_ITEM_FAILED } from '../app.errors';
+import { Stock, createStockItem } from '../client/catalog/stock.client';
 import { itemEntityToItemEvent, skuToItemEntity } from '../helpers/item-mapper';
 import { ItemEntity } from '../entity/item.entity';
 import { createItemAndAuditWithRetries, generateOwnershipToken } from '../helpers/item';
@@ -17,17 +17,17 @@ import { publisher } from '../helpers/util';
 import { RetailerItemMapper } from '../mapper/retailer/item-mapper-retailer';
 import { getSkuOrThrow } from '../helpers/sku';
 
-async function _updateStockOrThrow(cfg: AllConfig, skuCode: string): Promise<Stock> {
+async function _createStockItemOrThrow(cfg: AllConfig, platform: string, sku: string): Promise<Stock> {
   try {
-    return await updateStock(cfg, skuCode);
+    return await createStockItem(cfg, platform, sku);
   } catch (e) {
     switch (e.response?.data?.code) {
       case 'STOCK_00400':
-        throw new AppError(SKU_STOCK_NOT_INITIALISED(skuCode), e);
+        throw new AppError(STOCK_NOT_FOUND(platform,sku), e);
       case 'STOCK_00500':
-        throw new AppError(SKU_OUT_OF_STOCK(skuCode), e);
+        throw new AppError(OUT_OF_STOCK(platform,sku), e);
       default:
-        throw new AppError(UPDATE_SKU_STOCK_FAILED(skuCode), e);
+        throw new AppError(CREATE_STOCK_ITEM_FAILED(platform,sku), e);
     }
   }
 }
@@ -51,7 +51,7 @@ export async function createItemHandler(
 
   // Retrieve SKU and perform further validations
   const sku: Sku = await getSkuOrThrow(config, requestDto.skuCode);
-  const isEnumeratedSku: boolean = !!sku.maxQty;
+  const isEnumeratedSku = !!sku.maxQty;
 
   if (isPurchaseRequest && !sku.recommendedRetailPrice) {
     throw new AppError(SKU_ACTION_NOT_PERMITTED(sku.code,'purchased','missing price'));
@@ -59,10 +59,12 @@ export async function createItemHandler(
 
   // Manufacture the item
 
-  let saleQty: number = null;
+  let issued: number = null;
+  let issue: number = null;
   if (isEnumeratedSku) {
-    const skuStock = await _updateStockOrThrow(config, sku.code);
-    saleQty = sku.maxQty - skuStock.stock;
+    const stockItem = await _createStockItemOrThrow(config, sku.platformCode, sku.code);
+    issued = stockItem.issued;
+    issue = stockItem.issue;
   }
 
   const item: ItemEntity = skuToItemEntity(
@@ -70,9 +72,9 @@ export async function createItemHandler(
     requestDto.skuCode,
     generateOwnershipToken(),
     isPurchaseRequest ? null : requestDto.claimCode,
-    saleQty,
+    issued,
+    issue,
     requestDto.user,
-    config,
   );
 
   const audit: AuditEntity = await createItemAndAuditWithRetries(item);

@@ -4,7 +4,6 @@ import { EventPublisher } from '../src/eventstreaming/event-publisher';
 import { MutationResult } from '../src/helpers/persistence/mutation-result';
 import { AllConfig } from '../src/config/all-config';
 import { TEST_SKUS } from './test-data-skus';
-import { AppError, SKU_OUT_OF_STOCK, SKU_STOCK_NOT_INITIALISED } from '../src/app.errors';
 import { GaxiosError } from 'gaxios';
 import { StatusCodes } from 'http-status-codes';
 
@@ -42,25 +41,39 @@ const catalog = {
 }
 
 const stock = {
-  updateStock: jest.fn()
-    .mockImplementation((_cfg: AllConfig, sku: string) => {
+  createStockItem: jest.fn()
+    .mockImplementation((_cfg: AllConfig, platform: string, sku: string) => {
+
+      const noStockError = new GaxiosError('Simulated stock not found error', {}, {
+        status: StatusCodes.NOT_FOUND,
+        statusText: 'NOT_FOUND',
+        config: {},
+        data: { code: 'STOCK_00400', message: 'Simulated stock not found error' },
+        headers: {},
+        request: { responseURL: '' },
+      });
+
+      if (platform != 'SKN') {
+        throw noStockError;
+      }
+  
       switch (sku) {
         case 'GIVEAWAY-V1':
-          return { sku, stock: 50123 };
+          return { platform, sku, issue: 949877, issued: 949877  };
 
         case 'PREMIUM-V1':
-          return { sku, stock: 371 };
+          return { platform, sku, issue: 629, issued: 629 };
 
         case 'PREMIUM-V2':
         case 'TEST-ICOSAHEDRON-GREEN':
-          return { sku, stock: 4301 };
+          return { platform, sku, issue: 5699, issued: 5699  };
 
         case 'PREMIUM-V3':
         case 'TEST-TETRAHEDRON-PURPLE':
         case 'PREMIUM-V3-WITHOUT-MINT':
-          return { sku, stock: 7944 };
+          return { platform, sku, issue: 2056, issued: 2056 };
         case 'PREMIUM-V3-WITHOUT-PRICE':
-          return { sku, recommendedRetailPrice: null };
+          return { platform, sku };
 
         case 'PREMIUM-V3-WITH-ZERO-STOCK':
           throw new GaxiosError('Simulated out of stock error', {}, {
@@ -76,14 +89,7 @@ const stock = {
           throw new Error('Unexpected error retrieving stock PREMIUM-V3-WITH-STOCK-ERROR');
 
         default:
-          throw new GaxiosError('Simulated stock not found error', {}, {
-            status: StatusCodes.NOT_FOUND,
-            statusText: 'NOT_FOUND',
-            config: {},
-            data: { code: 'STOCK_00400', message: 'Simulated stock not found error' },
-            headers: {},
-            request: { responseURL: '' },
-          });
+          throw noStockError;
       }
     }),
 }
@@ -104,7 +110,7 @@ export const mocks = {
   datastoreHelper,
   eventPublisher,
   mockClear: () => {
-    stock.updateStock.mockClear();
+    stock.createStockItem.mockClear();
     catalog.getSku.mockClear();
     datastoreHelper.createContext.mockClear();
     datastoreHelper.insertEntity.mockClear();

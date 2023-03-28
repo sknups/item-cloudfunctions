@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -e
+
 common_args="--project drm-apps-01-43b0"
 common_args="${common_args} --trigger-http"
 common_args="${common_args} --region=europe-west2"
@@ -41,6 +43,15 @@ if [[ -z "$1" || "$1" == "$name" ]]; then
   gcloud functions deploy $name \
     $common_args \
     --entry-point=updateItem \
+    --memory=128MB \
+    --service-account=item-cf-read@drm-apps-01-43b0.iam.gserviceaccount.com
+fi
+
+name=item-find-last-issued-tmp
+if [[ -z "$1" || "$1" == "$name" ]]; then
+  gcloud functions deploy $name \
+    $common_args \
+    --entry-point=findLastIssued \
     --memory=128MB \
     --service-account=item-cf-read@drm-apps-01-43b0.iam.gserviceaccount.com
 fi

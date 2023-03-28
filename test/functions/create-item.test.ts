@@ -82,7 +82,7 @@ type ResponseDtoExpectations = {
 type EntityExpectations = {
   auditId: number,
   claimCode: string | null,
-  saleQty: number | null,
+  issue: number | null,
   source: string,
   user: string
 }
@@ -105,7 +105,7 @@ function _validateResponse(
 
   expect(res.itemEntities).toHaveLength(1);
   expect(res.itemEntities[0]).toEqual(expect.objectContaining({
-    saleQty: expectations.entity.saleQty,
+    issue: expectations.entity.issue,
     source: expectations.entity.source,
     user: expectations.entity.user,
   }));
@@ -245,7 +245,7 @@ describe('function - create-item', () => {
       expect(res.dto.code).toEqual('ITEM_00009'); // SKU_STOCK_NOT_INITIALISED
 
       expect(mocks.catalog.getSku).toHaveBeenCalledTimes(1);
-      expect(mocks.stock.updateStock).toHaveBeenCalledTimes(1);
+      expect(mocks.stock.createStockItem).toHaveBeenCalledTimes(1);
       expect(mocks.datastoreHelper.insertEntity).toHaveBeenCalledTimes(0);
     });
 
@@ -256,7 +256,7 @@ describe('function - create-item', () => {
       expect(res.dto.code).toEqual('ITEM_00008'); // SKU_OUT_OF_STOCK
 
       expect(mocks.catalog.getSku).toHaveBeenCalledTimes(1);
-      expect(mocks.stock.updateStock).toHaveBeenCalledTimes(1);
+      expect(mocks.stock.createStockItem).toHaveBeenCalledTimes(1);
       expect(mocks.datastoreHelper.insertEntity).toHaveBeenCalledTimes(0);
     });
 
@@ -267,7 +267,7 @@ describe('function - create-item', () => {
       expect(res.statusCode).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
 
       expect(mocks.catalog.getSku).toHaveBeenCalledTimes(1);
-      expect(mocks.stock.updateStock).toHaveBeenCalledTimes(1);
+      expect(mocks.stock.createStockItem).toHaveBeenCalledTimes(1);
       expect(mocks.datastoreHelper.insertEntity).toHaveBeenCalledTimes(0);
     });
   });
@@ -304,7 +304,7 @@ describe('function - create-item', () => {
       expect(res.statusCode).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
       expect(res.dto.code).toEqual('ITEM_00100');
       expect(mocks.catalog.getSku).toHaveBeenCalledTimes(1);
-      expect(mocks.stock.updateStock).toHaveBeenCalledTimes(1);
+      expect(mocks.stock.createStockItem).toHaveBeenCalledTimes(1);
       expect(mocks.datastoreHelper.startTransaction).toHaveBeenCalledTimes(3); // once for each try
       expect(mocks.datastoreHelper.rollbackTransaction).toHaveBeenCalledTimes(3); // 3 failures rolled back
       expect(mocks.datastoreHelper.insertEntity).toHaveBeenCalledTimes(3); // item x 3, 0 audit
@@ -328,7 +328,7 @@ describe('function - create-item', () => {
         entity: {
           auditId,
           claimCode: 'claimCode',
-          saleQty: 1000000 - 50123,
+          issue: 1000000 - 50123,
           source: 'GIVEAWAY',
           user: 'testUser',
         }
@@ -348,7 +348,7 @@ describe('function - create-item', () => {
         entity: {
           auditId,
           claimCode: 'claimCode2',
-          saleQty: null,
+          issue: null,
           source: 'GIVEAWAY',
           user: 'testUser'
         }
@@ -368,7 +368,7 @@ describe('function - create-item', () => {
         entity: {
           auditId,
           claimCode: 'claimCode',
-          saleQty: null,
+          issue: null,
           source: 'GIVEAWAY',
           user: 'testUser',
         }
@@ -388,7 +388,7 @@ describe('function - create-item', () => {
         entity: {
           auditId,
           claimCode: 'claimCode',
-          saleQty: 1000 - 371,
+          issue: 1000 - 371,
           source: 'GIVEAWAY',
           user: 'testUser',
         }
@@ -408,7 +408,7 @@ describe('function - create-item', () => {
         entity: {
           auditId,
           claimCode: 'claimCode',
-          saleQty: 10000 - 4301,
+          issue: 10000 - 4301,
           source: 'GIVEAWAY',
           user: 'testUser'
         }
@@ -428,7 +428,7 @@ describe('function - create-item', () => {
         entity: {
           auditId,
           claimCode: 'claimCode',
-          saleQty: 10000 - 7944,
+          issue: 10000 - 7944,
           source: 'GIVEAWAY',
           user: 'testUser',
         }
@@ -450,7 +450,7 @@ describe('function - create-item', () => {
        entity: {
          auditId,
          claimCode: null,
-         saleQty: 1000 - 371,
+         issue: 1000 - 371,
          source: 'SALE',
          user: 'testUser'
        }
@@ -470,7 +470,7 @@ describe('function - create-item', () => {
        entity: {
          auditId,
          claimCode: null,
-         saleQty: 10000 - 4301,
+         issue: 10000 - 4301,
          source: 'SALE',
          user: 'testUser'
        }
@@ -490,7 +490,7 @@ describe('function - create-item', () => {
        entity: {
          auditId,
          claimCode: null,
-         saleQty: 10000 - 7944,
+         issue: 10000 - 7944,
          source: 'SALE',
          user: 'testUser2'
        }
