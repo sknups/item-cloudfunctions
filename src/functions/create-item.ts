@@ -17,9 +17,9 @@ import { publisher } from '../helpers/util';
 import { RetailerItemMapper } from '../mapper/retailer/item-mapper-retailer';
 import { getSkuOrThrow } from '../helpers/sku';
 
-async function _createStockItemOrThrow(cfg: AllConfig, platform: string, sku: string): Promise<Stock> {
+async function _createStockItemOrThrow(cfg: AllConfig, platform: string, sku: string, type: 'claim' | 'purchase'): Promise<Stock> {
   try {
-    return await createStockItem(cfg, platform, sku);
+    return await createStockItem(cfg, platform, sku, type);
   } catch (e) {
     switch (e.response?.data?.code) {
       case 'STOCK_00400':
@@ -62,7 +62,8 @@ export async function createItemHandler(
   let issued: number = null;
   let issue: number = null;
   if (isEnumeratedSku) {
-    const stockItem = await _createStockItemOrThrow(config, sku.platformCode, sku.code);
+    const stockItemType = isPurchaseRequest ? 'purchase' : 'claim'
+    const stockItem = await _createStockItemOrThrow(config, sku.platformCode, sku.code, stockItemType);
     issued = stockItem.issued;
     issue = stockItem.issue;
   }
