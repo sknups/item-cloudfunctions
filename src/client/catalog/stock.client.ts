@@ -58,9 +58,9 @@ export type Stock = {
   allocation: string;
 }
 
-export async function createStockItem(cfg: AllConfig, platform: string, sku: string): Promise<Stock> {
+export async function createStockItem(cfg: AllConfig, platform: string, sku: string, type: 'claim' | 'purchase'): Promise<Stock> {
   const client = await httpClient(cfg.stockCreateIssue);
 
-  const resp: GaxiosResponse<Stock> = await client.request({ method: 'POST', url: `${cfg.stockCreateIssue}/${platform}/${sku}` });
+  const resp: GaxiosResponse<Stock> = await client.request({ method: 'POST', url: `${cfg.stockCreateIssue}/${platform}/${sku}/${type}` });
   return resp.data;
 }
