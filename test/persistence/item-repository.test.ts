@@ -28,6 +28,7 @@ function _transformedResponse(overrides: object): object[] {
 describe('persistence', () => {
 
   const runQuerySpy = jest.spyOn(Datastore.prototype, 'runQuery');
+  const runAggregationQuerySpy = jest.spyOn(Datastore.prototype, 'runAggregationQuery');
   const getSpy = jest.spyOn(Datastore.prototype, 'get');
 
   let instance: ItemRepository;
@@ -280,6 +281,80 @@ describe('persistence', () => {
       const result = await instance.findLastIssued(platformCode, stockKeepingUnitCode);
 
       expect(result).toEqual(TEST_ENTITIES.v2.sale);
+    });
+
+  })
+
+  describe('countClaimed', () => {
+
+    beforeEach(function () {
+      const result = [{ count: 42 }];
+      runAggregationQuerySpy.mockReturnValueOnce([result] as any);
+    });
+
+    it('uses correct query', async () => {
+      const {platformCode, stockKeepingUnitCode} = TEST_ENTITIES.v2.sale
+      await instance.countClaimed(platformCode, stockKeepingUnitCode);
+
+      const expectedQuery = {
+        filters: [
+          {"name": "platformCode", "op": "=", "val": platformCode}, 
+          {"name": "stockKeepingUnitCode", "op": "=", "val": stockKeepingUnitCode}, 
+          {"name": "claimCode", "op": "!=", "val": null}
+        ],
+        kinds: ["item"], 
+        namespace: "drm", 
+      }
+
+
+      expect(runAggregationQuerySpy).toHaveBeenCalledTimes(1);
+      expect(runAggregationQuerySpy).toHaveBeenLastCalledWith(expect.objectContaining({
+        query: expect.objectContaining(expectedQuery)
+      }));
+    })
+
+    it('transforms results', async () => {
+      const {platformCode, stockKeepingUnitCode} = TEST_ENTITIES.v2.sale
+      const result = await instance.countClaimed(platformCode, stockKeepingUnitCode);
+
+      expect(result).toEqual(42);
+    });
+
+  })
+
+  describe('countPurchased', () => {
+
+    beforeEach(function () {
+      const result = [{ count: 42 }];
+      runAggregationQuerySpy.mockReturnValueOnce([result] as any);
+    });
+
+    it('uses correct query', async () => {
+      const {platformCode, stockKeepingUnitCode} = TEST_ENTITIES.v2.sale
+      await instance.countPurchased(platformCode, stockKeepingUnitCode);
+
+      const expectedQuery = {
+        filters: [
+          {"name": "platformCode", "op": "=", "val": platformCode}, 
+          {"name": "stockKeepingUnitCode", "op": "=", "val": stockKeepingUnitCode}, 
+          {"name": "claimCode", "op": "=", "val": null}
+        ],
+        kinds: ["item"], 
+        namespace: "drm", 
+      }
+
+
+      expect(runAggregationQuerySpy).toHaveBeenCalledTimes(1);
+      expect(runAggregationQuerySpy).toHaveBeenLastCalledWith(expect.objectContaining({
+        query: expect.objectContaining(expectedQuery)
+      }));
+    })
+
+    it('transforms results', async () => {
+      const {platformCode, stockKeepingUnitCode} = TEST_ENTITIES.v2.sale
+      const result = await instance.countPurchased(platformCode, stockKeepingUnitCode);
+
+      expect(result).toEqual(42);
     });
 
   })
