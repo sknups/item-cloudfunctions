@@ -84,6 +84,24 @@ curl $BASE_URL/item-find -H 'content-type: application/json' \
   -d '{"platformCode":"SKN","blockchainAddress":"'$BLOCKCHAIN_ADDRESS'","user":"'$USER'"}'
 ```
 
+### item-last-issued
+
+```bash
+BASE_URL=http://localhost:8080
+SKU_CODE=TEST-DODECAHEDRON-GIVEAWAY
+
+curl -H 'content-type: application/json' $BASE_URL/item-find-last-issued/SKN/$SKU_CODE 
+```
+
+### item-count
+
+```bash
+BASE_URL=http://localhost:8080
+SKU_CODE=TEST-DODECAHEDRON-GIVEAWAY
+
+curl -H 'content-type: application/json' $BASE_URL/item-count/SKN/$SKU_CODE 
+```
+
 ### item-create (non-enumerated)
 
 ```bash

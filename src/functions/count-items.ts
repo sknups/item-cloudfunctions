@@ -3,12 +3,11 @@ import { Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import logger from '../helpers/logger';
 import { ItemRepository } from '../persistence/item-repository';
-import { AppError, NOT_AVAILABLE_TO_RETAILER, UNCATEGORIZED_ERROR } from '../app.errors';
-import { ItemEntity } from '../entity/item.entity';
+import { AppError, NOT_AVAILABLE_TO_RETAILER } from '../app.errors';
 import { getPlatformAndKeyFromPath, isRetailerRequest } from '../helpers/url';
-import { InternalItemMapper } from '../mapper/internal/item-mapper-internal';
+import { InternalCountDto } from 'dto/internal/count';
 
-export class FindLastIssued {
+export class CountItems {
 
   public static repository = new ItemRepository();
 
@@ -25,21 +24,16 @@ export class FindLastIssued {
       throw new AppError(NOT_AVAILABLE_TO_RETAILER);
     }
 
+    logger.debug(`Received request for count - platform '${platform}' '${key}'`);
+    
+    const claimed = await CountItems.repository.countClaimed(platform, key);
+    const purchased = await CountItems.repository.countPurchased(platform, key);
 
-    logger.debug(`Received request for last issued - platform '${platform}' '${key}'`);
-    let entity: ItemEntity;
-    try {
-      entity = await FindLastIssued.repository.findLastIssued(platform, key);
-    } catch (e) {
-      throw new AppError(UNCATEGORIZED_ERROR, e);
+    const dto : InternalCountDto  = {
+      claimed,
+      purchased
     }
 
-    if (entity === null) {
-      logger.debug(`no issued items found platform '${platform}' '${key}'`);
-      res.sendStatus(StatusCodes.NOT_FOUND);
-      return;
-    }
-
-    res.status(StatusCodes.OK).json(new InternalItemMapper().toDto(entity));
+    res.status(StatusCodes.OK).json(dto);
   }
 }
