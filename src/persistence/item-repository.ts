@@ -1,6 +1,6 @@
 import { AuditEntity } from '../entity/audit.entity';
 import { ItemEntity } from '../entity/item.entity';
-import { createContext, DatastoreContext, findEntities, getEntity, insertEntity, updateEntity } from '../helpers/datastore/datastore.helper';
+import { countEntities, createContext, DatastoreContext, findEntities, getEntity, insertEntity, updateEntity } from '../helpers/datastore/datastore.helper';
 import logger from '../helpers/logger';
 
 export class ItemRepository {
@@ -81,6 +81,34 @@ export class ItemRepository {
     );
 
     return items.length > 0 ? this._dataMigration(items[0]) : null;
+  }
+
+  public async countClaimed(platform: string, sku: string, context?: DatastoreContext): Promise<number> {
+    logger.debug(`countClaimed - platform = '${platform} sku = '${sku}''`)
+
+    return await countEntities(
+      context ?? ItemRepository.context,
+      'item',
+      [
+        { name: 'platformCode', op: '=', val: platform },
+        { name: 'stockKeepingUnitCode', op: '=', val: sku },
+        { name: 'claimCode', op: '!=', val: null }
+      ],
+    );
+  }
+
+  public async countPurchased(platform: string, sku: string, context?: DatastoreContext): Promise<number> {
+    logger.debug(`countPurchased - platform = '${platform} sku = '${sku}''`)
+
+    return await countEntities(
+      context ?? ItemRepository.context,
+      'item',
+      [
+        { name: 'platformCode', op: '=', val: platform },
+        { name: 'stockKeepingUnitCode', op: '=', val: sku },
+        { name: 'claimCode', op: '=', val: null }
+      ],
+    );
   }
 
   public async insertItem(item: ItemEntity, context?: DatastoreContext): Promise<void> {

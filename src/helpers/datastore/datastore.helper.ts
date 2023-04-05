@@ -123,6 +123,20 @@ export async function findEntities<T extends BaseEntity>(context: DatastoreConte
   return result.map(entity => _mapFromDatastoreEntity(entity));
 }
 
+export async function countEntities(context: DatastoreContext, kind: string, filters: Filter[]): Promise<number> {
+  const ds = context.tx ?? context.datastore;
+
+  const query = ds.createQuery(kind);
+  query.filters = filters;
+
+  const countQuery = ds.createAggregationQuery(query)
+      .count('count');
+
+  const [result] = await ds.runAggregationQuery(countQuery);
+
+  return result[0].count;
+}
+
 function _keyPath(kind: string, key: EntityKey): PathType[] {
   return key ? [kind, key] : [kind];
 }
