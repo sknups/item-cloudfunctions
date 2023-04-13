@@ -255,9 +255,9 @@ describe('persistence', () => {
         filters: [
           { name: 'platformCode', op: '=', val: platformCode },
           { name: 'stockKeepingUnitCode', op: '=', val: stockKeepingUnitCode },
-          { name: 'saleQty', op: '!=', val: null }
+          { name: 'issued', op: '!=', val: null }
         ],
-        orders: [{ name: 'saleQty', sign: '-'}]
+        orders: [{ name: 'issued', sign: '-'}]
 
       };
 
