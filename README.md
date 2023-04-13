@@ -84,11 +84,11 @@ curl $BASE_URL/item-find -H 'content-type: application/json' \
   -d '{"platformCode":"SKN","blockchainAddress":"'$BLOCKCHAIN_ADDRESS'","user":"'$USER'"}'
 ```
 
-### item-last-issued
+### item-find-last-issued
 
 ```bash
 BASE_URL=http://localhost:8080
-SKU_CODE=TEST-DODECAHEDRON-GIVEAWAY
+SKU_CODE=TEST-DODECAHEDRON-BLUE
 
 curl -H 'content-type: application/json' $BASE_URL/item-find-last-issued/SKN/$SKU_CODE 
 ```
