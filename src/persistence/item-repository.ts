@@ -19,7 +19,7 @@ export class ItemRepository {
       ],
     ).then(items => items.filter(item => item.state !== 'DELETED' && item.nftState === 'MINTED'));
    
-    return items.map((item) => this._dataMigration(item))
+    return items;
   }
 
   public async byUser(platformCode: string, user: string): Promise<ItemEntity[]> {
@@ -34,7 +34,7 @@ export class ItemRepository {
       ],
     ).then(items => items.filter(item => item.state !== 'DELETED'));
 
-    return items.map((item) => this._dataMigration(item))
+    return items;
   }
 
   public async byThumbprint(platformCode: string, thumbprint: string, context?: DatastoreContext): Promise<ItemEntity | null> {
@@ -43,7 +43,7 @@ export class ItemRepository {
     const item: ItemEntity = await getEntity(context ?? ItemRepository.context, 'item', thumbprint);
 
     if (item && item.platformCode === platformCode && item.state !== 'DELETED') {
-      return this._dataMigration(item);
+      return item;
     } else {
       return null;
     }
@@ -60,7 +60,7 @@ export class ItemRepository {
 
     const item = items.length > 0 ? items[0] : null;
     if (item && item.state !== 'DELETED') {
-      return this._dataMigration(item);
+      return item;
     } else {
       return null;
     }
@@ -80,7 +80,7 @@ export class ItemRepository {
       [{ name: 'issued', sign: '-'}]
     );
 
-    return items.length > 0 ? this._dataMigration(items[0]) : null;
+    return items.length > 0 ? items[0] : null;
   }
 
   public async countClaimed(platform: string, sku: string, context?: DatastoreContext): Promise<number> {
@@ -127,24 +127,6 @@ export class ItemRepository {
     logger.debug(`insertAudit - entityId = '${audit.entityId}' toState = '${audit.toState}'`);
 
     await insertEntity(context, 'audit', audit);
-  }
-
-  /**
-   * Set 'issue' and 'issued' properties from 
-   * 'maxQty' if they are not set.
-   * 
-   * TODO delete when data has been migrated in datastore
-   */
-  private _dataMigration(item :ItemEntity): ItemEntity {
-    if (item.issue === undefined) {
-      item.issue = item.saleQty
-    }
-
-    if (item.issued === undefined) {
-      item.issued = item.saleQty
-    }
-
-    return item;
   }
 
 }

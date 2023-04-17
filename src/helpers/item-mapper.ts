@@ -30,7 +30,6 @@ export function skuToItemEntity(
     ownerAddress: null,
     platformCode: sku.platformCode,
     recommendedRetailPrice: sku.recommendedRetailPrice,
-    saleQty: issued,
     issued: issued,
     issue: issue,
     source:  claimCode === null ? 'SALE' : 'GIVEAWAY',
