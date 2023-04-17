@@ -75,9 +75,9 @@ export class ItemRepository {
       [
         { name: 'platformCode', op: '=', val: platform },
         { name: 'stockKeepingUnitCode', op: '=', val: sku },
-        { name: 'saleQty', op: '!=', val: null }
+        { name: 'issued', op: '!=', val: null }
       ],
-      [{ name: 'saleQty', sign: '-'}]
+      [{ name: 'issued', sign: '-'}]
     );
 
     return items.length > 0 ? this._dataMigration(items[0]) : null;
