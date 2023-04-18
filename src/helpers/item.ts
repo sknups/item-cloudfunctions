@@ -7,15 +7,48 @@ import { ItemEntity } from '../entity/item.entity';
 import { commitTransaction, DatastoreContext, rollbackTransaction, startTransaction } from './datastore/datastore.helper';
 import logger from './logger';
 import { MutationResult } from './persistence/mutation-result';
-import { repository } from './util';
+import { publisher, repository } from './util';
+import { Sku } from '../client/catalog/catalog.client';
+import { itemEntityToItemEvent, skuToItemEntity } from './item-mapper';
+import { ItemEventType } from '../eventstreaming/item-event';
+import { AllConfig } from '../config/all-config';
 
 const MAX_OWNERSHIP_TOKEN_RETRIES = 3;
 
-export function generateOwnershipToken(): string {
+function generateOwnershipToken(): string {
   return randomBytes(5).toString("hex");
 }
 
-export async function createItemAndAuditWithRetries(item: ItemEntity): Promise<AuditEntity> {
+export async function createItemFromSku(
+  config: AllConfig,
+  sku: Sku,
+  user: string,
+  issued?: number,
+  issue?: number,
+  claimCode?: string,
+): Promise<ItemEntity> {
+
+  // Manufacture the item
+  const item: ItemEntity = skuToItemEntity(
+    sku,
+    sku.code,
+    generateOwnershipToken(),
+    claimCode ?? null,
+    issued ?? null,
+    issue ?? null,
+    user,
+  );
+  const audit: AuditEntity = await createItemAndAuditWithRetries(item);
+  logger.info(`Manufactured item ${audit.entityId} for SKU ${item.stockKeepingUnitCode} with auditId ${audit.key}`);
+
+  // Publish event
+  const event = itemEntityToItemEvent(item, audit, audit.key.toString(), ItemEventType.CREATE);
+  await publisher(config).publishEvent(event);
+
+  return item;
+}
+
+async function createItemAndAuditWithRetries(item: ItemEntity): Promise<AuditEntity> {
   const audit: AuditEntity = {
     key: null,
     date: item.created,

@@ -17,6 +17,7 @@ const GIVEAWAY_SKU_V1: Sku = {
   "recommendedRetailPrice": null,
   "skn": "DYNAMIC",
   "tier": null,
+  "claimable": false,
   "version": "1"
 };
 
@@ -37,6 +38,7 @@ const PREMIUM_SKU_V1: Sku = {
   "recommendedRetailPrice": 1000,
   "skn": "DYNAMIC",
   "tier": null,
+  "claimable": false,
   "version": "1"
 };
 
@@ -57,6 +59,7 @@ const GIVEAWAY_SKU_V2: Sku = {
   "recommendedRetailPrice": null,
   "skn": "DYNAMIC",
   "tier": "GIVEAWAY",
+  "claimable": false,
   "version": "2"
 };
 
@@ -77,6 +80,7 @@ const PREMIUM_SKU_V2: Sku = {
   "recommendedRetailPrice": 1000,
   "skn": "DYNAMIC",
   "tier": "GREEN",
+  "claimable": false,
   "version": "2"
 };
 
@@ -97,6 +101,7 @@ const GIVEAWAY_SKU_V3: Sku = {
   "recommendedRetailPrice": null,
   "skn": null,
   "tier": "GIVEAWAY",
+  "claimable": true,
   "version": "3"
 };
 
@@ -117,6 +122,28 @@ const PREMIUM_SKU_V3: Sku = {
   "recommendedRetailPrice": 2000,
   "skn": null,
   "tier": "GREEN",
+  "claimable": false,
+  "version": "3"
+};
+
+const DROPLINK_SKU_V3: Sku = {
+  "code": "DROPLINK-V3",
+  "brandCode": "TEST",
+  "brandName": "TEST",
+  "brandWholesalePrice": null,
+  "brandWholesalerShare": 0.5,
+  "card": null,
+  "description": "The fire element. Simplest of all polyhedra, strongest of all pyramids, the tetrahedron has only four prickly vertices.",
+  "maxQty": 100,
+  "media": "{\"primary\":{\"type\":\"STATIC\"},\"secondary\":[{\"type\":\"DYNAMIC\",\"labels\":[{\"text\":\"${token}\",\"color\":\"#FFFFFFAA\",\"size\":\"30pt\",\"font\":\"Share Tech Mono\",\"weight\":\"Regular\",\"align\":\"center\",\"x\":450,\"y\":1220}]}]}",
+  "name": "Giveaway Tetrahedron",
+  "permissions": [],
+  "platformCode": "SKN",
+  "rarity": null,
+  "recommendedRetailPrice": null,
+  "skn": null,
+  "tier": null,
+  "claimable": false,
   "version": "3"
 };
 
@@ -127,6 +154,19 @@ export const TEST_SKUS = {
   'PREMIUM-V1': PREMIUM_SKU_V1,
   'PREMIUM-V2': PREMIUM_SKU_V2,
   'PREMIUM-V3': PREMIUM_SKU_V3,
+  'DROPLINK-V3': DROPLINK_SKU_V3,
+
+  'PREMIUM-V3-CLAIMABLE': {
+    ...PREMIUM_SKU_V3,
+    code: 'PREMIUM-V3-CLAIMABLE',
+    claimable: true,
+  },
+
+  'DROPLINK-V3-CLAIMABLE': {
+    ...DROPLINK_SKU_V3,
+    code: 'DROPLINK-V3-CLAIMABLE',
+    claimable: true,
+  },
 
   'TEST-OCTAHEDRON-GIVEAWAY': {
     ...GIVEAWAY_SKU_V2,

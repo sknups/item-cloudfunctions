@@ -32,7 +32,7 @@ export function skuToItemEntity(
     recommendedRetailPrice: sku.recommendedRetailPrice,
     issued: issued,
     issue: issue,
-    source:  claimCode === null ? 'SALE' : 'GIVEAWAY',
+    source: (claimCode !== null || sku.claimable) ? 'GIVEAWAY' : 'SALE',
     state: 'UNBOXED',
     stockKeepingUnitCode: skuCode,
     stockKeepingUnitName: sku.name,

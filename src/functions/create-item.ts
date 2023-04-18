@@ -8,12 +8,8 @@ import logger from '../helpers/logger';
 import { Sku } from '../client/catalog/catalog.client';
 import { AppError, SKU_ACTION_NOT_PERMITTED, OUT_OF_STOCK, STOCK_NOT_FOUND, CREATE_STOCK_ITEM_FAILED } from '../app.errors';
 import { Stock, createStockItem } from '../client/catalog/stock.client';
-import { itemEntityToItemEvent, skuToItemEntity } from '../helpers/item-mapper';
 import { ItemEntity } from '../entity/item.entity';
-import { createItemAndAuditWithRetries, generateOwnershipToken } from '../helpers/item';
-import { AuditEntity } from '../entity/audit.entity';
-import { ItemEventType } from '../eventstreaming/item-event';
-import { publisher } from '../helpers/util';
+import { createItemFromSku } from '../helpers/item';
 import { RetailerItemMapper } from '../mapper/retailer/item-mapper-retailer';
 import { getSkuOrThrow } from '../helpers/sku';
 
@@ -23,11 +19,11 @@ async function _createStockItemOrThrow(cfg: AllConfig, platform: string, sku: st
   } catch (e) {
     switch (e.response?.data?.code) {
       case 'STOCK_00400':
-        throw new AppError(STOCK_NOT_FOUND(platform,sku), e);
+        throw new AppError(STOCK_NOT_FOUND(platform, sku), e);
       case 'STOCK_00500':
-        throw new AppError(OUT_OF_STOCK(platform,sku), e);
+        throw new AppError(OUT_OF_STOCK(platform, sku), e);
       default:
-        throw new AppError(CREATE_STOCK_ITEM_FAILED(platform,sku), e);
+        throw new AppError(CREATE_STOCK_ITEM_FAILED(platform, sku), e);
     }
   }
 }
@@ -54,7 +50,10 @@ export async function createItemHandler(
   const isEnumeratedSku = !!sku.maxQty;
 
   if (isPurchaseRequest && !sku.recommendedRetailPrice) {
-    throw new AppError(SKU_ACTION_NOT_PERMITTED(sku.code,'purchased','missing price'));
+    throw new AppError(SKU_ACTION_NOT_PERMITTED(sku.code, 'purchased', 'missing price'));
+  }
+  if (sku.claimable) {
+    throw new AppError(SKU_ACTION_NOT_PERMITTED(sku.code, 'manufactured', 'giveaway SKU not supported'));
   }
 
   // Manufacture the item
@@ -68,23 +67,14 @@ export async function createItemHandler(
     issue = stockItem.issue;
   }
 
-  const item: ItemEntity = skuToItemEntity(
+  const item: ItemEntity = await createItemFromSku(
+    config,
     sku,
-    requestDto.skuCode,
-    generateOwnershipToken(),
-    isPurchaseRequest ? null : requestDto.claimCode,
+    requestDto.user,
     issued,
     issue,
-    requestDto.user,
+    isPurchaseRequest ? null : requestDto.claimCode,
   );
-
-  const audit: AuditEntity = await createItemAndAuditWithRetries(item);
-  logger.info(`Manufactured item ${audit.entityId} for SKU ${item.stockKeepingUnitCode}${giveawayCodeLogMsg} with auditId ${audit.key}`);
-
-  // Publish event
-
-  const event = itemEntityToItemEvent(item, audit, audit.key.toString(), ItemEventType.CREATE);
-  await publisher(config).publishEvent(event);
 
   // Return populated retailer DTO
 
