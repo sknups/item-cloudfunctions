@@ -12,11 +12,11 @@ import { AuditEntity } from '../../src/entity/audit.entity';
 import { ItemEvent } from '../../src/eventstreaming/item-event';
 
 /**
- * Template request for giveaways.
+ * Template request for drop link redemptions.
  */
-const BODY_GIVEAWAY: CreateItemRequestDto = {
+const BODY_DROPLINK: CreateItemRequestDto = {
   claimCode: 'claimCode',
-  skuCode: 'GIVEAWAY-V3',
+  skuCode: 'DROPLINK-V3',
   user: 'testUser',
 };
 
@@ -138,7 +138,7 @@ describe('function - create-item', () => {
     let body: any;
 
     beforeEach(function () {
-      body = { ...BODY_GIVEAWAY };
+      body = { ...BODY_DROPLINK };
     });
 
     it('invalid method returns 405 METHOD_NOT_ALLOWED', async () => {
@@ -215,7 +215,7 @@ describe('function - create-item', () => {
 
   describe('validation - sku', () => {
     it('unknown sku returns 404', async () => {
-      const res = await _sendRequest({ ...BODY_GIVEAWAY, skuCode: 'unknown' });
+      const res = await _sendRequest({ ...BODY_DROPLINK, skuCode: 'unknown' });
 
       expect(res.statusCode).toEqual(StatusCodes.NOT_FOUND);
       expect(res.dto.code).toEqual('ITEM_00001');
@@ -227,7 +227,7 @@ describe('function - create-item', () => {
     let body: any;
 
     beforeEach(function () {
-      body = { ...BODY_GIVEAWAY };
+      body = { ...BODY_DROPLINK };
     });
 
     it('premium v3 without rrp returns 403 FORBIDDEN', async () => {
@@ -235,7 +235,7 @@ describe('function - create-item', () => {
 
       expect(res.statusCode).toEqual(StatusCodes.FORBIDDEN);
       expect(res.dto.message).toContain('SKU PREMIUM-V3-WITHOUT-PRICE can not be purchased, missing price');
-      expect(res.dto.code).toEqual('ITEM_00003'); 
+      expect(res.dto.code).toEqual('ITEM_00003');
     });
 
     it('sku without stock returns 403 FORBIDDEN', async () => {
@@ -277,7 +277,7 @@ describe('function - create-item', () => {
       mocks.datastoreHelper.insertEntity
         .mockImplementationOnce(() => { throw { code: ALREADY_EXISTS } });
 
-      const res = await _sendRequest(BODY_GIVEAWAY);
+      const res = await _sendRequest(BODY_DROPLINK);
 
       expect(res.statusCode).toEqual(StatusCodes.OK);
       expect(mocks.catalog.getSku).toHaveBeenCalledTimes(1);
@@ -312,14 +312,21 @@ describe('function - create-item', () => {
       const mockPublisher = mocks.eventPublisher.mock.instances[0];
       expect(mockPublisher.publishEvent).toHaveBeenCalledTimes(0); // item event not published
     });
+
+    it('create v3 giveaway returns 403 FORBIDDEN', async () => {
+      const res = await _sendRequest({ ...BODY_DROPLINK, skuCode: 'GIVEAWAY-V3' });
+
+      expect(res.dto.code).toEqual('ITEM_00003');
+      expect(res.dto.message).toContain('giveaway SKU not supported');
+    });
   });
 
   describe('create giveaway item', () => {
     it('create v1 returns 200 OK', async () => {
-      const res = await _sendRequest({ ...BODY_GIVEAWAY, skuCode: 'GIVEAWAY-V1' });
+      const res = await _sendRequest({ ...BODY_DROPLINK, skuCode: 'GIVEAWAY-V1' });
 
       _validateResponse(res, {
-        dto : {
+        dto: {
           claimCode: 'claimCode',
           issue: null,
           source: 'GIVEAWAY',
@@ -336,7 +343,7 @@ describe('function - create-item', () => {
     });
 
     it('create v2 returns 200 OK', async () => {
-      const res = await _sendRequest({ ...BODY_GIVEAWAY, skuCode: 'GIVEAWAY-V2', claimCode: 'claimCode2' });
+      const res = await _sendRequest({ ...BODY_DROPLINK, skuCode: 'GIVEAWAY-V2', claimCode: 'claimCode2' });
 
       _validateResponse(res, {
         dto: {
@@ -355,8 +362,8 @@ describe('function - create-item', () => {
       });
     });
 
-    it('create v3 returns 200 OK', async () => {
-      const res = await _sendRequest({ ...BODY_GIVEAWAY, skuCode: 'GIVEAWAY-V3' });
+    it('create v3 from drop link returns 200 OK', async () => {
+      const res = await _sendRequest({ ...BODY_DROPLINK, skuCode: 'DROPLINK-V3' });
 
       _validateResponse(res, {
         dto: {
@@ -368,7 +375,7 @@ describe('function - create-item', () => {
         entity: {
           auditId,
           claimCode: 'claimCode',
-          issue: null,
+          issue: 467,
           source: 'GIVEAWAY',
           user: 'testUser',
         }
@@ -376,7 +383,7 @@ describe('function - create-item', () => {
     });
 
     it('create premium v1 returns 200 OK', async () => {
-      const res = await _sendRequest({ ...BODY_GIVEAWAY, skuCode: 'PREMIUM-V1' });
+      const res = await _sendRequest({ ...BODY_DROPLINK, skuCode: 'PREMIUM-V1' });
 
       _validateResponse(res, {
         dto: {
@@ -396,7 +403,7 @@ describe('function - create-item', () => {
     });
 
     it('create premium v2 returns 200 OK', async () => {
-      const res = await _sendRequest({ ...BODY_GIVEAWAY, skuCode: 'PREMIUM-V2' });
+      const res = await _sendRequest({ ...BODY_DROPLINK, skuCode: 'PREMIUM-V2' });
 
       _validateResponse(res, {
         dto: {
@@ -416,7 +423,7 @@ describe('function - create-item', () => {
     });
 
     it('create premium v3 returns 200 OK', async () => {
-      const res = await _sendRequest({ ...BODY_GIVEAWAY, skuCode: 'PREMIUM-V3' });
+      const res = await _sendRequest({ ...BODY_DROPLINK, skuCode: 'PREMIUM-V3' });
 
       _validateResponse(res, {
         dto: {
@@ -436,65 +443,65 @@ describe('function - create-item', () => {
     });
   });
 
- describe('create purchased item', () => {
-   it('create premium v1 returns 200 OK', async () => {
-     const res = await _sendRequest({ ...BODY_PURCHASE, skuCode: 'PREMIUM-V1' });
+  describe('create purchased item', () => {
+    it('create premium v1 returns 200 OK', async () => {
+      const res = await _sendRequest({ ...BODY_PURCHASE, skuCode: 'PREMIUM-V1' });
 
-     _validateResponse(res, {
-       dto: {
-         claimCode: null,
-         issue: 1000 - 371,
-         source: 'SALE',
-         user: 'testUser'
-       },
-       entity: {
-         auditId,
-         claimCode: null,
-         issue: 1000 - 371,
-         source: 'SALE',
-         user: 'testUser'
-       }
-     });
-   });
+      _validateResponse(res, {
+        dto: {
+          claimCode: null,
+          issue: 1000 - 371,
+          source: 'SALE',
+          user: 'testUser'
+        },
+        entity: {
+          auditId,
+          claimCode: null,
+          issue: 1000 - 371,
+          source: 'SALE',
+          user: 'testUser'
+        }
+      });
+    });
 
-   it('create premium v2 returns 200 OK', async () => {
-     const res = await _sendRequest({ ...BODY_PURCHASE, skuCode: 'PREMIUM-V2' });
+    it('create premium v2 returns 200 OK', async () => {
+      const res = await _sendRequest({ ...BODY_PURCHASE, skuCode: 'PREMIUM-V2' });
 
-     _validateResponse(res, {
-       dto: {
-         claimCode: null,
-         issue: 10000 - 4301,
-         source: 'SALE',
-         user: 'testUser'
-       },
-       entity: {
-         auditId,
-         claimCode: null,
-         issue: 10000 - 4301,
-         source: 'SALE',
-         user: 'testUser'
-       }
-     });
-   });
+      _validateResponse(res, {
+        dto: {
+          claimCode: null,
+          issue: 10000 - 4301,
+          source: 'SALE',
+          user: 'testUser'
+        },
+        entity: {
+          auditId,
+          claimCode: null,
+          issue: 10000 - 4301,
+          source: 'SALE',
+          user: 'testUser'
+        }
+      });
+    });
 
-   it('create premium v3 returns 200 OK', async () => {
-     const res = await _sendRequest({ ...BODY_PURCHASE, skuCode: 'PREMIUM-V3', user: 'testUser2' });
+    it('create premium v3 returns 200 OK', async () => {
+      const res = await _sendRequest({ ...BODY_PURCHASE, skuCode: 'PREMIUM-V3', user: 'testUser2' });
 
-     _validateResponse(res, {
-       dto: {
-         claimCode: null,
-         issue: 10000 - 7944,
-         source: 'SALE',
-         user: 'testUser2'
-       },
-       entity: {
-         auditId,
-         claimCode: null,
-         issue: 10000 - 7944,
-         source: 'SALE',
-         user: 'testUser2'
-       }
-     });
-   });
+      _validateResponse(res, {
+        dto: {
+          claimCode: null,
+          issue: 10000 - 7944,
+          source: 'SALE',
+          user: 'testUser2'
+        },
+        entity: {
+          auditId,
+          claimCode: null,
+          issue: 10000 - 7944,
+          source: 'SALE',
+          user: 'testUser2'
+        }
+      });
+    });
   });
 });

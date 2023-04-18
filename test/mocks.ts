@@ -56,17 +56,17 @@ const stock = {
       if (platform != 'SKN') {
         throw noStockError;
       }
-  
+
       switch (sku) {
         case 'GIVEAWAY-V1':
-          return { platform, sku, issue: 949877, issued: 949877  };
+          return { platform, sku, issue: 949877, issued: 949877 };
 
         case 'PREMIUM-V1':
           return { platform, sku, issue: 629, issued: 629 };
 
         case 'PREMIUM-V2':
         case 'TEST-ICOSAHEDRON-GREEN':
-          return { platform, sku, issue: 5699, issued: 5699  };
+          return { platform, sku, issue: 5699, issued: 5699 };
 
         case 'PREMIUM-V3':
         case 'TEST-TETRAHEDRON-PURPLE':
@@ -74,6 +74,9 @@ const stock = {
           return { platform, sku, issue: 2056, issued: 2056 };
         case 'PREMIUM-V3-WITHOUT-PRICE':
           return { platform, sku };
+
+        case 'DROPLINK-V3':
+          return { platform, sku, issue: 467, issued: 3 };
 
         case 'PREMIUM-V3-WITH-ZERO-STOCK':
           throw new GaxiosError('Simulated out of stock error', {}, {
