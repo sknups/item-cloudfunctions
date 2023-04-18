@@ -129,6 +129,19 @@ curl \
   -d '{"skuCode":"'$SKU_CODE'","user":"'$USER'"}'
 ```
 
+### item-create-from-giveaway
+
+```bash
+BASE_URL=http://localhost:8080
+SKU_CODE=TEST-DODECAHEDRON-GIVEAWAY
+USER=devtesting
+
+curl \
+  -H 'Content-Type: application/json' \
+  $BASE_URL/item-create-from-giveaway \
+  -d '{"sku":"'$SKU_CODE'","user":"'$USER'"}'
+```
+
 ### item-update
 
 MINTING:

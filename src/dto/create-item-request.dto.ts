@@ -1,3 +1,4 @@
+import { Equals } from 'class-validator';
 import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class CreateItemRequestDto {
@@ -30,4 +31,34 @@ export class CreateItemRequestDto {
   @IsString()
   @IsNotEmpty()
   public readonly claimCode?: string;
+}
+
+export class CreateItemFromGiveawayRequestDto {
+
+  /**
+   * The stock keeping unit (SKU) code of the item to be manufactured.
+   *
+   * It MUST be a SKU that is claimable (=true)
+   *
+   * @example 'TEST-DODECAHEDRON-GIVEAWAY'
+   */
+  @IsString()
+  @IsNotEmpty()
+  public readonly sku: string;
+
+  /**
+   * User of the item owner.
+   */
+  @IsString()
+  @IsNotEmpty()
+  public readonly user: string;
+
+  /**
+   * @deprecated
+   *
+   * MUST NOT be provided.
+   */
+  @Equals(undefined)
+  public readonly claimCode?: undefined;
+
 }

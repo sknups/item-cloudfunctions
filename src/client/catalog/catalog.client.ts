@@ -24,6 +24,7 @@ export type Sku = {
   brandWholesalerShare: number | null,
   permissions: SkuPermission[],
   media?: string | null,
+  claimable: boolean,
 }
 
 export async function getSku(cfg: AllConfig, skuCode: string): Promise<Sku | null> {
