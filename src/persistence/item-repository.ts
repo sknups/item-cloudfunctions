@@ -130,19 +130,23 @@ export class ItemRepository {
   public async insertItem(item: ItemEntity, context?: DatastoreContext): Promise<void> {
     logger.debug(`insertItem - ownershipToken = '${item.key}' platformCode = '${item.platformCode}'`);
 
-    await insertEntity(context ?? ItemRepository.context, 'item', item);
+    await insertEntity(context ?? ItemRepository.context, 'item', item, this._excludeFromIndexes());
   }
 
   public async updateItem(item: ItemEntity, context: DatastoreContext): Promise<void> {
     logger.debug(`updateItem - ownershipToken = '${item.key}' platformCode = '${item.platformCode}'`);
 
-    await updateEntity(context, 'item', item);
+    await updateEntity(context, 'item', item, this._excludeFromIndexes());
   }
 
   public async insertAudit(audit: AuditEntity, context: DatastoreContext): Promise<void> {
     logger.debug(`insertAudit - entityId = '${audit.entityId}' toState = '${audit.toState}'`);
 
     await insertEntity(context, 'audit', audit);
+  }
+
+  private _excludeFromIndexes() : string[] {
+    return ['brandName','description','stockKeepingUnitName','media']
   }
 
 }
