@@ -9,7 +9,7 @@ import { getSkuOrThrow } from '../helpers/sku';
 import { Sku } from '../client/catalog/catalog.client';
 import { AppError, SKU_ACTION_NOT_PERMITTED } from '../app.errors';
 import { ItemEntity } from '../entity/item.entity';
-import { createItemFromSku } from '../helpers/item';
+import { createItemFromSku, getUserItemForSku } from '../helpers/item';
 import { RetailerItemMapper } from '../mapper/retailer/item-mapper-retailer';
 
 export async function createItemFromGiveawayHandler(
@@ -39,11 +39,17 @@ export async function createItemFromGiveawayHandler(
     throw new AppError(SKU_ACTION_NOT_PERMITTED(sku.code, 'claimed', 'it is enumerated'));
   }
 
-  // Manufacture the item
-  const item: ItemEntity = await createItemFromSku(config, sku, dto.user);
+  //Check if user owns item from Sku
+  let item: ItemEntity = await getUserItemForSku('SKN',sku, dto.user);
+  const userHasItem = item != null
+
+  if (!userHasItem) {
+    // Manufacture the item
+    item = await createItemFromSku(config, sku, dto.user);
+  }
 
   // Return populated retailer DTO
   const response = new RetailerItemMapper(config.assetsUrl, config.flexUrl).toDto(item);
-  res.status(StatusCodes.CREATED).json(response);
+  res.status(userHasItem ? StatusCodes.OK : StatusCodes.CREATED).json(response);
 
 }

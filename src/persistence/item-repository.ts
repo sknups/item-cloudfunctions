@@ -37,6 +37,22 @@ export class ItemRepository {
     return items;
   }
 
+  public async bySkuAndUser(platformCode: string, sku: string, user: string): Promise<ItemEntity[]> {
+    logger.debug(`bySkuAndUser - platformCode = '${platformCode}' sku = '${sku}' user = '${user}'`)
+    
+    const items = await findEntities<ItemEntity>(
+      ItemRepository.context,
+      'item',
+      [
+        { name: 'platformCode', op: '=', val: platformCode },
+        { name: 'stockKeepingUnitCode', op: '=', val: sku },
+        { name: 'user', op: '=', val: user },
+      ],
+    ).then(items => items.filter(item => item.state !== 'DELETED'));
+
+    return items;
+  }
+
   public async byThumbprint(platformCode: string, thumbprint: string, context?: DatastoreContext): Promise<ItemEntity | null> {
     logger.debug(`byThumbprint - platformCode = '${platformCode}' thumbprint = '${thumbprint}'`)
 

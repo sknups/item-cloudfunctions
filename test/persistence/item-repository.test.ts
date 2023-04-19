@@ -359,4 +359,47 @@ describe('persistence', () => {
 
   })
 
+  describe('bySkuAndUser', () => {
+
+    beforeEach(function () {
+      runQuerySpy.mockReturnValueOnce([[SALE_QUERY_DATA]] as any);
+    });
+
+    it('uses correct query', async () => {
+      const {platformCode, stockKeepingUnitCode} = TEST_ENTITIES.v2.sale;
+      await instance.bySkuAndUser(platformCode,stockKeepingUnitCode, USER);
+
+      const expectedQuery = {
+        namespace: 'drm',
+        kinds: ['item'],
+        filters: [
+          {"name": "platformCode", "op": "=", "val": platformCode}, 
+          {"name": "stockKeepingUnitCode", "op": "=", "val": stockKeepingUnitCode}, 
+          {"name": "user", "op": "=", "val": USER}
+        ],
+      };
+
+      expect(runQuerySpy).toHaveBeenCalledTimes(1);
+      expect(runQuerySpy).toHaveBeenLastCalledWith(expect.objectContaining(expectedQuery));
+    });
+
+    it('transforms results', async () => {
+      const { platformCode, stockKeepingUnitCode} = TEST_ENTITIES.v2.sale;
+      const result = await instance.bySkuAndUser(platformCode,stockKeepingUnitCode, USER);
+
+      expect(result).toEqual([TEST_ENTITIES.v2.sale]);
+    });
+
+    it('returns empty array for DELETED state', async () => {
+      runQuerySpy.mockReset();
+      runQuerySpy.mockReturnValueOnce([[{ ...SALE_QUERY_DATA, state: 'DELETED' }]] as any);
+
+      const {platformCode, stockKeepingUnitCode} = TEST_ENTITIES.v2.sale;
+      const result = await instance.bySkuAndUser(platformCode,stockKeepingUnitCode, USER);
+
+      expect(result).toEqual([]);
+    });
+
+  });
+
 });
