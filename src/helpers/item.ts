@@ -19,6 +19,15 @@ function generateOwnershipToken(): string {
   return randomBytes(5).toString("hex");
 }
 
+export async function getUserItemForSku(
+  platform: string,
+  sku: Sku,
+  user: string,
+): Promise<ItemEntity | null> {
+  const items = await repository().bySkuAndUser(platform, sku.code, user);
+  return items.length > 0 ? items[0] : null
+}
+
 export async function createItemFromSku(
   config: AllConfig,
   sku: Sku,

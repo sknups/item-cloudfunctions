@@ -9,6 +9,8 @@ import { ItemEntity } from '../../src/entity/item.entity';
 import { AuditEntity } from '../../src/entity/audit.entity';
 import { ItemEvent } from '../../src/eventstreaming/item-event';
 import { validateString } from '../validation-util';
+import { ItemRepository } from '../../src/persistence/item-repository';
+import { GIVEAWAY_ENTITY_V3 } from '../test-data-entities';
 
 /**
  * Sends the given request body the createItem function and handles the response.
@@ -108,6 +110,7 @@ function _validateResponse(
 describe('function - create-item-from-giveaway', () => {
 
   let auditId: number;
+  let bySkuAndUserSpy = jest.spyOn(ItemRepository.prototype, 'bySkuAndUser');
 
   beforeEach(function () {
 
@@ -116,6 +119,9 @@ describe('function - create-item-from-giveaway', () => {
 
     auditId = Math.floor(Math.random() * 10000000000);
     mocks.datastoreHelper.commitTransaction.mockReturnValueOnce(mockCommitTransactionResponse('audit', auditId));
+
+    bySkuAndUserSpy.mockClear();
+    bySkuAndUserSpy.mockReturnValueOnce(Promise.resolve([]));
 
   });
 
@@ -211,7 +217,23 @@ describe('function - create-item-from-giveaway', () => {
 
   describe('item manufacture', () => {
 
-    it('create returns 201 CREATED', async () => {
+    beforeEach(function () {
+      bySkuAndUserSpy.mockReset();
+      bySkuAndUserSpy.mockImplementation((platform: string, sku: string, user: string) : Promise<ItemEntity[]> => {
+        if (platform === 'SKN' && sku === 'GIVEAWAY-V3' && user === 'testUserWithItem') {
+          return Promise.resolve([{
+            ...GIVEAWAY_ENTITY_V3,
+            stockKeepingUnitCode: 'GIVEAWAY-V3',
+            user: 'testUserWithItem'
+          } as ItemEntity]);
+        }
+
+        return Promise.resolve([]);
+      })
+  
+    });
+
+    it('create returns 201 CREATED if user does not have item for sku', async () => {
       const res = await _sendRequest({ sku: 'GIVEAWAY-V3', user: 'testUser' });
 
       _validateResponse(res, {
@@ -229,6 +251,19 @@ describe('function - create-item-from-giveaway', () => {
           user: 'testUser',
         }
       });
+    });
+
+    it('create returns existing item if user already has item for sku', async () => {
+      const res = await _sendRequest({ sku: 'GIVEAWAY-V3', user: 'testUserWithItem' });
+
+      expect(res.statusCode).toEqual(StatusCodes.OK);
+      expect(res.dto).toEqual(expect.objectContaining({
+        token: 'ecd5aa6b03',
+      }));
+
+      expect(res.itemEntities).toHaveLength(0);
+      expect(res.auditEntities).toHaveLength(0);
+      expect(res.events).toHaveLength(0);
     });
 
   });
