@@ -135,7 +135,7 @@ const DROPLINK_SKU_V3: Sku = {
   "card": null,
   "description": "The fire element. Simplest of all polyhedra, strongest of all pyramids, the tetrahedron has only four prickly vertices.",
   "maxQty": 100,
-  "media": "{\"primary\":{\"type\":\"STATIC\"},\"secondary\":[{\"type\":\"DYNAMIC\",\"labels\":[{\"text\":\"${token}\",\"color\":\"#FFFFFFAA\",\"size\":\"30pt\",\"font\":\"Share Tech Mono\",\"weight\":\"Regular\",\"align\":\"center\",\"x\":450,\"y\":1220}]}]}",
+  "media": "{\"primary\":{\"type\":\"STATIC\"},\"secondary\":[{\"type\":\"DYNAMIC\",\"labels\":[{\"text\":\"${token}${issue}${issued}\",\"color\":\"#FFFFFFAA\",\"size\":\"30pt\",\"font\":\"Share Tech Mono\",\"weight\":\"Regular\",\"align\":\"center\",\"x\":450,\"y\":1220}]}]}",
   "name": "Giveaway Tetrahedron",
   "permissions": [],
   "platformCode": "SKN",
@@ -208,6 +208,12 @@ export const TEST_SKUS = {
     code: 'PREMIUM-V3-WITHOUT-PRICE',
     recommendedRetailPrice: null,
     permissions: ['METAPLEX_MINT'],
+  },
+
+  'PREMIUM-V3-WITHOUT-ENUMERATION': {
+    ...PREMIUM_SKU_V3,
+    code: 'PREMIUM-V3-WITHOUT-ENUMERATION',
+    maxQty: null,
   },
 
   'PREMIUM-V3-WITHOUT-MINT': {
