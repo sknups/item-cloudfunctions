@@ -7,4 +7,6 @@ gcloud functions delete item-find-tmp $common_args
 gcloud functions delete item-get-tmp $common_args
 gcloud functions delete item-update-tmp $common_args
 gcloud functions delete item-find-last-issued-tmp $common_args
+gcloud functions delete item-create-from-drop-link-tmp $common_args
 gcloud functions delete item-create-from-giveaway-tmp $common_args
+gcloud functions delete item-create-from-purchase-tmp $common_args

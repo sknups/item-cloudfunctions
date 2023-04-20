@@ -129,6 +129,19 @@ curl \
   -d '{"skuCode":"'$SKU_CODE'","user":"'$USER'"}'
 ```
 
+### item-create-from-drop-link (enumerated)
+
+```bash
+BASE_URL=http://localhost:8080
+SKU_CODE=TEST-DODECAHEDRON-BLUE
+USER=devtesting
+
+curl \
+  -H 'Content-Type: application/json' \
+  $BASE_URL/item-create-from-drop-link \
+  -d '{"sku":"'$SKU_CODE'","user":"'$USER'","giveaway":"devtest-fake"}'
+```
+
 ### item-create-from-giveaway
 
 ```bash
@@ -140,6 +153,19 @@ curl \
   -H 'Content-Type: application/json' \
   $BASE_URL/item-create-from-giveaway \
   -d '{"sku":"'$SKU_CODE'","user":"'$USER'"}'
+```
+
+### item-create-from-purchase
+
+```bash
+BASE_URL=http://localhost:8080
+SKU_CODE=TEST-DODECAHEDRON-BLUE
+USER=devtesting
+
+curl \
+  -H 'Content-Type: application/json' \
+  $BASE_URL/item-create-from-purchase \
+  -d '{"sku":"'$SKU_CODE'","user":"'$USER'","transaction":"devtest-fake"}'
 ```
 
 ### item-update
