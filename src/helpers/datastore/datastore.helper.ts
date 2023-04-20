@@ -99,16 +99,16 @@ export async function getEntity<T extends BaseEntity>(context: DatastoreContext,
   return _mapFromDatastoreEntity<T>(entity);
 }
 
-export async function insertEntity(context: DatastoreContext, kind: string, entity: BaseEntity): Promise<void> {
+export async function insertEntity(context: DatastoreContext, kind: string, entity: BaseEntity, excludeFromIndexes?: string[]): Promise<void> {
   const ds = context.tx ?? context.datastore;
 
-  await ds.insert(_mapToDatastoreEntity(context, kind, entity));
+  await ds.insert(_mapToDatastoreEntity(context, kind, entity, excludeFromIndexes));
 }
 
-export async function updateEntity(context: DatastoreContext, kind: string, entity: BaseEntity): Promise<void> {
+export async function updateEntity(context: DatastoreContext, kind: string, entity: BaseEntity, excludeFromIndexes?: string[]): Promise<void> {
   const ds = context.tx ?? context.datastore;
 
-  await ds.update(_mapToDatastoreEntity(context, kind, entity));
+  await ds.update(_mapToDatastoreEntity(context, kind, entity, excludeFromIndexes));
 }
 
 export async function findEntities<T extends BaseEntity>(context: DatastoreContext, kind: string, filters: Filter[], orders?: Order[]): Promise<T[]> {
@@ -160,9 +160,10 @@ function _mapFromDatastoreEntity<T extends BaseEntity>(entity: Entity): T {
   return mapped as T;
 }
 
-function _mapToDatastoreEntity(context: DatastoreContext, kind: string, obj: BaseEntity) {
+function _mapToDatastoreEntity(context: DatastoreContext, kind: string, obj: BaseEntity, excludeFromIndexes?: string[]) {
   const datastoreEntity = {
     key: context.datastore.key(_keyPath(kind, obj.key)),
+    excludeFromIndexes,
     data: { ...obj },
   };
   delete datastoreEntity.data.key; // we don't want to persist the key as an additional 'key' column
