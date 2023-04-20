@@ -368,7 +368,7 @@ describe('function - create-item', () => {
       _validateResponse(res, {
         dto: {
           claimCode: 'claimCode',
-          issue: null,
+          issue: 467,
           source: 'GIVEAWAY',
           user: 'testUser'
         },

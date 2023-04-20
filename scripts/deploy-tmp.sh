@@ -20,11 +20,27 @@ if [[ -z "$1" || "$1" == "$name" ]]; then
     --service-account=item-cf-write@drm-apps-01-43b0.iam.gserviceaccount.com
 fi
 
+name=item-create-from-drop-link-tmp
+if [[ -z "$1" || "$1" == "$name" ]]; then
+  gcloud functions deploy $name \
+    $common_args \
+    --entry-point=createItemFromDropLink \
+    --service-account=item-cf-write@drm-apps-01-43b0.iam.gserviceaccount.com
+fi
+
 name=item-create-from-giveaway-tmp
 if [[ -z "$1" || "$1" == "$name" ]]; then
   gcloud functions deploy $name \
     $common_args \
     --entry-point=createItemFromGiveaway \
+    --service-account=item-cf-write@drm-apps-01-43b0.iam.gserviceaccount.com
+fi
+
+name=item-create-from-purchase-tmp
+if [[ -z "$1" || "$1" == "$name" ]]; then
+  gcloud functions deploy $name \
+    $common_args \
+    --entry-point=createItemFromPurchase \
     --service-account=item-cf-write@drm-apps-01-43b0.iam.gserviceaccount.com
 fi
 

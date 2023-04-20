@@ -33,7 +33,7 @@ export class CreateItemRequestDto {
   public readonly claimCode?: string;
 }
 
-export class CreateItemFromGiveawayRequestDto {
+export abstract class AbstractCreateItemRequestDto {
 
   /**
    * The stock keeping unit (SKU) code of the item to be manufactured.
@@ -60,5 +60,39 @@ export class CreateItemFromGiveawayRequestDto {
    */
   @Equals(undefined)
   public readonly claimCode?: undefined;
+
+}
+
+export class CreateItemFromGiveawayRequestDto extends AbstractCreateItemRequestDto { }
+
+export class CreateItemFromDropLinkRequestDto extends AbstractCreateItemRequestDto {
+
+  /**
+   * The giveaway code used to redeem the item using a drop link.
+   *
+   * @example 'dodecahedron'
+   */
+  @IsString()
+  @IsNotEmpty()
+  public readonly giveaway: string;
+
+}
+
+export class CreateItemFromPurchaseRequestDto extends AbstractCreateItemRequestDto {
+
+  /**
+   * The unique identifier of the transaction used to pay for the item.
+   *
+   * This is treated as opaque data and will initially be ignored.
+   * It may be used in future, eg. to handle idempotency.
+   *
+   * The format of the transaction will depend on the payment service that was used.
+   * The retailer may decide on the exact format, eg. including a prefix for each supported payment provider.
+   *
+   * @example 'abc41f9d-7f10-4f8b-87c3-674e75afc3d0'
+   */
+  @IsString()
+  @IsNotEmpty()
+  public readonly transaction: string;
 
 }

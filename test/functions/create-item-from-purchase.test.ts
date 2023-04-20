@@ -2,23 +2,19 @@ import './test-env';
 import * as MockExpressResponse from 'mock-express-response';
 import { mockCommitTransactionResponse, mocks } from '../mocks';
 import { getMockReq } from '@jest-mock/express';
-import { CreateItemFromGiveawayRequestDto } from '../../src/dto/create-item-request.dto';
-import { createItemFromGiveaway } from '../../src';
+import { CreateItemFromPurchaseRequestDto } from '../../src/dto/create-item-request.dto';
+import { createItemFromPurchase } from '../../src';
 import { StatusCodes } from 'http-status-codes';
-import { ItemEntity } from '../../src/entity/item.entity';
 import { validateString } from '../validation-util';
-import { ItemRepository } from '../../src/persistence/item-repository';
-import { GIVEAWAY_ENTITY_V3 } from '../test-data-entities';
 import { sendRequest, validateResponse } from './create-item-test-util';
 
-function _sendRequest(body: CreateItemFromGiveawayRequestDto) {
-  return sendRequest(body, createItemFromGiveaway);
+function _sendRequest(body: CreateItemFromPurchaseRequestDto) {
+  return sendRequest(body, createItemFromPurchase);
 }
 
-describe('function - create-item-from-giveaway', () => {
+describe('function - create-item-from-purchase', () => {
 
   let auditId: number;
-  let bySkuAndUserSpy = jest.spyOn(ItemRepository.prototype, 'bySkuAndUser');
 
   beforeEach(function () {
 
@@ -28,16 +24,14 @@ describe('function - create-item-from-giveaway', () => {
     auditId = Math.floor(Math.random() * 10000000000);
     mocks.datastoreHelper.commitTransaction.mockReturnValueOnce(mockCommitTransactionResponse('audit', auditId));
 
-    bySkuAndUserSpy.mockClear();
-    bySkuAndUserSpy.mockReturnValueOnce(Promise.resolve([]));
-
   });
 
   describe('validation - basic', () => {
 
-    const template: CreateItemFromGiveawayRequestDto = {
-      sku: 'GIVEAWAY-V3',
+    const template: CreateItemFromPurchaseRequestDto = {
+      sku: 'PREMIUM-V3',
       user: 'testUser',
+      transaction: 'dummy-transaction',
     };
 
     let body: any;
@@ -50,13 +44,13 @@ describe('function - create-item-from-giveaway', () => {
       const req = getMockReq({ method: 'PUT', body });
       const res = new MockExpressResponse();
 
-      await createItemFromGiveaway(req, res);
+      await createItemFromPurchase(req, res);
 
       expect(res.statusCode).toEqual(StatusCodes.METHOD_NOT_ALLOWED);
     });
 
     it('empty body returns 400 BAD_REQUEST', async () => {
-      const res = await _sendRequest({} as CreateItemFromGiveawayRequestDto);
+      const res = await _sendRequest({} as CreateItemFromPurchaseRequestDto);
 
       expect(res.statusCode).toEqual(StatusCodes.BAD_REQUEST);
     });
@@ -64,6 +58,8 @@ describe('function - create-item-from-giveaway', () => {
     validateString('sku', template, _sendRequest);
 
     validateString('user', template, _sendRequest);
+
+    validateString('transaction', template, _sendRequest);
 
     it('defined claimCode returns 400 BAD_REQUEST', async () => {
       body.claimCode = 'anything';
@@ -83,9 +79,10 @@ describe('function - create-item-from-giveaway', () => {
 
   describe('validation - sku', () => {
 
-    const template: CreateItemFromGiveawayRequestDto = {
-      sku: 'GIVEAWAY-V3',
+    const template: CreateItemFromPurchaseRequestDto = {
+      sku: 'PREMIUM-V3',
       user: 'testUser',
+      transaction: 'dummy-transaction',
     };
 
     let body: any;
@@ -94,29 +91,29 @@ describe('function - create-item-from-giveaway', () => {
       body = { ...template };
     });
 
-    it('non-claimable SKU returns 403 FORBIDDEN', async () => {
-      body.sku = 'PREMIUM-V3';
+    it('claimable SKU returns 403 FORBIDDEN', async () => {
+      body.sku = 'GIVEAWAY-V3';
       const res = await _sendRequest(body);
 
-      expect(res.dto.message).toContain('claimable attribute not set');
+      expect(res.dto.message).toContain('claimable attribute is set');
       expect(res.dto.code).toEqual('ITEM_00003');
       expect(res.statusCode).toEqual(StatusCodes.FORBIDDEN);
     });
 
-    it('premium SKU returns 403 FORBIDDEN', async () => {
-      body.sku = 'PREMIUM-V3-CLAIMABLE';
+    it('SKU without price returns 403 FORBIDDEN', async () => {
+      body.sku = 'PREMIUM-V3-WITHOUT-PRICE';
       const res = await _sendRequest(body);
 
-      expect(res.dto.message).toContain('price is set');
+      expect(res.dto.message).toContain('price is not set');
       expect(res.dto.code).toEqual('ITEM_00003');
       expect(res.statusCode).toEqual(StatusCodes.FORBIDDEN);
     });
 
-    it('enumerated SKU returns 403 FORBIDDEN', async () => {
-      body.sku = 'DROPLINK-V3-CLAIMABLE';
+    it('non-enumerated SKU returns 403 FORBIDDEN', async () => {
+      body.sku = 'PREMIUM-V3-WITHOUT-ENUMERATION';
       const res = await _sendRequest(body);
 
-      expect(res.dto.message).toContain('it is enumerated');
+      expect(res.dto.message).toContain('is not enumerated');
       expect(res.dto.code).toEqual('ITEM_00003');
       expect(res.statusCode).toEqual(StatusCodes.FORBIDDEN);
     });
@@ -125,53 +122,24 @@ describe('function - create-item-from-giveaway', () => {
 
   describe('item manufacture', () => {
 
-    beforeEach(function () {
-      bySkuAndUserSpy.mockReset();
-      bySkuAndUserSpy.mockImplementation((platform: string, sku: string, user: string): Promise<ItemEntity[]> => {
-        if (platform === 'SKN' && sku === 'GIVEAWAY-V3' && user === 'testUserWithItem') {
-          return Promise.resolve([{
-            ...GIVEAWAY_ENTITY_V3,
-            stockKeepingUnitCode: 'GIVEAWAY-V3',
-            user: 'testUserWithItem'
-          } as ItemEntity]);
-        }
-
-        return Promise.resolve([]);
-      })
-
-    });
-
-    it('create returns 201 CREATED if user does not have item for sku', async () => {
-      const res = await _sendRequest({ sku: 'GIVEAWAY-V3', user: 'testUser' });
+    it('create returns 201 CREATED', async () => {
+      const res = await _sendRequest({ sku: 'PREMIUM-V3', user: 'testUser', transaction: 'dummy-transaction' });
 
       validateResponse(res, {
         dto: {
           claimCode: null,
-          issue: null,
-          source: 'GIVEAWAY',
+          issue: 2056,
+          source: 'SALE',
           user: 'testUser',
         },
         entity: {
           auditId,
           claimCode: null,
-          issue: null,
-          source: 'GIVEAWAY',
+          issue: 2056,
+          source: 'SALE',
           user: 'testUser',
         }
       });
-    });
-
-    it('create returns existing item if user already has item for sku', async () => {
-      const res = await _sendRequest({ sku: 'GIVEAWAY-V3', user: 'testUserWithItem' });
-
-      expect(res.statusCode).toEqual(StatusCodes.OK);
-      expect(res.dto).toEqual(expect.objectContaining({
-        token: 'ecd5aa6b03',
-      }));
-
-      expect(res.itemEntities).toHaveLength(0);
-      expect(res.auditEntities).toHaveLength(0);
-      expect(res.events).toHaveLength(0);
     });
 
   });
