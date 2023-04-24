@@ -246,7 +246,7 @@ describe('persistence', () => {
     });
 
     it('uses correct query', async () => {
-      const {platformCode, stockKeepingUnitCode} = TEST_ENTITIES.v2.sale
+      const { platformCode, stockKeepingUnitCode } = TEST_ENTITIES.v2.sale
       await instance.findLastIssued(platformCode, stockKeepingUnitCode);
 
       const expectedQuery = {
@@ -257,7 +257,7 @@ describe('persistence', () => {
           { name: 'stockKeepingUnitCode', op: '=', val: stockKeepingUnitCode },
           { name: 'issued', op: '!=', val: null }
         ],
-        orders: [{ name: 'issued', sign: '-'}]
+        orders: [{ name: 'issued', sign: '-' }]
 
       };
 
@@ -269,15 +269,15 @@ describe('persistence', () => {
       runQuerySpy.mockReset();
       runQuerySpy.mockReturnValueOnce([[]] as any);
 
-      const {platformCode, stockKeepingUnitCode} = TEST_ENTITIES.v2.sale
+      const { platformCode, stockKeepingUnitCode } = TEST_ENTITIES.v2.sale
       const result = await instance.findLastIssued(platformCode, stockKeepingUnitCode);
 
       expect(result).toBeNull();
-     
+
     });
 
     it('transforms results', async () => {
-      const {platformCode, stockKeepingUnitCode} = TEST_ENTITIES.v2.sale
+      const { platformCode, stockKeepingUnitCode } = TEST_ENTITIES.v2.sale
       const result = await instance.findLastIssued(platformCode, stockKeepingUnitCode);
 
       expect(result).toEqual(TEST_ENTITIES.v2.sale);
@@ -293,17 +293,17 @@ describe('persistence', () => {
     });
 
     it('uses correct query', async () => {
-      const {platformCode, stockKeepingUnitCode} = TEST_ENTITIES.v2.sale
+      const { platformCode, stockKeepingUnitCode } = TEST_ENTITIES.v2.sale
       await instance.countClaimed(platformCode, stockKeepingUnitCode);
 
       const expectedQuery = {
         filters: [
-          {"name": "platformCode", "op": "=", "val": platformCode}, 
-          {"name": "stockKeepingUnitCode", "op": "=", "val": stockKeepingUnitCode}, 
-          {"name": "claimCode", "op": "!=", "val": null}
+          { "name": "platformCode", "op": "=", "val": platformCode },
+          { "name": "stockKeepingUnitCode", "op": "=", "val": stockKeepingUnitCode },
+          { "name": "claimCode", "op": "!=", "val": null }
         ],
-        kinds: ["item"], 
-        namespace: "drm", 
+        kinds: ["item"],
+        namespace: "drm",
       }
 
 
@@ -314,7 +314,7 @@ describe('persistence', () => {
     })
 
     it('transforms results', async () => {
-      const {platformCode, stockKeepingUnitCode} = TEST_ENTITIES.v2.sale
+      const { platformCode, stockKeepingUnitCode } = TEST_ENTITIES.v2.sale
       const result = await instance.countClaimed(platformCode, stockKeepingUnitCode);
 
       expect(result).toEqual(42);
@@ -330,17 +330,17 @@ describe('persistence', () => {
     });
 
     it('uses correct query', async () => {
-      const {platformCode, stockKeepingUnitCode} = TEST_ENTITIES.v2.sale
+      const { platformCode, stockKeepingUnitCode } = TEST_ENTITIES.v2.sale
       await instance.countPurchased(platformCode, stockKeepingUnitCode);
 
       const expectedQuery = {
         filters: [
-          {"name": "platformCode", "op": "=", "val": platformCode}, 
-          {"name": "stockKeepingUnitCode", "op": "=", "val": stockKeepingUnitCode}, 
-          {"name": "claimCode", "op": "=", "val": null}
+          { "name": "platformCode", "op": "=", "val": platformCode },
+          { "name": "stockKeepingUnitCode", "op": "=", "val": stockKeepingUnitCode },
+          { "name": "claimCode", "op": "=", "val": null }
         ],
-        kinds: ["item"], 
-        namespace: "drm", 
+        kinds: ["item"],
+        namespace: "drm",
       }
 
 
@@ -351,7 +351,7 @@ describe('persistence', () => {
     })
 
     it('transforms results', async () => {
-      const {platformCode, stockKeepingUnitCode} = TEST_ENTITIES.v2.sale
+      const { platformCode, stockKeepingUnitCode } = TEST_ENTITIES.v2.sale
       const result = await instance.countPurchased(platformCode, stockKeepingUnitCode);
 
       expect(result).toEqual(42);
@@ -366,16 +366,15 @@ describe('persistence', () => {
     });
 
     it('uses correct query', async () => {
-      const {platformCode, stockKeepingUnitCode} = TEST_ENTITIES.v2.sale;
-      await instance.bySkuAndUser(platformCode,stockKeepingUnitCode, USER);
+      const { stockKeepingUnitCode } = TEST_ENTITIES.v2.sale;
+      await instance.bySkuAndUser(stockKeepingUnitCode, USER);
 
       const expectedQuery = {
         namespace: 'drm',
         kinds: ['item'],
         filters: [
-          {"name": "platformCode", "op": "=", "val": platformCode}, 
-          {"name": "stockKeepingUnitCode", "op": "=", "val": stockKeepingUnitCode}, 
-          {"name": "user", "op": "=", "val": USER}
+          { "name": "stockKeepingUnitCode", "op": "=", "val": stockKeepingUnitCode },
+          { "name": "user", "op": "=", "val": USER }
         ],
       };
 
@@ -384,8 +383,8 @@ describe('persistence', () => {
     });
 
     it('transforms results', async () => {
-      const { platformCode, stockKeepingUnitCode} = TEST_ENTITIES.v2.sale;
-      const result = await instance.bySkuAndUser(platformCode,stockKeepingUnitCode, USER);
+      const { stockKeepingUnitCode } = TEST_ENTITIES.v2.sale;
+      const result = await instance.bySkuAndUser(stockKeepingUnitCode, USER);
 
       expect(result).toEqual([TEST_ENTITIES.v2.sale]);
     });
@@ -394,8 +393,8 @@ describe('persistence', () => {
       runQuerySpy.mockReset();
       runQuerySpy.mockReturnValueOnce([[{ ...SALE_QUERY_DATA, state: 'DELETED' }]] as any);
 
-      const {platformCode, stockKeepingUnitCode} = TEST_ENTITIES.v2.sale;
-      const result = await instance.bySkuAndUser(platformCode,stockKeepingUnitCode, USER);
+      const { stockKeepingUnitCode } = TEST_ENTITIES.v2.sale;
+      const result = await instance.bySkuAndUser(stockKeepingUnitCode, USER);
 
       expect(result).toEqual([]);
     });
