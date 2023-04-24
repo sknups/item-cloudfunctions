@@ -127,8 +127,8 @@ describe('function - create-item-from-giveaway', () => {
 
     beforeEach(function () {
       bySkuAndUserSpy.mockReset();
-      bySkuAndUserSpy.mockImplementation((platform: string, sku: string, user: string): Promise<ItemEntity[]> => {
-        if (platform === 'SKN' && sku === 'GIVEAWAY-V3' && user === 'testUserWithItem') {
+      bySkuAndUserSpy.mockImplementation((sku: string, user: string): Promise<ItemEntity[]> => {
+        if (sku === 'GIVEAWAY-V3' && user === 'testUserWithItem') {
           return Promise.resolve([{
             ...GIVEAWAY_ENTITY_V3,
             stockKeepingUnitCode: 'GIVEAWAY-V3',
