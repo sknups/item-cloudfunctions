@@ -20,11 +20,10 @@ function generateOwnershipToken(): string {
 }
 
 export async function getUserItemForSku(
-  platform: string,
   sku: Sku,
   user: string,
 ): Promise<ItemEntity | null> {
-  const items = await repository().bySkuAndUser(platform, sku.code, user);
+  const items = await repository().bySkuAndUser(sku.code, user);
   return items.length > 0 ? items[0] : null
 }
 

@@ -40,7 +40,7 @@ export async function createItemFromGiveawayHandler(
   }
 
   //Check if user owns item from Sku
-  let item: ItemEntity = await getUserItemForSku('SKN',sku, dto.user);
+  let item: ItemEntity = await getUserItemForSku(sku, dto.user);
   const userHasItem = item != null
 
   if (!userHasItem) {
