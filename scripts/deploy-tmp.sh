@@ -9,6 +9,7 @@ common_args="${common_args} --security-level=secure-always"
 common_args="${common_args} --runtime=nodejs18"
 common_args="${common_args} --memory=512MB"
 common_args="${common_args} --set-env-vars CF_BASE_URL=https://europe-west2-drm-apps-01-43b0.cloudfunctions.net,ASSETS_URL=https://assets-dev.sknups.gg,FLEX_URL=https://flex-dev.sknups.com,SKNAPP_URL=https://app-dev.sknups.com"
+common_args="${common_args} --set-build-env-vars GOOGLE_NODE_RUN_SCRIPTS="
 
 npm run build
 
