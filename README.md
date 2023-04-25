@@ -102,33 +102,6 @@ SKU_CODE=TEST-DODECAHEDRON-GIVEAWAY
 curl -H 'content-type: application/json' $BASE_URL/item-count/SKN/$SKU_CODE 
 ```
 
-### item-create (non-enumerated)
-
-```bash
-BASE_URL=http://localhost:8080
-SKU_CODE=TEST-DODECAHEDRON-GIVEAWAY
-CLAIM_CODE=test
-USER=devtesting
-
-curl \
-  -H 'Content-Type: application/json' \
-  $BASE_URL/item-create \
-  -d '{"skuCode":"'$SKU_CODE'","claimCode":"'$CLAIM_CODE'","user":"'$USER'"}'
-```
-
-### item-create (enumerated)
-
-```bash
-BASE_URL=http://localhost:8080
-SKU_CODE=TEST-DODECAHEDRON-BLUE
-USER=devtesting
-
-curl \
-  -H 'Content-Type: application/json' \
-  $BASE_URL/item-create \
-  -d '{"skuCode":"'$SKU_CODE'","user":"'$USER'"}'
-```
-
 ### item-create-from-drop-link (enumerated)
 
 ```bash

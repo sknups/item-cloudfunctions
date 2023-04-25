@@ -12,14 +12,6 @@ common_args="${common_args} --set-env-vars CF_BASE_URL=https://europe-west2-drm-
 
 npm run build
 
-name=item-create-tmp
-if [[ -z "$1" || "$1" == "$name" ]]; then
-  gcloud functions deploy $name \
-    $common_args \
-    --entry-point=createItem \
-    --service-account=item-cf-write@drm-apps-01-43b0.iam.gserviceaccount.com
-fi
-
 name=item-create-from-drop-link-tmp
 if [[ -z "$1" || "$1" == "$name" ]]; then
   gcloud functions deploy $name \
