@@ -114,14 +114,4 @@ export class ItemEvent extends BaseEvent {
   @IsString()
   @IsNotEmpty()
   public skuName: string;
-
-  @IsInt()
-  @Min(0)
-  @Max(Number.MAX_VALUE)
-  @ValidateIf((_, value) => value != null) // allow null
-  public skuRarity?: number | null;
-
-  @IsString()
-  @IsOptional()
-  public tier?: string | null;
 }
