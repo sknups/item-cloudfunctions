@@ -67,9 +67,7 @@ export function itemEntityToItemEvent(item: ItemEntity, audit: AuditEntity, even
   event.saleQty = item.issued;
   event.skuCode = item.stockKeepingUnitCode;
   event.skuName = item.stockKeepingUnitName;
-  event.skuRarity = item.stockKeepingUnitRarity;
   event.source = item.source;
   event.state = item.state;
-  event.tier = item.tier;
   return event;
 }

@@ -2,7 +2,7 @@
 import { ItemEvent } from '../src/eventstreaming/item-event';
 import { validateSync, ValidationError } from 'class-validator';
 
-const ITEM_EVENT_JSON_TEMPLATE = '{"dataVersion":3,"brandCode":"brandCode1","brandName":"brandName1","brandWholesalePrice":101,"brandWholesalerShare":1.5,"claimCode":"claimCode1","dataEvent":"CREATE","dataTimestamp":"$dataTimestamp","eventId":"$eventId","itemCode":"ownershipToken1","maxQty":50,"nftAddress":"nftAddress1","nftState":"UNMINTED","ownerAddress":"ownerAddress1","platformCode":"platformCode1","retailSource":"retailSource1","retailUserId":"retailUserId1","rrp":99,"saleQty":9,"skuCode":"stockKeepingUnitCode1","skuName":"stockKeepingUnitName1","skuRarity":3,"source":"source1","state":"state1","tier":"PREMIUM_3"}'
+const ITEM_EVENT_JSON_TEMPLATE = '{"dataVersion":3,"brandCode":"brandCode1","brandName":"brandName1","brandWholesalePrice":101,"brandWholesalerShare":1.5,"claimCode":"claimCode1","dataEvent":"CREATE","dataTimestamp":"$dataTimestamp","eventId":"$eventId","itemCode":"ownershipToken1","maxQty":50,"nftAddress":"nftAddress1","nftState":"UNMINTED","ownerAddress":"ownerAddress1","platformCode":"platformCode1","retailSource":"retailSource1","retailUserId":"retailUserId1","rrp":99,"saleQty":9,"skuCode":"stockKeepingUnitCode1","skuName":"stockKeepingUnitName1","source":"source1","state":"state1"}'
 
 function itemEventJson(dataTimestamp: Date, eventId: string) {
   return ITEM_EVENT_JSON_TEMPLATE
@@ -36,10 +36,8 @@ describe('function - create-non-enumerated-item', () => {
     testEvent.saleQty = 9;
     testEvent.skuCode = 'stockKeepingUnitCode1';
     testEvent.skuName = 'stockKeepingUnitName1';
-    testEvent.skuRarity = 3;
     testEvent.source = 'source1';
     testEvent.state = 'state1';
-    testEvent.tier = 'PREMIUM_3';
   });
 
   it('is valid', () => {
@@ -400,25 +398,6 @@ describe('function - create-non-enumerated-item', () => {
     const result: ValidationError[] = validateSync(testEvent, { whitelist: true, forbidNonWhitelisted: true });
     expect(result).toHaveLength(1);
     expect(result[0].property).toEqual('skuName');
-  });
-
-  it('invalid skuRarity', () => {
-    testEvent.skuRarity = -1;
-    const result: ValidationError[] = validateSync(testEvent, { whitelist: true, forbidNonWhitelisted: true });
-    expect(result).toHaveLength(1);
-    expect(result[0].property).toEqual('skuRarity');
-  });
-
-  it('missing skuRarity', () => {
-    delete testEvent.skuRarity;
-    const result: ValidationError[] = validateSync(testEvent, { whitelist: true, forbidNonWhitelisted: true });
-    expect(result).toHaveLength(0);
-  });
-
-  it('null skuRarity', () => {
-    testEvent.skuRarity = null;
-    const result: ValidationError[] = validateSync(testEvent, { whitelist: true, forbidNonWhitelisted: true });
-    expect(result).toHaveLength(0);
   });
 
   it('serializes to json', () => {
