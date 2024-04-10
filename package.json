@@ -12,9 +12,9 @@
     "test": "NODE_ENV=test LOG_LEVEL=error LOG_FORMAT=simple jest --config test/jest-config.json"
   },
   "dependencies": {
-    "@google-cloud/datastore": "^7.4.0",
+    "@google-cloud/datastore": "^8.7.0",
     "@google-cloud/functions-framework": "^3.1.2",
-    "@google-cloud/pubsub": "^3.2.1",
+    "@google-cloud/pubsub": "^4.3.3",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.0",
     "http-status-codes": "^2.2.0",
